@@ -49,7 +49,7 @@ export default async function AdminBorderedItemsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
-          {items.map((item) => (
+          {items.map((item: any) => (
             <div key={item.id} className="bg-white rounded-2xl p-5 flex items-center gap-4">
               <div
                 className="w-12 h-12 rounded-xl flex-shrink-0 border-2"

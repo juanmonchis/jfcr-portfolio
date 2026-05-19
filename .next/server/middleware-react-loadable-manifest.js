@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST='{"components/admin/BlockEditor.tsx -> @/components/admin/Editor":{"id":7280,"files":["static/chunks/70e0d97a.969a257034b1ba10.js","static/chunks/54a60aa6.919d8c7142f0af35.js","static/chunks/85.a88fc22905d227ea.js","static/chunks/280.d4bc5997204ea7ff.js"]}}';

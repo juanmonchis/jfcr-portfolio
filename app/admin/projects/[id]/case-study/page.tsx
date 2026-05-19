@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import CaseStudyEditorClient from "./CaseStudyEditorClient";
 
 export const dynamic = "force-dynamic";
+export function generateStaticParams() { return []; }
 
 interface Props {
   params: Promise<{ id: string }>;

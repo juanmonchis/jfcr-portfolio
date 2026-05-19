@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import BlogCard from "@/components/BlogCard";
 import SiteHeader from "@/components/SiteHeader";
 
-export const dynamic = "force-dynamic";
+
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -31,7 +31,7 @@ export default async function BlogPage() {
 
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {posts.map((post) => (
+            {posts.map((post: any) => (
               <BlogCard
                 key={post.id}
                 title={post.title}

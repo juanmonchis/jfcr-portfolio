@@ -32,7 +32,7 @@ import ProjectCard from "@/components/ProjectCard";
 import BorderedItemComponent from "@/components/BorderedItem";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
+
 
 export default async function HomePage() {
   const [projects, borderedItems] = await Promise.all([
@@ -43,9 +43,9 @@ export default async function HomePage() {
     prisma.borderedItem.findMany({ orderBy: { order: "asc" } }),
   ]);
 
-  const defaultProjects = projects.filter((p) => p.size === "default").sort((a, b) => a.order - b.order);
-  const smallProjects = projects.filter((p) => p.size === "small").sort((a, b) => a.order - b.order);
-  const xsmallProjects = projects.filter((p) => p.size === "xsmall").sort((a, b) => a.order - b.order);
+  const defaultProjects = projects.filter((p: any) => p.size === "default").sort((a: any, b: any) => a.order - b.order);
+  const smallProjects = projects.filter((p: any) => p.size === "small").sort((a: any, b: any) => a.order - b.order);
+  const xsmallProjects = projects.filter((p: any) => p.size === "xsmall").sort((a: any, b: any) => a.order - b.order);
 
   function parseTags(tags: string): string[] {
     try {
@@ -70,7 +70,7 @@ export default async function HomePage() {
         {/* Default (full width) projects */}
         {defaultProjects.length > 0 && (
           <div className="flex flex-col gap-6 mb-6 max-w-[1000px] mx-auto">
-            {defaultProjects.map((project) => (
+            {defaultProjects.map((project: any) => (
               <ProjectCard
                 key={project.id}
                 title={project.title}
@@ -92,7 +92,7 @@ export default async function HomePage() {
         {/* Small (2-col) projects */}
         {smallProjects.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 max-w-[1000px] mx-auto">
-            {smallProjects.map((project) => (
+            {smallProjects.map((project: any) => (
               <ProjectCard
                 key={project.id}
                 title={project.title}
@@ -114,7 +114,7 @@ export default async function HomePage() {
         {/* XSmall (3-col) projects */}
         {xsmallProjects.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[1000px] mx-auto">
-            {xsmallProjects.map((project) => (
+            {xsmallProjects.map((project: any) => (
               <ProjectCard
                 key={project.id}
                 title={project.title}

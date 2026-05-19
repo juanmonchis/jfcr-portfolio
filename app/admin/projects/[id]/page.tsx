@@ -4,6 +4,7 @@ import ProjectForm from "@/components/admin/ProjectForm";
 import CaseStudyEditorClient from "./case-study/CaseStudyEditorClient";
 
 export const dynamic = "force-dynamic";
+export function generateStaticParams() { return []; }
 
 interface Props {
   params: Promise<{ id: string }>;

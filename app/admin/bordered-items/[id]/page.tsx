@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import BorderedItemForm from "@/components/admin/BorderedItemForm";
 
 export const dynamic = "force-dynamic";
+export function generateStaticParams() { return []; }
 
 interface Props {
   params: Promise<{ id: string }>;

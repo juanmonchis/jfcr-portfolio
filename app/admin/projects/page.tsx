@@ -49,7 +49,7 @@ export default async function AdminProjectsPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
-          {projects.map((project) => (
+          {projects.map((project: any) => (
             <div
               key={project.id}
               className="bg-white rounded-2xl p-5 flex items-center gap-4"

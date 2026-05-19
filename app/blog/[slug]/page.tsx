@@ -5,7 +5,10 @@ import Image from "next/image";
 import SiteHeader from "@/components/SiteHeader";
 import BlockRenderer, { Block } from "@/components/CaseStudy/BlockRenderer";
 
-export const dynamic = "force-dynamic";
+export async function generateStaticParams() {
+  const posts = await prisma.post.findMany({ where: { published: true }, select: { slug: true } });
+  return posts.map((p: { slug: string }) => ({ slug: p.slug }));
+}
 
 interface Props {
   params: Promise<{ slug: string }>;

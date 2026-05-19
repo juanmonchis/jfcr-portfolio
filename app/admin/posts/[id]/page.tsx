@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import PostForm from "@/components/admin/PostForm";
 
 export const dynamic = "force-dynamic";
+export function generateStaticParams() { return []; }
 
 interface Props {
   params: Promise<{ id: string }>;
