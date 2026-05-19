@@ -31,8 +31,12 @@ import BlockRenderer, { Block } from "@/components/CaseStudy/BlockRenderer";
 import SiteHeader from "@/components/SiteHeader";
 
 export async function generateStaticParams() {
-  const caseStudies = await prisma.caseStudy.findMany({ select: { slug: true } });
-  return caseStudies.map((cs) => ({ slug: cs.slug }));
+  try {
+    const caseStudies = await prisma.caseStudy.findMany({ select: { slug: true } });
+    return caseStudies.map((cs) => ({ slug: cs.slug }));
+  } catch {
+    return [];
+  }
 }
 
 interface Props {
