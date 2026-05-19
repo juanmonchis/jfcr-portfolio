@@ -115,7 +115,7 @@ function VideoBlock({ block }: { block: Extract<Block, { type: "video" }> }) {
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           />
         ) : (
-          <video src={block.url} controls className="w-full h-full rounded-xl object-cover" />
+          <video src={assetPath(block.url)} controls className="w-full h-full rounded-xl object-cover" />
         )}
       </div>
       {block.caption && (
@@ -216,7 +216,7 @@ function Lightbox({ item, onClose }: { item: GridImage; onClose: () => void }) {
           }}
         >
           {isVid ? (
-            <video src={item.url} className="max-h-[70vh] rounded-xl object-contain block" autoPlay loop muted playsInline />
+            <video src={assetPath(item.url)} className="max-h-[70vh] rounded-xl object-contain block" autoPlay loop muted playsInline />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={assetPath(item.url)} alt="" className="max-h-[70vh] rounded-xl object-contain block" />
@@ -298,7 +298,7 @@ type CardState = { item: GridImage; x: number; y: number; rot: number; z: number
 
 function MediaEl({ item, className, onClick, lazy = false }: { item: GridImage; className: string; onClick: () => void; lazy?: boolean }) {
   return item.url.toLowerCase().endsWith(".mp4") ? (
-    <video src={item.url} className={className} autoPlay loop muted playsInline onClick={onClick} />
+    <video src={assetPath(item.url)} className={className} autoPlay loop muted playsInline onClick={onClick} />
   ) : (
     // eslint-disable-next-line @next/next/no-img-element
     <img src={assetPath(item.url)} alt="" className={className} onClick={onClick} loading={lazy ? "lazy" : "eager"} decoding="async" />
