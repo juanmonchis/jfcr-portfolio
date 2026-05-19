@@ -1,0 +1,388 @@
+/*
+ * ════════════════════════════════════════════════════════════════════════════
+ * FILE: app/globals.css
+ * ════════════════════════════════════════════════════════════════════════════
+ * WHAT IT DOES:
+ *   The single source of truth for all global styles. Loaded on every page.
+ *   Contains: font declarations, the Tailwind theme (global color/font tokens),
+ *   and all named text style classes.
+ *
+ * 🎨 DESIGN — things to edit here:
+ *   - @font-face blocks   → swap or add font files (point to /public/fonts/)
+ *   - @theme block        → change the site-wide color palette or font stacks
+ *   - .type-* classes     → change any text style (size, weight, line-height)
+ *                           that applies across the whole site
+ *
+ * ℹ️  HOW TO USE TEXT STYLES:
+ *   Add a .type-* class to any element in any component or page file.
+ *   You can combine it with Tailwind utility classes freely.
+ *   Example:  <h1 className="type-homepage-hero text-[#0C0D1F]">Hello</h1>
+ * ════════════════════════════════════════════════════════════════════════════
+ */
+
+@import "tailwindcss";
+
+html, body {
+  overflow-x: clip;
+}
+
+/* ─── Fonts ─────────────────────────────────────────────────────────────── */
+/* Fonts are loaded via next/font/local in app/layout.tsx.                  */
+/* They expose CSS variables: --font-migra and --font-telegraf               */
+/* which are injected on the <html> element and used in the type classes.   */
+
+/* ─── Theme ──────────────────────────────────────────────────────────────── */
+
+@theme {
+  --color-hero-bg: #DDED3C;
+  --color-dark-bg: #0C0D1F;
+  --color-dark-card: #13142B;
+  --font-sans: var(--font-telegraf), sans-serif;
+  --font-display: var(--font-migra), serif;
+  --breakpoint-wide: 1000px;
+}
+
+/* ─── Type styles — Migra ────────────────────────────────────────────────── */
+/*
+  Usage: add the class directly to any HTML element or component.
+  Example: <h1 className="type-case-main-title">...</h1>
+*/
+
+/* Hero / homepage headline — e.g. "Hey, I am Juan Felipe" */
+.type-hero-title {
+  font-family: var(--font-migra), serif;
+  font-size: 70px;
+  line-height: 90px;
+  font-weight: 400;
+  color: #0d0c27;
+}
+
+/* Homepage hero — largest display text on the homepage */
+.type-homepage-hero {
+  font-family: var(--font-migra), serif;
+  font-size: 120px;
+  line-height: 118px;
+  font-weight: 800; /* ⚠ Mapped to Extrabold — Migra has no 700 */
+  color: #0d0c27;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .type-homepage-hero {
+    font-size: 169px;
+    line-height: 159px;
+  }
+}
+
+/* Case study opening title — the largest heading on a case study page */
+.type-case-main-title {
+  font-family: var(--font-migra), serif;
+  font-size: 120px;
+  line-height: 120px;
+  font-weight: 400;
+  color: #0d0c27;
+}
+
+/* Case study primary section title */
+.type-case-title {
+  font-family: var(--font-migra), serif;
+  font-size: 64px;
+  line-height: 64px;
+  font-weight: 800; /* ⚠ Mapped to Extrabold — Migra has no 700 */
+  color: #0d0c27;
+}
+
+/* Case study subsection title */
+.type-case-subtitle {
+  font-family: var(--font-migra), serif;
+  font-size: 40px;
+  line-height: 52px;
+  font-weight: 800; /* ⚠ Mapped to Extrabold — Migra has no 700 */
+  color: #0d0c27;
+}
+
+/* Case study small heading / label heading */
+.type-case-heading-sm {
+  font-family: var(--font-migra), serif;
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 800; /* ⚠ Mapped to Extrabold — Migra has no 700 */
+  color: #0d0c27;
+}
+
+/* Highlighted pullquote or key statement inside a case study */
+.type-case-highlight {
+  font-family: var(--font-migra), serif;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 800; /* ⚠ Mapped to Extrabold — Migra has no 700 */
+  color: #0d0c27;
+}
+
+/* Card synopsis — short punchy line on a project card */
+.type-card-synopsis {
+  font-family: var(--font-migra), serif;
+  font-size: 40px;
+  line-height: 40px;
+  font-weight: 400;
+  color: #0d0c27;
+}
+
+/* Card title inside a case study context */
+.type-card-title {
+  font-family: var(--font-migra), serif;
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 800; /* ⚠ Mapped to Extrabold — Migra has no 700 */
+  color: #0d0c27;
+}
+
+/* ─── Type styles — Telegraf ─────────────────────────────────────────────── */
+
+/* Body paragraph text */
+.type-paragraph {
+  font-family: var(--font-telegraf), sans-serif;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+  color: #0d0c27;
+}
+
+/* Caption — image or section captions */
+.type-caption {
+  font-family: var(--font-telegraf), sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+/* Small caption — footnotes, metadata, dates */
+.type-caption-sm {
+  font-family: var(--font-telegraf), sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+/* Tags — always uppercase */
+.type-tag {
+  font-family: var(--font-telegraf), sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0d0c27;
+}
+
+/* CTA inside a case study (large, bold) */
+.type-cta-case-study {
+  font-family: var(--font-telegraf), sans-serif;
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #0d0c27;
+}
+
+/* General CTA — buttons and links */
+.type-cta {
+  font-family: var(--font-telegraf), sans-serif;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+/* Card description text */
+.type-card-description {
+  font-family: var(--font-telegraf), sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #0d0c27;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #0d0c27;
+}
+
+
+/* Card shuffle — exit trajectories (slow, curved float-away paths) */
+@keyframes cardOut0 { 0%{transform:translate(0,0) rotate(0deg);opacity:1} 30%{opacity:1} 60%{transform:translate(-55vw,6vh) rotate(-14deg);opacity:.5} 100%{transform:translate(-130vw,10vh) rotate(-22deg);opacity:0} }
+@keyframes cardOut1 { 0%{transform:translate(0,0) rotate(0deg);opacity:1} 30%{opacity:1} 60%{transform:translate(52vw,-8vh) rotate(12deg);opacity:.5} 100%{transform:translate(128vw,-14vh) rotate(20deg);opacity:0} }
+@keyframes cardOut2 { 0%{transform:translate(0,0) rotate(0deg);opacity:1} 30%{opacity:1} 60%{transform:translate(-48vw,-10vh) rotate(-18deg);opacity:.5} 100%{transform:translate(-125vw,-20vh) rotate(-26deg);opacity:0} }
+@keyframes cardOut3 { 0%{transform:translate(0,0) rotate(0deg);opacity:1} 30%{opacity:1} 60%{transform:translate(50vw,12vh) rotate(16deg);opacity:.5} 100%{transform:translate(130vw,22vh) rotate(24deg);opacity:0} }
+@keyframes cardOut4 { 0%{transform:translate(0,0) rotate(0deg);opacity:1} 30%{opacity:1} 60%{transform:translate(-58vw,14vh) rotate(-10deg);opacity:.5} 100%{transform:translate(-135vw,24vh) rotate(-16deg);opacity:0} }
+@keyframes cardOut5 { 0%{transform:translate(0,0) rotate(0deg);opacity:1} 30%{opacity:1} 60%{transform:translate(54vw,-14vh) rotate(14deg);opacity:.5} 100%{transform:translate(132vw,-26vh) rotate(22deg);opacity:0} }
+
+/* Mobile summon zone — idle pulse while dragging */
+@keyframes mobileZonePulse {
+  0%, 100% { box-shadow: 0 -8px  30px 4px  rgba(221,237,60,0.4); }
+  50%       { box-shadow: 0 -20px 60px 16px rgba(221,237,60,0.7); }
+}
+@keyframes mobileZoneSummon {
+  0%, 100% { box-shadow: 0 0 20px 4px  rgba(147,51,234,0.5); }
+  50%       { box-shadow: 0 0 60px 20px rgba(147,51,234,0.85); }
+}
+
+/* Summon area — purple aura pulse on drop */
+@keyframes summonAura {
+  0%   { box-shadow: 0 0 0   0px rgba(147,51,234,0.8), 0 0  30px  8px rgba(147,51,234,0.5); }
+  50%  { box-shadow: 0 0 0  28px rgba(147,51,234,0),   0 0  80px 32px rgba(147,51,234,0.7); }
+  100% { box-shadow: 0 0 0   0px rgba(147,51,234,0.8), 0 0  30px  8px rgba(147,51,234,0.5); }
+}
+
+/* Drop-zone glow wave — color driven by --glow-color CSS variable */
+@keyframes zoneGlow {
+  0%   { box-shadow: 0 0 0   0px var(--glow-color), 0 0 20px  0px var(--glow-color); }
+  50%  { box-shadow: 0 0 0  18px transparent,        0 0 48px 12px var(--glow-color); }
+  100% { box-shadow: 0 0 0   0px var(--glow-color), 0 0 20px  0px var(--glow-color); }
+}
+
+/* Card pack idle float */
+@keyframes packFloat {
+  0%, 100% { transform: translateY(0px);    box-shadow: 0 20px 60px rgba(0,0,0,0.35); }
+  50%       { transform: translateY(-14px);  box-shadow: 0 34px 80px rgba(0,0,0,0.45); }
+}
+
+/* Card pack open — lift, shake, fade out */
+@keyframes packReveal {
+  0%   { transform: translateY(0)     scale(1)    rotate(0deg);   opacity: 1; }
+  10%  { transform: translateY(-32px) scale(1.08) rotate(0deg);   opacity: 1; }
+  22%  { transform: translateY(-32px) scale(1.08) rotate(-15deg); opacity: 1; }
+  34%  { transform: translateY(-32px) scale(1.08) rotate(15deg);  opacity: 1; }
+  44%  { transform: translateY(-32px) scale(1.08) rotate(-10deg); opacity: 1; }
+  54%  { transform: translateY(-32px) scale(1.08) rotate(10deg);  opacity: 1; }
+  63%  { transform: translateY(-32px) scale(1.08) rotate(-5deg);  opacity: 1; }
+  72%  { transform: translateY(-32px) scale(1.1)  rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(-32px) scale(1.1)  rotate(0deg);   opacity: 0; }
+}
+
+/* Sheen highlight — slides a soft stripe across the card (clipped by parent overflow:hidden) */
+@keyframes sheenSlide {
+  0%   { transform: translateX(-150%); opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translateX(400%);  opacity: 0; }
+}
+
+@keyframes starRock {
+  from { transform: rotate(-18deg); }
+  to   { transform: rotate(18deg);  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+@keyframes zoomOut {
+  from { transform: scale(1);    opacity: 1; }
+  to   { transform: scale(0.85); opacity: 0; }
+}
+
+@keyframes float {
+  0%   { translate: var(--float-x, 0px) var(--float-y, 0px);
+         rotate: var(--float-rotate, 0deg);
+         box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+  50%  { translate: var(--float-x, 0px) calc(var(--float-y, 0px) - 10px);
+         rotate: var(--float-rotate, 0deg);
+         box-shadow: 0 20px 40px rgba(0,0,0,0.20); }
+  100% { translate: var(--float-x, 0px) var(--float-y, 0px);
+         rotate: var(--float-rotate, 0deg);
+         box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+}
+
+.float-item {
+  animation: float 4s ease-in-out infinite;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+/* Prose styles for blog content */
+.prose h1 {
+  font-family: var(--font-migra), serif;
+  font-size: 64px;
+  line-height: 64px;
+  font-weight: 800;
+  color: #0d0c27;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+.prose h2 {
+  font-family: var(--font-migra), serif;
+  font-size: 40px;
+  line-height: 52px;
+  font-weight: 800;
+  color: #0d0c27;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+.prose h3, .prose h4 {
+  font-family: var(--font-migra), serif;
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 800;
+  color: #0d0c27;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.prose p {
+  font-family: var(--font-telegraf), sans-serif;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+  color: #0d0c27;
+  margin-bottom: 1rem;
+}
+.prose ul, .prose ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.prose ul { list-style-type: disc; }
+.prose ol { list-style-type: decimal; }
+.prose a {
+  text-decoration: underline;
+  color: #DDED3C;
+}
+.prose strong { font-weight: 700; }
+.prose em { font-style: italic; }
+.prose blockquote {
+  border-left: 4px solid #DDED3C;
+  padding-left: 1rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+.prose code {
+  background: rgba(255,255,255,0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+.prose pre {
+  background: rgba(0,0,0,0.3);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+@keyframes cardAura {
+  0%   { box-shadow: 0 0 0 3px rgba(147,51,234,0.7), 0 0 30px 10px rgba(147,51,234,0.35), 0 20px 50px rgba(0,0,0,0.3); }
+  50%  { box-shadow: 0 0 0 5px rgba(147,51,234,0.9), 0 0 55px 22px rgba(147,51,234,0.55), 0 20px 50px rgba(0,0,0,0.3); }
+  100% { box-shadow: 0 0 0 3px rgba(147,51,234,0.7), 0 0 30px 10px rgba(147,51,234,0.35), 0 20px 50px rgba(0,0,0,0.3); }
+}

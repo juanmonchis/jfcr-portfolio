@@ -1,0 +1,88 @@
+// ════════════════════════════════════════════════════════════════════════════
+// FILE: prisma/schema.prisma
+// ════════════════════════════════════════════════════════════════════════════
+// WHAT IT DOES:
+//   Defines the database structure — every table (called a "model") and its
+//   fields. The actual data lives in a file called dev.db (SQLite database).
+//
+// MODELS:
+//   - Project       → portfolio cards shown on the homepage
+//   - CaseStudy     → the case study page linked to a project (blocks = content)
+//   - BorderedItem  → items in the "other projects" section at the bottom
+//   - Post          → blog posts
+//
+// ✏️  THINGS YOU CAN CHANGE:
+//   - Add a new field to a model (e.g. a "client" field on Project)
+//   - After ANY change here, run these two commands in the terminal:
+//       npx prisma migrate dev --name describe-your-change
+//       npx prisma generate
+//   - Then restart the dev server.
+//
+// ⚠️  DO NOT delete fields that are already being used in the app — it will
+//     break the pages that read those fields.
+// ════════════════════════════════════════════════════════════════════════════
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Project {
+  id                    Int        @id @default(autoincrement())
+  title                 String
+  subtitle              String
+  tags                  String     // JSON array stored as string
+  description           String
+  ctaLabel              String
+  ctaHref               String
+  thumbnailUrl          String?
+  cardColor             String
+  size                  String     @default("default") // default | small | xsmall
+  showThumbnailOnMobile Boolean    @default(true)
+  order                 Int        @default(0)
+  createdAt             DateTime   @default(now())
+  caseStudy             CaseStudy?
+}
+
+model CaseStudy {
+  id          Int      @id @default(autoincrement())
+  projectId   Int      @unique
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  slug        String   @unique
+  teamMembers String   @default("[]") // JSON array of strings
+  blocks      String   @default("[]") // JSON array of Block objects
+  description String?  // overrides project.description in the hero
+  ctaLabel    String?  // optional CTA button label
+  ctaUrl      String?  // optional CTA button URL
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BorderedItem {
+  id        Int    @id @default(autoincrement())
+  title     String
+  tags      String // JSON array
+  href      String
+  bgColor   String @default("transparent")
+  textColor String @default("#0C0D1F")
+  tagColor  String @default("#0C0D1F")
+  glowColor String @default("#0C0D1F")
+  order     Int    @default(0)
+}
+
+model Post {
+  id         Int      @id @default(autoincrement())
+  title      String
+  slug       String   @unique
+  excerpt    String
+  coverImage String?
+  content    String   @default("") // legacy HTML from TipTap (fallback)
+  blocks     String   @default("[]") // JSON array of Block objects
+  published  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
