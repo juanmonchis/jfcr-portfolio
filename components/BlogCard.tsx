@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { assetPath } from "@/lib/assetPath";
 
 interface BlogCardProps {
   title: string;
@@ -30,7 +31,7 @@ export default function BlogCard({
       {coverImage && (
         <div className="relative w-full h-48">
           <Image
-            src={coverImage}
+            src={assetPath(coverImage)}
             alt={title}
             fill
             className="object-cover"

@@ -37,6 +37,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { assetPath } from "@/lib/assetPath";
 
 export type ProjectCardSize = "default" | "small" | "xsmall";
 
@@ -99,7 +100,7 @@ export default function ProjectCard({
           <div className={`mt-6 px-6 md:mt-[50px] md:px-[50px] ${showThumbnailOnMobile ? "" : "hidden md:block"}`}>
             <div className="relative w-full h-[250px] md:h-[400px] overflow-hidden rounded-xl">
               {thumbnailUrl ? (
-                <Image src={thumbnailUrl} alt={title} fill className="object-cover" />
+                <Image src={assetPath(thumbnailUrl)} alt={title} fill className="object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-black/10">
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-black/20">
@@ -154,7 +155,7 @@ export default function ProjectCard({
           {/* Full-width image / placeholder */}
           <div className={`w-full ${size === "xsmall" || !showThumbnailOnMobile ? "hidden md:block" : ""}`}>
             {thumbnailUrl ? (
-              <Image src={thumbnailUrl} alt={title} width={0} height={0} sizes="100vw" className="w-full h-auto" />
+              <Image src={assetPath(thumbnailUrl)} alt={title} width={0} height={0} sizes="100vw" className="w-full h-auto" />
             ) : (
               <div className="w-full h-24 flex items-center justify-center bg-black/10">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-black/20">

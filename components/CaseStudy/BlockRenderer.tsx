@@ -35,6 +35,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import LogoIcon from "@/components/LogoIcon";
+import { assetPath } from "@/lib/assetPath";
 
 export type GridImage = { url: string; description?: string; link?: string; seriesNumber?: string; project?: string[] };
 
@@ -218,7 +219,7 @@ function Lightbox({ item, onClose }: { item: GridImage; onClose: () => void }) {
             <video src={item.url} className="max-h-[70vh] rounded-xl object-contain block" autoPlay loop muted playsInline />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={item.url} alt="" className="max-h-[70vh] rounded-xl object-contain block" />
+            <img src={assetPath(item.url)} alt="" className="max-h-[70vh] rounded-xl object-contain block" />
           )}
           {/* Radial sheen that follows the cursor */}
           <div style={{
@@ -300,7 +301,7 @@ function MediaEl({ item, className, onClick, lazy = false }: { item: GridImage; 
     <video src={item.url} className={className} autoPlay loop muted playsInline onClick={onClick} />
   ) : (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={item.url} alt="" className={className} onClick={onClick} loading={lazy ? "lazy" : "eager"} decoding="async" />
+    <img src={assetPath(item.url)} alt="" className={className} onClick={onClick} loading={lazy ? "lazy" : "eager"} decoding="async" />
   );
 }
 
@@ -1019,7 +1020,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                   ) : (
                     <figure>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={block.leftContent} alt={block.leftCaption ?? ""} className="w-full h-auto block" />
+                      <img src={assetPath(block.leftContent)} alt={block.leftCaption ?? ""} className="w-full h-auto block" />
                       {block.leftCaption && <figcaption className="type-caption-sm text-[#0C0D1F]/50 mt-2">{block.leftCaption}</figcaption>}
                     </figure>
                   )}
@@ -1030,7 +1031,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                   ) : (
                     <figure>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={block.rightContent} alt={block.rightCaption ?? ""} className="w-full h-auto block" />
+                      <img src={assetPath(block.rightContent)} alt={block.rightCaption ?? ""} className="w-full h-auto block" />
                       {block.rightCaption && <figcaption className="type-caption-sm text-[#0C0D1F]/50 mt-2">{block.rightCaption}</figcaption>}
                     </figure>
                   )}
@@ -1044,7 +1045,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
               <picture>
                 {block.mobileUrl && <source srcSet={block.mobileUrl} media="(max-width: 767px)" />}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={block.url} alt={block.caption ?? ""} className="w-full h-auto block" />
+                <img src={assetPath(block.url)} alt={block.caption ?? ""} className="w-full h-auto block" />
               </picture>
               {block.caption && (
                 <p className="mt-2 text-sm text-gray-500 text-center">{block.caption}</p>

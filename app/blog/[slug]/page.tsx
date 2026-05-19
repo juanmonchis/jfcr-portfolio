@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import SiteHeader from "@/components/SiteHeader";
 import BlockRenderer, { Block } from "@/components/CaseStudy/BlockRenderer";
+import { assetPath } from "@/lib/assetPath";
 
 export const dynamicParams = false;
 
@@ -83,7 +84,7 @@ export default async function BlogPostPage({ params }: Props) {
 
         {post.coverImage && (
           <div className="relative w-full h-64 md:h-96 rounded-2xl overflow-hidden mb-10">
-            <Image src={post.coverImage} alt={post.title} fill className="object-cover" />
+            <Image src={assetPath(post.coverImage)} alt={post.title} fill className="object-cover" />
           </div>
         )}
       </div>
