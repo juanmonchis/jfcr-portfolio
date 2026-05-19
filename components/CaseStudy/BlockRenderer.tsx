@@ -1043,7 +1043,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
           {block.type === "image" && (
             <div className={block.width === "contained" ? "max-w-[1200px] mx-auto w-full px-6 md:px-12" : "w-full"}>
               <picture>
-                {block.mobileUrl && <source srcSet={block.mobileUrl} media="(max-width: 767px)" />}
+                {block.mobileUrl && <source srcSet={assetPath(block.mobileUrl)} media="(max-width: 767px)" />}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={assetPath(block.url)} alt={block.caption ?? ""} className="w-full h-auto block" />
               </picture>
