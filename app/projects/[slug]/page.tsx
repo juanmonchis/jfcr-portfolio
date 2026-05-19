@@ -30,6 +30,8 @@ import { notFound } from "next/navigation";
 import BlockRenderer, { Block } from "@/components/CaseStudy/BlockRenderer";
 import SiteHeader from "@/components/SiteHeader";
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   try {
     const caseStudies = await prisma.caseStudy.findMany({ select: { slug: true } });

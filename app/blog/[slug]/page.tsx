@@ -5,6 +5,8 @@ import Image from "next/image";
 import SiteHeader from "@/components/SiteHeader";
 import BlockRenderer, { Block } from "@/components/CaseStudy/BlockRenderer";
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   try {
     const posts = await prisma.post.findMany({ where: { published: true }, select: { slug: true } });
