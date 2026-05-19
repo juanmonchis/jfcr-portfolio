@@ -60,17 +60,23 @@ export const metadata: Metadata = {
     template: "%s — JFCR",
   },
   description: "A digital designer focused on exceptional products, brands and sometimes silly animations.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
   openGraph: {
     type: "website",
     siteName: "JFCR",
     title: "JFCR — Juan Felipe Cadavid Rojas",
     description: "A digital designer focused on exceptional products, brands and sometimes silly animations.",
     url: BASE_URL,
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "JFCR — Juan Felipe Cadavid Rojas",
     description: "A digital designer focused on exceptional products, brands and sometimes silly animations.",
+    images: ["/og-image.png"],
   },
   other: {
     "viewport": "width=device-width, initial-scale=1, viewport-fit=cover",
