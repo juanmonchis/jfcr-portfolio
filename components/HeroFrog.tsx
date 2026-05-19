@@ -1,7 +1,9 @@
+import { assetPath } from "@/lib/assetPath";
+
 export default function HeroFrog() {
   return (
     <img
-      src="/images/home_sleeping_animation_jfcr.gif"
+      src={assetPath("/images/home_sleeping_animation_jfcr.gif")}
       alt=""
       aria-hidden="true"
       style={{

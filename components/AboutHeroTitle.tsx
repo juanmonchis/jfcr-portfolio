@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import { assetPath } from "@/lib/assetPath";
 
 const CREAM = "#F2EBD9";
 const GIF_SIZE = 250;
@@ -75,7 +76,7 @@ export default function AboutHeroTitle() {
 
       {ready && (
         <img
-          src="/images/aboutme/aboutme_purpledude_jfcr.gif"
+          src={assetPath("/images/aboutme/aboutme_purpledude_jfcr.gif")}
           alt=""
           aria-hidden="true"
           style={{

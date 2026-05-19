@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import { assetPath } from "@/lib/assetPath";
 
 const BG = "#2D0055";
 const CREAM = "#F2EBD9";
@@ -75,7 +76,7 @@ export default function CvCta() {
     >
       {/* Cursor-following GIF */}
       <img
-        src="/images/aboutme/aboutme_purpledude_jfcr.gif"
+        src={assetPath("/images/aboutme/aboutme_purpledude_jfcr.gif")}
         alt=""
         aria-hidden="true"
         style={{
