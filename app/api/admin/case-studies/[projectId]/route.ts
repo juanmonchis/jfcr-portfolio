@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = "force-static";
 
 interface RouteContext {
   params: Promise<{ projectId: string }>;
@@ -64,5 +63,3 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }
-
-export function generateStaticParams() { return []; }
