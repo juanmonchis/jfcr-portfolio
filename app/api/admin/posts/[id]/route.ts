@@ -41,5 +41,3 @@ export async function DELETE(_request: NextRequest, { params }: Params) {
   await prisma.post.delete({ where: { id: parseInt(id) } });
   return NextResponse.json({ success: true });
 }
-
-export function generateStaticParams() { return []; }
