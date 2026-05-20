@@ -217,7 +217,7 @@ function Lightbox({ item, onClose }: { item: GridImage; onClose: () => void }) {
           }}
         >
           {isVid ? (
-            <video src={assetPath(item.url)} className="max-h-[70vh] rounded-xl object-contain block" autoPlay loop muted playsInline />
+            <video src={assetPath(item.url)} className="max-h-[70vh] rounded-xl object-contain block" autoPlay loop muted playsInline preload="none" />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={assetPath(item.url)} alt="" className="max-h-[70vh] rounded-xl object-contain block" />
@@ -299,7 +299,7 @@ type CardState = { item: GridImage; x: number; y: number; rot: number; z: number
 
 function MediaEl({ item, className, onClick, lazy = false }: { item: GridImage; className: string; onClick: () => void; lazy?: boolean }) {
   return item.url.toLowerCase().endsWith(".mp4") ? (
-    <video src={assetPath(item.url)} className={className} autoPlay loop muted playsInline onClick={onClick} />
+    <video src={assetPath(item.url)} className={className} autoPlay loop muted playsInline preload="none" onClick={onClick} />
   ) : (
     // eslint-disable-next-line @next/next/no-img-element
     <img src={assetPath(item.url)} alt="" className={className} onClick={onClick} loading={lazy ? "lazy" : "eager"} decoding="async" />
@@ -1044,6 +1044,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                 item={card.item}
                 className="w-full h-auto block rounded-xl pointer-events-none select-none"
                 onClick={() => {}}
+                lazy
               />
               {/* Sheen — slow sweep when over drop zone, quick loop while dragging a new card */}
               {(isZoneCard || showRainbow) && (
