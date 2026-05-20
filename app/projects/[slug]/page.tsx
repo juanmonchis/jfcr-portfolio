@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { project } = caseStudy;
   const description = caseStudy.description ?? project.description;
   const ogImage = slug === "trading-card-game"
-    ? "https://www.jfcr.design/jfcr-portfolio/images/og-trading-cards.png"
+    ? "https://www.jfcr.design/images/og-trading-cards.png"
     : undefined;
   return {
     title: project.title,
