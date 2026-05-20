@@ -51,6 +51,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!caseStudy) return {};
   const { project } = caseStudy;
   const description = caseStudy.description ?? project.description;
+  const ogImage = slug === "trading-card-game"
+    ? "https://www.jfcr.design/jfcr-portfolio/images/og-trading-cards.png"
+    : undefined;
   return {
     title: project.title,
     description,
@@ -58,7 +61,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: project.title,
       description,
       url: `https://www.jfcr.design/projects/${slug}`,
+      ...(ogImage && { images: [{ url: ogImage, width: 1200, height: 630 }] }),
     },
+    ...(ogImage && { twitter: { card: "summary_large_image", images: [ogImage] } }),
   };
 }
 
