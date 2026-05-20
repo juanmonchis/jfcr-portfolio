@@ -898,6 +898,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                   resetPackState();
                   setPackTransitioningTo(version);
                   setSelectedVersion(version);
+                  // Always rebuild the stack so same-version re-picks get a fresh shuffle
+                  setStack(makeStack(shuffle(imagesForVersion(version)).slice(0, MAX_GRID_IMAGES)));
                   packTransitionTimer.current = setTimeout(() => {
                     packTransitionTimer.current = null;
                     setPackSelectionPhase(false);
