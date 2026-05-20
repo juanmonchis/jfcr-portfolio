@@ -1,1 +1,14 @@
-{"node":{"084400801bbd906d6d86dc1851ccee524dae84c3":{"workers":{"app/admin/bordered-items/page":"7594"},"layer":{"app/admin/bordered-items/page":"rsc"}},"27b8506eb9fdd84e0adfaa515f236b301e9aa265":{"workers":{"app/admin/posts/page":"4417"},"layer":{"app/admin/posts/page":"rsc"}},"defca5bc31d402fbdb2717a9e74751d02667252e":{"workers":{"app/admin/projects/page":"1886"},"layer":{"app/admin/projects/page":"rsc"}}},"edge":{},"encryptionKey":"O8H5BL7Nuasegbh43434C/5bp+BccEy4MkVB9eA3AJE="}
+{
+  "node": {
+    "7f469806db8700ec674bf7270dfb81f88f165d02": {
+      "workers": {
+        "app/admin/projects/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fjuanfelipe.cadavidrojas%2FDocuments%2FPersonal%2FAI%20experiments%2Fjfcr-portfolio%2Fapp%2Fadmin%2Fprojects%2Fpage.tsx%22%2C%5B%22%24%24ACTION_0%22%5D%5D%5D&__client_imported__=!"
+      },
+      "layer": {
+        "app/admin/projects/page": "rsc"
+      }
+    }
+  },
+  "edge": {},
+  "encryptionKey": "fA5TXRkDycDduTyQLcNSflmFtO4GTrVR5uqXzdMa0Y0="
+}
