@@ -53,9 +53,11 @@ interface LogoIconProps {
   playing?: boolean;
   /** Renders a div instead of a Link — use when the logo is decorative and shouldn't navigate */
   noLink?: boolean;
+  /** Override the default "/" href — use for external links */
+  href?: string;
 }
 
-export default function LogoIcon({ variant = "light", size = 175, cropPx = 0, playing, noLink }: LogoIconProps) {
+export default function LogoIcon({ variant = "light", size = 175, cropPx = 0, playing, noLink, href }: LogoIconProps) {
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const [isMobile, setIsMobile] = useState(false);
   const externalControl = playing !== undefined;
@@ -102,6 +104,22 @@ export default function LogoIcon({ variant = "light", size = 175, cropPx = 0, pl
 
   if (noLink) {
     return <div style={wrapperStyle}>{inner}</div>;
+  }
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Go home"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{ ...wrapperStyle, textDecoration: "none" }}
+      >
+        {inner}
+      </a>
+    );
   }
 
   return (

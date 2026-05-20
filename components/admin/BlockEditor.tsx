@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { Block, GridImage } from "@/components/CaseStudy/BlockRenderer";
+import { Block, GridImage, PackVersion } from "@/components/CaseStudy/BlockRenderer";
 import MediaUploadInput from "@/components/admin/MediaUploadInput";
 
 const Editor = dynamic(() => import("@/components/admin/Editor"), { ssr: false });
@@ -383,6 +383,17 @@ function BlockItem({
                     listId={`project-suggestions-${i}`}
                   />
                   <input type="text" className={inputClass} value={item.link ?? ""} onChange={(e) => updateItem({ link: e.target.value || undefined })} placeholder="Link URL" />
+                  <select
+                    className={selectClass}
+                    value={item.version ?? "common"}
+                    onChange={(e) => updateItem({ version: e.target.value as PackVersion })}
+                  >
+                    <option value="common">Common (all versions)</option>
+                    <option value="V1">V1</option>
+                    <option value="V2">V2</option>
+                    <option value="V3">V3</option>
+                    <option value="rare">Rare</option>
+                  </select>
                 </div>
               );
             });})()}

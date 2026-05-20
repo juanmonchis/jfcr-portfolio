@@ -37,7 +37,8 @@ import { createPortal } from "react-dom";
 import LogoIcon from "@/components/LogoIcon";
 import { assetPath } from "@/lib/assetPath";
 
-export type GridImage = { url: string; description?: string; link?: string; seriesNumber?: string; project?: string[] };
+export type PackVersion = "common" | "V1" | "V2" | "V3" | "rare";
+export type GridImage = { url: string; description?: string; link?: string; seriesNumber?: string; project?: string[]; version?: PackVersion };
 
 // Handles legacy string-only format and legacy project-as-string
 function toGridImage(item: GridImage | string): GridImage {
@@ -305,15 +306,153 @@ function MediaEl({ item, className, onClick, lazy = false }: { item: GridImage; 
   );
 }
 
+function SelectionPack({ version, rotate, tx, ty, z, transitioning, onClick, isDesktop }: {
+  version: PackVersion; rotate: number; tx: number; ty: number; z: number;
+  transitioning: PackVersion | null; onClick: () => void; isDesktop: boolean;
+}) {
+  const [hovered, setHovered] = useState(false);
+  const [holoMouse, setHoloMouse] = useState({ nx: 0.5, ny: 0.5 });
+  const isSelected = transitioning === version;
+  const isDismissed = transitioning !== null && !isSelected;
+  const mobileScale = isDesktop ? 1 : (isSelected ? 1 : 0.7);
+  const isRare = version === "rare";
+  const currentTy = hovered ? ty - 20 : ty;
+  const holoAngle = holoMouse.nx * 180;
+
+  return (
+    <div
+      onClick={!transitioning ? onClick : undefined}
+      onMouseEnter={() => { if (!transitioning) setHovered(true); }}
+      onMouseLeave={() => { setHovered(false); setHoloMouse({ nx: 0.5, ny: 0.5 }); }}
+      onMouseMove={(e) => {
+        if (!isRare || !hovered) return;
+        const r = e.currentTarget.getBoundingClientRect();
+        setHoloMouse({ nx: (e.clientX - r.left) / r.width, ny: (e.clientY - r.top) / r.height });
+      }}
+      style={{
+        position:   "absolute",
+        left:       "50%",
+        top:        "50%",
+        width:      200,
+        height:     350,
+        marginLeft: -100,
+        marginTop:  -175,
+        transform:  isSelected
+          ? "rotate(0deg) translate(0px, 0px) scale(1)"
+          : `rotate(${rotate}deg) translate(${tx}px, ${currentTy}px) scale(${mobileScale})`,
+        zIndex:     isSelected ? 20 : z,
+        opacity:    isDismissed ? 0 : 1,
+        cursor:     transitioning ? "default" : "pointer",
+        transition: isSelected
+          ? "transform 480ms cubic-bezier(0.25,0.46,0.45,0.94)"
+          : isDismissed
+          ? "opacity 280ms ease"
+          : "transform 350ms cubic-bezier(0.34,1.56,0.64,1)",
+        display:    "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {/* Card body — owns background, clipping, shadow and float */}
+      <div style={{
+        position:           "absolute",
+        inset:              0,
+        overflow:           "hidden",
+        backgroundImage:    `url(${assetPath(PACK_IMAGES[version])})`,
+        backgroundSize:     "cover",
+        backgroundPosition: "center",
+        boxShadow:          hovered && !transitioning ? "0 32px 80px rgba(0,0,0,0.55)" : "0 20px 60px rgba(0,0,0,0.4)",
+        animation:          isRare && !isDismissed && !isSelected ? "rareFloat 3s ease-in-out infinite" : undefined,
+      }}>
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 45%)" }} />
+
+        {/* Holographic rainbow layer — always-on slow hue cycle, intensifies on hover */}
+        {isRare && (
+          <div style={{
+            position:     "absolute",
+            inset:        0,
+            pointerEvents: "none",
+            background:   `linear-gradient(${holoAngle}deg,
+              rgba(255,0,128,0.45),
+              rgba(255,180,0,0.45),
+              rgba(0,255,160,0.45),
+              rgba(0,140,255,0.45),
+              rgba(180,0,255,0.45),
+              rgba(255,0,128,0.45))`,
+            mixBlendMode: "screen",
+            opacity:      hovered ? 0.85 : 0.35,
+            animation:    !hovered ? "holoShift 5s linear infinite" : undefined,
+            transition:   "opacity 300ms ease",
+          }} />
+        )}
+
+        {/* Specular highlight — follows cursor on hover */}
+        {isRare && hovered && (
+          <div style={{
+            position:     "absolute",
+            inset:        0,
+            pointerEvents: "none",
+            background:   `radial-gradient(circle at ${holoMouse.nx * 100}% ${holoMouse.ny * 100}%, rgba(255,255,255,0.45) 0%, transparent 55%)`,
+            mixBlendMode: "overlay",
+          }} />
+        )}
+      </div>
+      {!isRare && <LogoIcon variant="light" size={100} cropPx={10} playing={hovered} noLink />}
+    </div>
+  );
+}
+
+const PACK_IMAGES: Record<PackVersion, string> = {
+  common: "/images/cardpackageV1_jfcr.png",
+  V1:     "/images/cardpackageV1_jfcr.png",
+  V2:     "/images/cardpackageV2_jfcr.png",
+  V3:     "/images/cardpackageV3_jfcr.png",
+  rare:   "/images/cardpackagerare_jfcr.png",
+};
+
+function buildFanVersions(unlimited: boolean, rareOpened: boolean): [PackVersion, PackVersion, PackVersion] {
+  if (!unlimited) return ["V3", "V1", "V2"];
+  if (!rareOpened) return ["V3", "rare", "V2"];
+  if (Math.random() < 0.33) {
+    const slot = Math.floor(Math.random() * 3) as 0 | 1 | 2;
+    const v: [PackVersion, PackVersion, PackVersion] = ["V3", "V1", "V2"];
+    v[slot] = "rare";
+    return v;
+  }
+  return ["V3", "V1", "V2"];
+}
+
 function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo = false, description }: { block: ImageGridBlock; onOpen: (item: GridImage) => void; cardColor?: string; title?: string; showLogo?: boolean; description?: string }) {
   const allImages = block.images.map(toGridImage);
   const storageKey = `collected-${block.id}`;
+  const [selectedVersion, setSelectedVersion] = useState<PackVersion>("V1");
+  const [packSelectionPhase, setPackSelectionPhase] = useState(true);
+  const [packTransitioningTo, setPackTransitioningTo] = useState<PackVersion | null>(null);
   const [mounted, setMounted] = useState(false);
   const [packOpened, setPackOpened] = useState(false);
   const [packAnimating, setPackAnimating] = useState(false);
   const [packHovering, setPackHovering] = useState(false);
   const [packMouse, setPackMouse] = useState({ nx: 0.5, ny: 0.5 });
   const packRef = useRef<HTMLDivElement>(null);
+  const packTransitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function resetPackState() {
+    setPackOpened(false);
+    setPackAnimating(false);
+    setPackHovering(false);
+    setPackMouse({ nx: 0.5, ny: 0.5 });
+  }
+
+  function enterSelectionPhase() {
+    if (packTransitionTimer.current) {
+      clearTimeout(packTransitionTimer.current);
+      packTransitionTimer.current = null;
+    }
+    resetPackState();
+    setPackTransitioningTo(null);
+    setFanVersions(buildFanVersions(unlockedUnlimited, rareOpened));
+    setPackSelectionPhase(true);
+  }
 
   function handlePackMouseMove(e: React.MouseEvent) {
     const el = packRef.current;
@@ -330,6 +469,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   const [mobileZoneOpen, setMobileZoneOpen] = useState(false);
   const [packsUsed, setPacksUsed] = useState(0);
   const [unlockedUnlimited, setUnlockedUnlimited] = useState(false);
+  const [rareOpened, setRareOpened] = useState(false);
+  const [fanVersions, setFanVersions] = useState<[PackVersion, PackVersion, PackVersion]>(["V3", "V1", "V2"]);
 
   const draggingCardRef = useRef<HTMLDivElement | null>(null);
   const [isDesktop, setIsDesktop] = useState(true);
@@ -356,6 +497,10 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   } | null>(null);
   const [circleProgress, setCircleProgress] = useState(0);
 
+  function imagesForVersion(version: PackVersion): GridImage[] {
+    return allImages.filter(img => !img.version || img.version === "common" || img.version === version);
+  }
+
   function makeStack(imgs: GridImage[]): CardState[] {
     maxZ.current = imgs.length;
     return imgs.map((item, i) => ({
@@ -367,7 +512,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
 
   useEffect(() => {
     setMounted(true);
-    setStack(makeStack(shuffle(allImages).slice(0, MAX_GRID_IMAGES)));
+    setStack(makeStack(shuffle(imagesForVersion(selectedVersion)).slice(0, MAX_GRID_IMAGES)));
     try {
       const stored = localStorage.getItem(storageKey);
       if (stored) setCollected((JSON.parse(stored) as GridImage[]).map(toGridImage));
@@ -375,8 +520,15 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     try {
       const storedPacks = localStorage.getItem(`${storageKey}-packs-used`);
       setPacksUsed(storedPacks ? parseInt(storedPacks, 10) : 1);
-      if (localStorage.getItem(`${storageKey}-unlimited`) === "true") setUnlockedUnlimited(true);
+      const unlimited = localStorage.getItem(`${storageKey}-unlimited`) === "true";
+      const hasOpenedRare = localStorage.getItem(`${storageKey}-rare-opened`) === "true";
+      if (unlimited) setUnlockedUnlimited(true);
+      if (hasOpenedRare) setRareOpened(true);
+      setFanVersions(buildFanVersions(unlimited, hasOpenedRare));
     } catch {}
+    return () => {
+      if (packTransitionTimer.current) clearTimeout(packTransitionTimer.current);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -398,23 +550,24 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unlockedUnlimited]);
 
+  useEffect(() => {
+    if (!mounted) return;
+    try { localStorage.setItem(`${storageKey}-rare-opened`, String(rareOpened)); } catch {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rareOpened]);
+
+  useEffect(() => {
+    if (!mounted) return;
+    setStack(makeStack(shuffle(imagesForVersion(selectedVersion)).slice(0, MAX_GRID_IMAGES)));
+    resetPackState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedVersion]);
+
   function addToCollection(item: GridImage) {
     setCollected(prev => prev.some(c => c.url === item.url) ? prev : [item, ...prev]);
   }
 
   const isLimited = packsUsed >= PACK_LIMIT && !unlockedUnlimited;
-
-  function reshuffle() {
-    if (isLimited) return;
-    dragRef.current = null;
-    setDraggingIdx(null);
-    setStack(makeStack(shuffle(allImages).slice(0, MAX_GRID_IMAGES)));
-    setPackOpened(false);
-    setPackAnimating(false);
-    setPackHovering(false);
-    setPackMouse({ nx: 0.5, ny: 0.5 });
-    setPacksUsed(prev => prev + 1);
-  }
 
   function handleInstagramUnlock(e: React.MouseEvent) {
     e.preventDefault();
@@ -470,11 +623,24 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setCircleProgress(0);
   }
 
-  function cardOverlapsZone(zoneEl: HTMLDivElement | null): boolean {
+  function cardOverlapsZone(_zoneEl: HTMLDivElement | null): boolean {
     const cardEl = draggingCardRef.current;
-    if (!cardEl || !zoneEl) return false;
+    if (!cardEl) return false;
     const c = cardEl.getBoundingClientRect();
-    const z = zoneEl.getBoundingClientRect();
+    // Compute zone's stable final rect from window geometry rather than measuring
+    // the animated element — getBoundingClientRect() returns mid-animation positions
+    // which causes the first-drop to always miss.
+    let z: { left: number; right: number; top: number; bottom: number };
+    if (isDesktop) {
+      const zoneW = 416, zoneH = 72;
+      const zoneLeft  = window.innerWidth / 2 - zoneW / 2;
+      const zoneBottom = window.innerHeight * 0.86;
+      z = { left: zoneLeft, right: zoneLeft + zoneW, top: zoneBottom - zoneH, bottom: zoneBottom };
+    } else {
+      const zoneH = 72;
+      const zoneBottom = window.innerHeight - 16;
+      z = { left: 16, right: window.innerWidth - 16, top: zoneBottom - zoneH, bottom: zoneBottom };
+    }
     return c.left < z.right && c.right > z.left && c.top < z.bottom && c.bottom > z.top;
   }
 
@@ -538,7 +704,10 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
           let delta = angle - d.prevAngle;
           if (delta > Math.PI)  delta -= 2 * Math.PI;
           if (delta < -Math.PI) delta += 2 * Math.PI;
-          d.accumulatedAngle += delta;
+          // Only accumulate in the dominant direction — small reversals don't bleed progress
+          if (d.accumulatedAngle === 0 || delta * d.accumulatedAngle >= 0) {
+            d.accumulatedAngle += delta;
+          }
           const progress = Math.min(Math.abs(d.accumulatedAngle) / (3 * 2 * Math.PI), 1);
           setCircleProgress(progress);
           if (Math.abs(d.accumulatedAngle) >= 3 * 2 * Math.PI) {
@@ -547,6 +716,10 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
           }
         }
         d.prevAngle = angle;
+      } else {
+        // Reset angle reference when cursor returns to centre so the next
+        // crossing doesn't produce a stale-angle spike
+        d.prevAngle = null;
       }
     }
   }
@@ -589,11 +762,17 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
 
   return (
     <div className="w-full flex flex-col">
-    <div className="min-h-[calc(100vh-80px)] w-full flex flex-col wide:flex-row wide:items-center px-0 wide:px-12 pt-0 wide:pt-0 gap-4 wide:gap-0">
+    <div
+      className="min-h-[calc(100vh-80px)] w-full flex flex-col wide:flex-row wide:items-center px-0 wide:px-12 pt-0 wide:pt-0 gap-4 wide:gap-0"
+      style={{
+        backgroundImage: "radial-gradient(circle, rgba(138,94,217,0.3) 1px, transparent 1px)",
+        backgroundSize: "32px 32px",
+      }}
+    >
 
       {/* Left column: logo → title → description */}
       <div className="w-full wide:w-1/3 shrink-0 flex flex-col wide:gap-6 px-6 wide:px-0 wide:pr-8 items-center wide:items-start text-center wide:text-left" style={{ gap: isDesktop ? undefined : "0.5rem", paddingTop: 0, marginTop: 0, position: "relative" }}>
-        {showLogo && <LogoIcon variant="color" cropPx={50} />}
+        {showLogo && <LogoIcon variant="color" cropPx={50} href="https://www.jfcr.design/" />}
         {title && (
           <h2 className="type-case-subtitle">{title}</h2>
         )}
@@ -617,8 +796,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
               </a>
             ) : (
               <button
-                onClick={reshuffle}
-                className="type-caption-sm bg-white/60 backdrop-blur-md border border-[#0C0D1F]/20 text-[#0C0D1F] px-4 py-1.5 rounded-full hover:bg-[#0C0D1F] hover:text-[#F2EBD9] hover:border-[#0C0D1F] hover:shadow-[0_0_18px_4px_rgba(12,13,31,0.35)] active:bg-[#0C0D1F] active:text-[#F2EBD9] active:border-[#0C0D1F] active:shadow-[0_0_18px_4px_rgba(12,13,31,0.35)] transition-all duration-300 ease-in-out self-start"
+                onClick={enterSelectionPhase}
+                className="type-caption-sm bg-white/60 backdrop-blur-md border border-[#0C0D1F]/20 text-[#0C0D1F] px-4 py-1.5 rounded-full hover:bg-[#0C0D1F] hover:text-[#F2EBD9] hover:border-[#0C0D1F] hover:shadow-[0_0_18px_4px_rgba(12,13,31,0.35)] transition-all duration-300 ease-in-out self-start"
               >
                 Get a new pack ↻
               </button>
@@ -644,7 +823,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
             </a>
           ) : (
             <button
-              onClick={reshuffle}
+              onClick={enterSelectionPhase}
               className="type-caption-sm bg-white/60 backdrop-blur-md border border-[#0C0D1F]/20 text-[#0C0D1F] px-4 py-1.5 rounded-full hover:bg-[#0C0D1F] hover:text-[#F2EBD9] hover:border-[#0C0D1F] hover:shadow-[0_0_18px_4px_rgba(12,13,31,0.35)] active:bg-[#0C0D1F] active:text-[#F2EBD9] active:border-[#0C0D1F] active:shadow-[0_0_18px_4px_rgba(12,13,31,0.35)] transition-all duration-300 ease-in-out"
             >
               Get a new pack ↻
@@ -655,10 +834,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
 
       {/* Right section: spinning circle + cards + drop zone */}
       <div className="flex-1 relative" style={{ height: 700 }}>
-      {mounted && (<>
-
-        {/* Spinning text circle — scale=440/300=1.467, center y=293*1.467≈430px from SVG top.
-            SVG top = 350 (cards center in 700px container) - 430 = -80px. */}
+      {/* Spinning text circle — always visible */}
+      {mounted && (
         <svg
           style={{
             position:      "absolute",
@@ -687,7 +864,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
             {[0, 120, 240].map((deg) => (
               <g key={deg} transform={`rotate(${deg} 150 293)`}>
                 <text
-                  fill={cardColor}
+                  fill="#8A5ED9"
                   fontSize="24"
                   fontWeight="800"
                   textAnchor="middle"
@@ -701,6 +878,41 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
             ))}
           </g>
         </svg>
+      )}
+
+      {mounted && packSelectionPhase && (
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ position: "relative", width: 560, height: 420 }}>
+            {([
+              { version: fanVersions[0], rotate: -14, tx: isDesktop ? -140 : -80, ty: 40, z: 1 },
+              { version: fanVersions[1], rotate: 0,   tx: 0,                      ty: 0,  z: 3 },
+              { version: fanVersions[2], rotate: 14,  tx: isDesktop ? 140  : 80,  ty: 40, z: 2 },
+            ]).map(({ version, rotate, tx, ty, z }) => (
+              <SelectionPack
+                key={version}
+                version={version} rotate={rotate} tx={tx} ty={ty} z={z}
+                transitioning={packTransitioningTo}
+                isDesktop={isDesktop}
+                onClick={() => {
+                  if (packTransitionTimer.current) clearTimeout(packTransitionTimer.current);
+                  resetPackState();
+                  setPackTransitioningTo(version);
+                  setSelectedVersion(version);
+                  packTransitionTimer.current = setTimeout(() => {
+                    packTransitionTimer.current = null;
+                    setPackSelectionPhase(false);
+                    setPackTransitioningTo(null);
+                  }, 520);
+                }}
+              />
+            ))}
+          </div>
+          <p style={{ position: "absolute", bottom: 60, left: "50%", transform: "translateX(-50%)", color: "rgba(255,255,255,0.4)", fontSize: 13, whiteSpace: "nowrap" }}>
+            no take backsies
+          </p>
+        </div>
+      )}
+      {mounted && !packSelectionPhase && (<>
 
         {/* Card pack stand-in — shown until opened */}
         {!packOpened && (() => {
@@ -711,7 +923,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
           <div
             ref={packRef}
             onClick={() => { if (!packAnimating) setPackAnimating(true); }}
-            onAnimationEnd={(e) => { if (e.animationName === "packReveal") setPackOpened(true); }}
+            onAnimationEnd={(e) => { if (e.animationName === "packReveal") { setPackOpened(true); setPacksUsed(prev => prev + 1); if (selectedVersion === "rare") setRareOpened(true); } }}
             onMouseEnter={() => setPackHovering(true)}
             onMouseLeave={() => { setPackHovering(false); setPackMouse({ nx: 0.5, ny: 0.5 }); }}
             onMouseMove={handlePackMouseMove}
@@ -725,7 +937,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
               height:      350,
               borderRadius: 0,
               background:  "#1a1a2e",
-              backgroundImage: `url(${assetPath("/images/cardpackageV1_jfcr.png")})`,
+              backgroundImage: `url(${assetPath(PACK_IMAGES[selectedVersion])})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               display:     "flex",
@@ -751,11 +963,6 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
               position: "absolute", inset: 0, pointerEvents: "none", borderRadius: 0,
               background: "linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 45%)",
             }} />
-            {/* Mid band */}
-            <div style={{
-              position: "absolute", left: 0, right: 0, top: "38%", height: 64,
-              background: "rgba(255,255,255,0.05)", pointerEvents: "none",
-            }} />
             {/* Specular highlight — follows cursor */}
             <div style={{
               position:   "absolute", inset: 0, pointerEvents: "none",
@@ -772,7 +979,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
               mixBlendMode: "screen",
             }} />
             {/* Logo */}
-            <LogoIcon variant="light" size={100} cropPx={10} playing={packHovering} noLink />
+            {selectedVersion !== "rare" && <LogoIcon variant="light" size={100} cropPx={10} playing={packHovering} noLink />}
           </div>
           );
         })()}
@@ -856,6 +1063,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
         </div>{/* end preloaded cards wrapper */}
       </>)}
       </div>{/* end right section */}
+
     </div>{/* end flex row */}
 
     {/* Summon zone — bottom bar on mobile, centered pill on desktop */}

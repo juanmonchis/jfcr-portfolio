@@ -245,6 +245,17 @@ html, body {
   50%       { transform: translateY(-14px);  box-shadow: 0 34px 80px rgba(0,0,0,0.45); }
 }
 
+@keyframes rareFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes holoShift {
+  0%   { filter: hue-rotate(0deg)   brightness(1.05); }
+  100% { filter: hue-rotate(360deg) brightness(1.05); }
+}
+
+
 /* Card pack open — lift, shake, fade out */
 @keyframes packReveal {
   0%   { transform: translateY(0)     scale(1)    rotate(0deg);   opacity: 1; }
