@@ -601,8 +601,9 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   function handlePointerDown(e: React.PointerEvent<HTMLDivElement>, idx: number) {
     e.currentTarget.setPointerCapture(e.pointerId);
     e.preventDefault();
-    if (isDesktop) {
-      zoneShowTimer.current = setTimeout(() => setMobileZoneOpen(true), 300);
+    if (isDesktop && zoneShowTimer.current) {
+      clearTimeout(zoneShowTimer.current);
+      zoneShowTimer.current = null;
     }
     const restingZ = Math.min(maxZ.current + 1, 35);
     maxZ.current = restingZ;
@@ -676,7 +677,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     const dx = e.clientX - d.startPX;
     const dy = e.clientY - d.startPY;
     if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
-      if (!d.moved && !isDesktop) setMobileZoneOpen(true);
+      if (!d.moved) setMobileZoneOpen(true);
       d.moved = true;
     }
     const vx = e.clientX - d.prevPX;
