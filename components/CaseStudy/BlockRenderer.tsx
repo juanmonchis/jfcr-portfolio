@@ -928,6 +928,14 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
           const tiltY = packHovering && !packAnimating ? (packMouse.nx - 0.5) * 8 : 0;
           const foilAngle = packMouse.nx * 180;
           return (
+          <div style={{
+            position: "absolute", left: "50%", top: "50%",
+            marginLeft: -100, marginTop: -175,
+            width: 200, height: 350,
+            transform: isDesktop ? undefined : "scale(0.7)",
+            transformOrigin: "center center",
+            zIndex: 20,
+          }}>
           <div
             ref={packRef}
             onClick={() => { if (!packAnimating) setPackAnimating(true); }}
@@ -936,11 +944,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
             onMouseLeave={() => { setPackHovering(false); setPackMouse({ nx: 0.5, ny: 0.5 }); }}
             onMouseMove={handlePackMouseMove}
             style={{
-              position:    "absolute",
-              left:        "50%",
-              top:         "50%",
-              marginLeft:  -100,
-              marginTop:   -175,
+              position:    "relative",
               width:       200,
               height:      350,
               borderRadius: 0,
@@ -952,7 +956,6 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
               alignItems:  "center",
               justifyContent: "center",
               cursor:      packAnimating ? "default" : "pointer",
-              zIndex:      20,
               overflow:    "hidden",
               transform:   packAnimating ? undefined
                 : `perspective(600px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(${packHovering ? 50 : 0}px)`,
@@ -989,6 +992,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
             {/* Logo */}
             {selectedVersion !== "rare" && <LogoIcon variant="light" size={100} cropPx={10} playing={packHovering} noLink />}
           </div>
+          </div>
           );
         })()}
 
@@ -998,6 +1002,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
           pointerEvents:  packOpened ? "auto" : "none",
           transition:     "opacity 300ms ease",
           position:       "absolute", inset: 0,
+          transform:      isDesktop ? undefined : "scale(0.7)",
+          transformOrigin: "center center",
         }}>
         {stack.map((card, i) => {
           const isZoneCard = draggingIdx === i && overZone;
