@@ -603,8 +603,6 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     e.preventDefault();
     if (isDesktop) {
       zoneShowTimer.current = setTimeout(() => setMobileZoneOpen(true), 300);
-    } else {
-      setMobileZoneOpen(true);
     }
     const restingZ = Math.min(maxZ.current + 1, 35);
     maxZ.current = restingZ;
@@ -677,7 +675,10 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     if (!d || d.idx !== idx) return;
     const dx = e.clientX - d.startPX;
     const dy = e.clientY - d.startPY;
-    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) d.moved = true;
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+      if (!d.moved && !isDesktop) setMobileZoneOpen(true);
+      d.moved = true;
+    }
     const vx = e.clientX - d.prevPX;
     const vy = e.clientY - d.prevPY;
     const dragTilt = Math.max(-22, Math.min(22, vx * 0.6));
