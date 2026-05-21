@@ -39,11 +39,11 @@ export default function BlogCard({
         </div>
       )}
       <div className="p-6">
-        <p className="text-xs text-white/40 mb-2">{formattedDate}</p>
-        <h2 className="text-xl font-bold text-white mb-2 group-hover:text-[#DDED3C] transition-colors">
+        <p className="type-tag text-[#F2EBD9]/40 mb-2">{formattedDate}</p>
+        <h2 className="type-card-title text-[#F2EBD9] mb-2 group-hover:text-[#DDED3C] transition-colors">
           {title}
         </h2>
-        <p className="text-sm text-white/60 leading-relaxed line-clamp-3">{excerpt}</p>
+        <p className="type-card-description text-[#F2EBD9]/60 line-clamp-3">{excerpt}</p>
       </div>
     </Link>
   );

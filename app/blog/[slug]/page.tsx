@@ -76,11 +76,11 @@ export default async function BlogPostPage({ params }: Props) {
 
       {/* Hero */}
       <div className="px-6 md:px-12 lg:px-20 pt-40 pb-8 max-w-3xl mx-auto">
-        <p className="text-white/40 text-sm mb-4">{formattedDate}</p>
-        <h1 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+        <p className="type-tag text-[#F2EBD9]/40 mb-4">{formattedDate}</p>
+        <h1 className="type-case-title text-[#F2EBD9] mb-6">
           {post.title}
         </h1>
-        <p className="text-white/60 text-lg mb-8 leading-relaxed">{post.excerpt}</p>
+        <p className="type-paragraph text-[#F2EBD9]/60 mb-8">{post.excerpt}</p>
 
         {post.coverImage && (
           <div className="relative w-full h-64 md:h-96 rounded-2xl overflow-hidden mb-10">
