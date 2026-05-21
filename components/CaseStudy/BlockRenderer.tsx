@@ -587,6 +587,11 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     window.open("https://www.instagram.com/jfcr_/", "_blank", "noopener,noreferrer");
   }
 
+  function releaseDragSelection() {
+    (document.body.style as CSSStyleDeclaration & { webkitUserSelect: string }).webkitUserSelect = "";
+    document.body.style.userSelect = "";
+  }
+
   function triggerCircleSummon(idx: number) {
     const d = dragRef.current;
     if (!d) return;
@@ -597,6 +602,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setOverZone(false);
     setMobileZoneOpen(false);
     setCircleProgress(0);
+    releaseDragSelection();
     addToCollection(stack[idx].item);
     setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ, dragTilt: 0 } : c));
     if (link) {
@@ -609,6 +615,9 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   function handlePointerDown(e: React.PointerEvent<HTMLDivElement>, idx: number) {
     e.currentTarget.setPointerCapture(e.pointerId);
     e.preventDefault();
+    // Suppress text selection across the whole page for the duration of the drag
+    (document.body.style as CSSStyleDeclaration & { webkitUserSelect: string }).webkitUserSelect = "none";
+    document.body.style.userSelect = "none";
     if (isDesktop && zoneShowTimer.current) {
       clearTimeout(zoneShowTimer.current);
       zoneShowTimer.current = null;
@@ -662,6 +671,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setDraggingIdx(null);
     setOverZone(false);
     setCircleProgress(0);
+    releaseDragSelection();
     addToCollection(stack[idx].item);
     setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: link ? DRAG_Z : restingZ, dragTilt: 0 } : c));
     if (link) {
@@ -670,7 +680,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
       setTimeout(() => {
         setSummoning(false);
         setMobileZoneOpen(false);
-        setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
+        setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ, x: 0, y: 0 } : c));
       }, 2000);
     } else {
       setMobileZoneOpen(false);
@@ -746,6 +756,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setDraggingIdx(null);
     setOverZone(false);
     setCircleProgress(0);
+    releaseDragSelection();
     setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: droppedOnZone ? DRAG_Z : restingZ, dragTilt: 0 } : c));
     if (d.moved) addToCollection(stack[idx].item);
     if (droppedOnZone) {
@@ -757,10 +768,10 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
         setTimeout(() => {
           setSummoning(false);
           setMobileZoneOpen(false);
-          setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
+          setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ, x: 0, y: 0 } : c));
         }, 2000);
       } else {
-        setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
+        setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ, x: 0, y: 0 } : c));
         setMobileZoneOpen(false);
       }
     } else {
