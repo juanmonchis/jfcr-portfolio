@@ -132,6 +132,21 @@ const MAX_GRID_IMAGES = 12;
 const PACK_LIMIT = 5;
 const DRAG_Z = 200;
 
+function openAfterDelay(link: string, delayMs: number) {
+  const isFirefox = typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().includes("firefox");
+  if (isFirefox) {
+    const win = window.open("", "_blank");
+    if (win) {
+      win.document.write(
+        `<html><head><title>Summoning…</title></head><body style="margin:0;background:#0c0d1f;display:flex;align-items:center;justify-content:center;height:100vh"><p style="color:rgba(255,255,255,0.5);font-family:sans-serif;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase">Summoning…</p></body></html>`
+      );
+      setTimeout(() => { win.location.href = link; }, delayMs);
+    }
+  } else {
+    setTimeout(() => { window.open(link, "_blank", "noopener,noreferrer"); }, delayMs);
+  }
+}
+
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -589,10 +604,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ, dragTilt: 0 } : c));
     if (link) {
       setSummoning(true);
-      setTimeout(() => {
-        setSummoning(false);
-        window.open(link, "_blank", "noopener,noreferrer");
-      }, 3000);
+      openAfterDelay(link, 3000);
+      setTimeout(() => { setSummoning(false); }, 3000);
     }
   }
 
@@ -656,11 +669,11 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: link ? DRAG_Z : restingZ, dragTilt: 0 } : c));
     if (link) {
       setSummoning(true);
+      openAfterDelay(link, 3000);
       setTimeout(() => {
         setSummoning(false);
         setMobileZoneOpen(false);
         setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
-        window.open(link, "_blank", "noopener,noreferrer");
       }, 3000);
     } else {
       setMobileZoneOpen(false);
@@ -743,11 +756,11 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
       const link = stack[idx].item.link;
       if (link) {
         setSummoning(true);
+        openAfterDelay(link, 3000);
         setTimeout(() => {
           setSummoning(false);
           setMobileZoneOpen(false);
           setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
-          window.open(link, "_blank", "noopener,noreferrer");
         }, 3000);
       } else {
         setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
