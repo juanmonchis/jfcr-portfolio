@@ -26,8 +26,8 @@ export default async function BlogPage() {
       <SiteHeader logoSize={100} logoVariant="light" color="#F2EBD9" />
 
       <main className="px-6 md:px-12 lg:px-20 pt-40 pb-16 max-w-5xl mx-auto">
-        <h1 className="type-case-title text-[#F2EBD9] mb-4">Blog</h1>
-        <p className="type-paragraph text-[#F2EBD9]/60 mb-12">Thoughts on design, products, and everything in between.</p>
+        <h1 className="type-case-title !text-[#F2EBD9] mb-4">Blog</h1>
+        <p className="type-paragraph !text-[#F2EBD9]/60 mb-12">Thoughts on design, products, and everything in between.</p>
 
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -43,7 +43,7 @@ export default async function BlogPage() {
             ))}
           </div>
         ) : (
-          <p className="type-caption-sm text-[#F2EBD9]/40">No posts published yet.</p>
+          <p className="type-caption-sm !text-[#F2EBD9]/40">No posts published yet.</p>
         )}
       </main>
     </div>
