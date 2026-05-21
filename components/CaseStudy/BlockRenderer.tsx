@@ -874,7 +874,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                   fontSize="24"
                   fontWeight="800"
                   textAnchor="middle"
-                  style={{ fontFamily: "var(--font-migra), serif" }}
+                  style={{ fontFamily: "var(--font-migra), serif", userSelect: "none", WebkitUserSelect: "none" }}
                 >
                   <textPath href="#grid-arch" startOffset="50%">
                     new pack • unwrap • repeat •
