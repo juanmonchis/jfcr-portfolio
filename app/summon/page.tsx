@@ -14,10 +14,9 @@ export default function SummonPage() {
 
     lottieRef.current?.goToAndPlay(0, true);
 
-    // Navigate after one logo animation cycle (~2.3s) with a safety fallback
     const timer = setTimeout(() => {
       window.location.href = to;
-    }, 2300);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);

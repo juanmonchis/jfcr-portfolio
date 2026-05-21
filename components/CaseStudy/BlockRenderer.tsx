@@ -135,6 +135,10 @@ const DRAG_Z = 200;
 function openAfterDelay(link: string, delayMs: number) {
   const win = window.open("", "_blank");
   if (!win) return;
+  // Write a dark holding screen so if the tab gets focus, the user sees
+  // a matching dark background rather than a jarring blank white page.
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><style>*{margin:0;padding:0}body{background:#0c0d1f;height:100vh}</style></head><body></body></html>`);
+  win.document.close();
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
   const summonUrl = `${window.location.origin}${basePath}/summon?to=${encodeURIComponent(link)}`;
   setTimeout(() => { win.location.href = summonUrl; }, delayMs);
@@ -597,8 +601,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ, dragTilt: 0 } : c));
     if (link) {
       setSummoning(true);
-      openAfterDelay(link, 3000);
-      setTimeout(() => { setSummoning(false); }, 3000);
+      openAfterDelay(link, 2000);
+      setTimeout(() => { setSummoning(false); }, 2000);
     }
   }
 
@@ -662,12 +666,12 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: link ? DRAG_Z : restingZ, dragTilt: 0 } : c));
     if (link) {
       setSummoning(true);
-      openAfterDelay(link, 3000);
+      openAfterDelay(link, 2000);
       setTimeout(() => {
         setSummoning(false);
         setMobileZoneOpen(false);
         setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
-      }, 3000);
+      }, 2000);
     } else {
       setMobileZoneOpen(false);
     }
@@ -749,12 +753,12 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
       const link = stack[idx].item.link;
       if (link) {
         setSummoning(true);
-        openAfterDelay(link, 3000);
+        openAfterDelay(link, 2000);
         setTimeout(() => {
           setSummoning(false);
           setMobileZoneOpen(false);
           setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
-        }, 3000);
+        }, 2000);
       } else {
         setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
         setMobileZoneOpen(false);
