@@ -1136,8 +1136,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     {collected.length > 0 && (
       <div className="w-full px-12 pb-20 pt-[150px] wide:pt-4">
         <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start mb-6">
-          <p className="type-tag text-[#0C0D1F]/40 mr-2">
-            Collected — {collected.length} / {allImages.length}
+          <p className="mr-2 text-[#0C0D1F]/40" style={{ fontFamily: "var(--font-migra), serif", fontSize: "1rem" }}>
+            Collected — <span>{collected.length}</span> / <span>{allImages.length}</span>
           </p>
           {Array.from(new Set(collected.flatMap(c => c.project ?? []))).map(p => (
             <button
@@ -1147,7 +1147,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                 setFilterProject(filterProject === p ? null : p);
                 requestAnimationFrame(() => window.scrollTo({ top: y, behavior: "instant" }));
               }}
-              className="type-tag px-3 py-1 rounded-full border transition-colors duration-150"
+              className="type-tag px-3 py-1 rounded-full border transition-colors duration-150 leading-none flex items-center"
               style={{
                 background:  filterProject === p ? cardColor : "transparent",
                 borderColor: filterProject === p ? cardColor : "rgba(12,13,31,0.2)",
