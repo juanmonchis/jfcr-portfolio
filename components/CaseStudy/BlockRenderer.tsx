@@ -588,12 +588,10 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     addToCollection(stack[idx].item);
     setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ, dragTilt: 0 } : c));
     if (link) {
-      const win = window.open("", "_blank");
       setSummoning(true);
       setTimeout(() => {
         setSummoning(false);
-        if (win) win.location.href = link;
-        else window.open(link, "_blank", "noopener,noreferrer");
+        window.open(link, "_blank", "noopener,noreferrer");
       }, 3000);
     }
   }
@@ -657,14 +655,12 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     addToCollection(stack[idx].item);
     setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: link ? DRAG_Z : restingZ, dragTilt: 0 } : c));
     if (link) {
-      const win = window.open("", "_blank");
       setSummoning(true);
       setTimeout(() => {
         setSummoning(false);
         setMobileZoneOpen(false);
         setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
-        if (win) win.location.href = link;
-        else window.open(link, "_blank", "noopener,noreferrer");
+        window.open(link, "_blank", "noopener,noreferrer");
       }, 3000);
     } else {
       setMobileZoneOpen(false);
@@ -746,14 +742,12 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
       addToCollection(stack[idx].item);
       const link = stack[idx].item.link;
       if (link) {
-        const win = window.open("", "_blank");
         setSummoning(true);
         setTimeout(() => {
           setSummoning(false);
           setMobileZoneOpen(false);
           setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
-          if (win) win.location.href = link;
-          else window.open(link, "_blank", "noopener,noreferrer");
+          window.open(link, "_blank", "noopener,noreferrer");
         }, 3000);
       } else {
         setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
