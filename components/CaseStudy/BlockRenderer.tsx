@@ -594,7 +594,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
         setSummoning(false);
         if (win) win.location.href = link;
         else window.open(link, "_blank", "noopener,noreferrer");
-      }, 2000);
+      }, 3000);
     }
   }
 
@@ -665,7 +665,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
         setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
         if (win) win.location.href = link;
         else window.open(link, "_blank", "noopener,noreferrer");
-      }, 2000);
+      }, 3000);
     } else {
       setMobileZoneOpen(false);
     }
@@ -754,7 +754,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
           setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
           if (win) win.location.href = link;
           else window.open(link, "_blank", "noopener,noreferrer");
-        }, 2000);
+        }, 3000);
       } else {
         setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ } : c));
         setMobileZoneOpen(false);
