@@ -147,7 +147,7 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function Lightbox({ items, initialIndex, onClose }: { items: GridImage[]; initialIndex: number; onClose: () => void }) {
+function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: GridImage[]; initialIndex: number; showDots?: boolean; onClose: () => void }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -343,8 +343,8 @@ function Lightbox({ items, initialIndex, onClose }: { items: GridImage[]; initia
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="#0C0D1F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
 
-          {/* Dot indicators */}
-          <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 6, zIndex: 10 }}>
+          {/* Dot indicators — only shown in pack view, not collection */}
+          {showDots && <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 6, zIndex: 10 }}>
             {items.map((_, i) => (
               <button
                 key={i}
@@ -357,7 +357,7 @@ function Lightbox({ items, initialIndex, onClose }: { items: GridImage[]; initia
                 }}
               />
             ))}
-          </div>
+          </div>}
         </>
       )}
     </div>,
@@ -504,7 +504,7 @@ function buildFanVersions(unlimited: boolean, rareOpened: boolean): [PackVersion
   return ["V3", "V1", "V2"];
 }
 
-function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo = false, description }: { block: ImageGridBlock; onOpen: (items: GridImage[], index: number) => void; cardColor?: string; title?: string; showLogo?: boolean; description?: string }) {
+function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo = false, description }: { block: ImageGridBlock; onOpen: (items: GridImage[], index: number, showDots: boolean) => void; cardColor?: string; title?: string; showLogo?: boolean; description?: string }) {
   const allImages = block.images.map(toGridImage);
   const storageKey = `collected-${block.id}`;
   const [selectedVersion, setSelectedVersion] = useState<PackVersion>("V1");
@@ -849,7 +849,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     }
     if (!d.moved && !droppedOnZone) {
       addToCollection(stack[idx].item);
-      onOpen(stack.map(c => c.item), idx);
+      onOpen(stack.map(c => c.item), idx, true);
     }
   }
 
@@ -1248,7 +1248,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
           {collected.filter(c => !filterProject || c.project?.includes(filterProject)).map((item, i, arr) => (
             <div
               key={item.url}
-              onClick={() => onOpen(arr, i)}
+              onClick={() => onOpen(arr, i, false)}
               style={{
                 width:        "100%",
                 borderRadius: "0.75rem",
@@ -1290,7 +1290,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
 }
 
 export default function BlockRenderer({ blocks, cardColor, title, showLogo, description }: { blocks: Block[]; cardColor?: string; title?: string; showLogo?: boolean; description?: string }) {
-  const [lightbox, setLightbox] = useState<{ items: GridImage[]; index: number } | null>(null);
+  const [lightbox, setLightbox] = useState<{ items: GridImage[]; index: number; showDots: boolean } | null>(null);
 
   return (
     <>
@@ -1367,7 +1367,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
           )}
 
           {block.type === "image-grid" && (
-            <ImageGrid block={block} onOpen={(items, index) => setLightbox({ items, index })} cardColor={cardColor} title={title} showLogo={showLogo} description={description} />
+            <ImageGrid block={block} onOpen={(items, index, showDots) => setLightbox({ items, index, showDots })} cardColor={cardColor} title={title} showLogo={showLogo} description={description} />
           )}
 
           {block.type === "video" && <VideoBlock block={block} />}
@@ -1404,7 +1404,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
         </div>
       ))}
     </div>
-    {lightbox && <Lightbox items={lightbox.items} initialIndex={lightbox.index} onClose={() => setLightbox(null)} />}
+    {lightbox && <Lightbox items={lightbox.items} initialIndex={lightbox.index} showDots={lightbox.showDots} onClose={() => setLightbox(null)} />}
     </>
   );
 }
