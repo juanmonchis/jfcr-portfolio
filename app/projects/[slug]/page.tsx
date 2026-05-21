@@ -52,7 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { project } = caseStudy;
   const description = caseStudy.description ?? project.description;
   const ogImage = slug === "trading-card-game"
-    ? "https://www.jfcr.design/images/og-trading-cards.png"
+    ? "https://juanmonchis.github.io/jfcr-portfolio/images/og-trading-cards.png"
     : undefined;
   return {
     title: project.title,
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: project.title,
       description,
-      url: `https://www.jfcr.design/projects/${slug}`,
+      url: `https://juanmonchis.github.io/jfcr-portfolio/projects/${slug}`,
       ...(ogImage && { images: [{ url: ogImage, width: 1200, height: 630 }] }),
     },
     ...(ogImage && { twitter: { card: "summary_large_image", images: [ogImage] } }),

@@ -51,7 +51,7 @@ const telegraf = localFont({
   display: "swap",
 });
 
-const BASE_URL = "https://www.jfcr.design";
+const BASE_URL = "https://juanmonchis.github.io/jfcr-portfolio";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
