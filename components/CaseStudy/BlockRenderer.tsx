@@ -728,31 +728,6 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     return c.left < z.right && c.right > z.left && c.top < z.bottom && c.bottom > z.top;
   }
 
-  function triggerSwipeSummon(idx: number) {
-    const d = dragRef.current;
-    if (!d) return;
-    const link = stack[idx]?.item.link;
-    const restingZ = d.restingZ;
-    dragRef.current = null;
-    setDraggingIdx(null);
-    setOverZone(false);
-    setCircleProgress(0);
-    releaseDragSelection();
-    addToCollection(stack[idx].item);
-    setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: link ? DRAG_Z : restingZ, dragTilt: 0 } : c));
-    if (link) {
-      setSummoning(true);
-      openAfterDelay(link, 2000);
-      setTimeout(() => {
-        setSummoning(false);
-        setMobileZoneOpen(false);
-        setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ, x: 0, y: 0 } : c));
-      }, 2000);
-    } else {
-      setMobileZoneOpen(false);
-    }
-  }
-
   function handlePointerMove(e: React.PointerEvent<HTMLDivElement>, idx: number) {
     const d = dragRef.current;
     if (!d || d.idx !== idx) return;
@@ -763,16 +738,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
       d.moved = true;
     }
     const vx = e.clientX - d.prevPX;
-    const vy = e.clientY - d.prevPY;
     const dragTilt = Math.max(-22, Math.min(22, vx * 0.6));
-
-    // Mobile — summon when card touches zone while moving downward
-    if (!isDesktop && d.moved && dy > 20 && vy > 0 && stack[idx]?.item.link) {
-      if (cardOverlapsZone(mobileDropRef.current)) {
-        triggerSwipeSummon(idx);
-        return;
-      }
-    }
 
     d.prevPX = e.clientX;
     d.prevPY = e.clientY;
@@ -1209,7 +1175,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
           color:         summoning ? "#ffffff" : "rgba(12,13,31,0.45)",
           transition:    "color 300ms ease",
         }}>
-          {summoning ? "summoning…" : isDesktop ? "place card here to summon" : "↓ swipe down to summon ↓"}
+          {summoning ? "summoning…" : "drop card here to summon"}
         </span>
       </div>
     )}
