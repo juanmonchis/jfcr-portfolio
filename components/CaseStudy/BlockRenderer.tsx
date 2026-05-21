@@ -154,15 +154,17 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
   const [sheen, setSheen] = useState({ x: 50, y: 50 });
   const [hovering, setHovering] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
   const settled = useRef(false);
 
+  useEffect(() => { setIsDesktop(window.innerWidth >= 1024); }, []);
+
   const item = items[currentIndex];
-  const hasPrev = currentIndex > 0;
-  const hasNext = currentIndex < items.length - 1;
 
   function goTo(idx: number) {
-    if (idx < 0 || idx >= items.length) return;
-    setCurrentIndex(idx);
+    // Wrap around both ends
+    const wrapped = ((idx % items.length) + items.length) % items.length;
+    setCurrentIndex(wrapped);
     setTilt({ x: 0, y: 0 });
     setSheen({ x: 50, y: 50 });
     setHovering(false);
@@ -181,9 +183,9 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") handleClose();
-      if (e.key === "ArrowLeft")  goTo(currentIndex - 1);
-      if (e.key === "ArrowRight") goTo(currentIndex + 1);
+      if (e.key === "Escape")      handleClose();
+      if (e.key === "ArrowLeft")   goTo(currentIndex - 1);
+      if (e.key === "ArrowRight")  goTo(currentIndex + 1);
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -208,6 +210,28 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
 
   const isVid = item.url.toLowerCase().endsWith(".mp4");
   const hasContent = item.description || item.link || item.seriesNumber || (item.project && item.project.length > 0);
+  const multiCard = items.length > 1;
+
+  const arrowBtn = (dir: "prev" | "next") => (
+    <button
+      key={dir}
+      onClick={(e) => { e.stopPropagation(); goTo(dir === "prev" ? currentIndex - 1 : currentIndex + 1); }}
+      style={{
+        width: 44, height: 44, borderRadius: "50%",
+        background: "rgba(255,255,255,0.85)",
+        backdropFilter: "blur(8px)",
+        border: "1px solid rgba(12,13,31,0.12)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        cursor: "pointer",
+        flexShrink: 0,
+      }}
+    >
+      {dir === "prev"
+        ? <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="#0C0D1F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        : <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="#0C0D1F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      }
+    </button>
+  );
 
   return createPortal(
     <div
@@ -245,7 +269,6 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
             // eslint-disable-next-line @next/next/no-img-element
             <img src={assetPath(item.url)} alt="" className="max-h-[70vh] rounded-xl object-contain block" />
           )}
-          {/* Radial sheen that follows the cursor */}
           <div style={{
             position:   "absolute",
             inset:      0,
@@ -295,6 +318,30 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
             )}
           </div>
         )}
+
+        {/* Mobile arrows — inline below card/info box */}
+        {multiCard && !isDesktop && (
+          <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 4 }}>
+            {arrowBtn("prev")}
+            {showDots && (
+              <div style={{ display: "flex", gap: 6 }}>
+                {items.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={(e) => { e.stopPropagation(); goTo(i); }}
+                    style={{
+                      width: i === currentIndex ? 20 : 6, height: 6, borderRadius: 3,
+                      background: i === currentIndex ? "#0C0D1F" : "rgba(12,13,31,0.25)",
+                      border: "none", padding: 0, cursor: "pointer",
+                      transition: "width 200ms ease, background 200ms ease",
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+            {arrowBtn("next")}
+          </div>
+        )}
       </div>
 
       {/* Close */}
@@ -303,22 +350,19 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
         className="absolute top-6 right-6 text-[#0C0D1F] text-2xl font-bold w-10 h-10 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 transition-colors"
       >×</button>
 
-      {/* Prev / Next arrows */}
-      {items.length > 1 && (
+      {/* Desktop arrows — fixed to viewport sides */}
+      {multiCard && isDesktop && (
         <>
           <button
             onClick={(e) => { e.stopPropagation(); goTo(currentIndex - 1); }}
-            disabled={!hasPrev}
             style={{
               position: "fixed", left: 20, top: "50%", transform: "translateY(-50%)",
               width: 44, height: 44, borderRadius: "50%",
-              background: hasPrev ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.25)",
+              background: "rgba(255,255,255,0.85)",
               backdropFilter: "blur(8px)",
               border: "1px solid rgba(12,13,31,0.12)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: hasPrev ? "pointer" : "default",
-              transition: "background 200ms ease, opacity 200ms ease",
-              opacity: hasPrev ? 1 : 0.3,
+              cursor: "pointer",
               zIndex: 10,
             }}
           >
@@ -326,38 +370,37 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); goTo(currentIndex + 1); }}
-            disabled={!hasNext}
             style={{
               position: "fixed", right: 20, top: "50%", transform: "translateY(-50%)",
               width: 44, height: 44, borderRadius: "50%",
-              background: hasNext ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.25)",
+              background: "rgba(255,255,255,0.85)",
               backdropFilter: "blur(8px)",
               border: "1px solid rgba(12,13,31,0.12)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: hasNext ? "pointer" : "default",
-              transition: "background 200ms ease, opacity 200ms ease",
-              opacity: hasNext ? 1 : 0.3,
+              cursor: "pointer",
               zIndex: 10,
             }}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="#0C0D1F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
 
-          {/* Dot indicators — only shown in pack view, not collection */}
-          {showDots && <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 6, zIndex: 10 }}>
-            {items.map((_, i) => (
-              <button
-                key={i}
-                onClick={(e) => { e.stopPropagation(); goTo(i); }}
-                style={{
-                  width: i === currentIndex ? 20 : 6, height: 6, borderRadius: 3,
-                  background: i === currentIndex ? "#0C0D1F" : "rgba(12,13,31,0.25)",
-                  border: "none", padding: 0, cursor: "pointer",
-                  transition: "width 200ms ease, background 200ms ease",
-                }}
-              />
-            ))}
-          </div>}
+          {/* Dot indicators — only in pack view */}
+          {showDots && (
+            <div style={{ position: "fixed", bottom: 24, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 6, zIndex: 10 }}>
+              {items.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={(e) => { e.stopPropagation(); goTo(i); }}
+                  style={{
+                    width: i === currentIndex ? 20 : 6, height: 6, borderRadius: 3,
+                    background: i === currentIndex ? "#0C0D1F" : "rgba(12,13,31,0.25)",
+                    border: "none", padding: 0, cursor: "pointer",
+                    transition: "width 200ms ease, background 200ms ease",
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>,
