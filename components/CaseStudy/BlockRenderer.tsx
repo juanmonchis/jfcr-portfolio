@@ -133,17 +133,12 @@ const PACK_LIMIT = 5;
 const DRAG_Z = 200;
 
 function openAfterDelay(link: string, delayMs: number) {
-  const isFirefox = typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().includes("firefox");
-  if (isFirefox) {
-    const win = window.open("", "_blank");
-    if (win) {
-      win.document.write(
-        `<html><head><title>Summoning…</title></head><body style="margin:0;background:#0c0d1f;display:flex;align-items:center;justify-content:center;height:100vh"><p style="color:rgba(255,255,255,0.5);font-family:sans-serif;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase">Summoning…</p></body></html>`
-      );
-      setTimeout(() => { win.location.href = link; }, delayMs);
-    }
-  } else {
-    setTimeout(() => { window.open(link, "_blank", "noopener,noreferrer"); }, delayMs);
+  const win = window.open("", "_blank");
+  if (win) {
+    win.document.write(
+      `<html><head><title>Summoning…</title></head><body style="margin:0;background:#0c0d1f;display:flex;align-items:center;justify-content:center;height:100vh"><p style="color:rgba(255,255,255,0.5);font-family:sans-serif;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase">Summoning…</p></body></html>`
+    );
+    setTimeout(() => { win.location.href = link; }, delayMs);
   }
 }
 
