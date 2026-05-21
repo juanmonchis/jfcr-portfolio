@@ -134,12 +134,10 @@ const DRAG_Z = 200;
 
 function openAfterDelay(link: string, delayMs: number) {
   const win = window.open("", "_blank");
-  if (win) {
-    win.document.write(
-      `<html><head><title>Summoning…</title></head><body style="margin:0;background:#0c0d1f;display:flex;align-items:center;justify-content:center;height:100vh"><p style="color:rgba(255,255,255,0.5);font-family:sans-serif;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase">Summoning…</p></body></html>`
-    );
-    setTimeout(() => { win.location.href = link; }, delayMs);
-  }
+  if (!win) return;
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  const summonUrl = `${window.location.origin}${basePath}/summon?to=${encodeURIComponent(link)}`;
+  setTimeout(() => { win.location.href = summonUrl; }, delayMs);
 }
 
 function shuffle<T>(arr: T[]): T[] {
