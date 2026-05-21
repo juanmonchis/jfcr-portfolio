@@ -154,10 +154,7 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
   const [sheen, setSheen] = useState({ x: 50, y: 50 });
   const [hovering, setHovering] = useState(false);
   const [closing, setClosing] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
   const settled = useRef(false);
-
-  useEffect(() => { setIsDesktop(window.innerWidth >= 1024); }, []);
 
   const item = items[currentIndex];
 
@@ -211,27 +208,6 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
   const isVid = item.url.toLowerCase().endsWith(".mp4");
   const hasContent = item.description || item.link || item.seriesNumber || (item.project && item.project.length > 0);
   const multiCard = items.length > 1;
-
-  const arrowBtn = (dir: "prev" | "next") => (
-    <button
-      key={dir}
-      onClick={(e) => { e.stopPropagation(); goTo(dir === "prev" ? currentIndex - 1 : currentIndex + 1); }}
-      style={{
-        width: 44, height: 44, borderRadius: "50%",
-        background: "rgba(255,255,255,0.85)",
-        backdropFilter: "blur(8px)",
-        border: "1px solid rgba(12,13,31,0.12)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        cursor: "pointer",
-        flexShrink: 0,
-      }}
-    >
-      {dir === "prev"
-        ? <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke="#0C0D1F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        : <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke="#0C0D1F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-      }
-    </button>
-  );
 
   return createPortal(
     <div
@@ -319,29 +295,6 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
           </div>
         )}
 
-        {/* Mobile arrows — inline below card/info box */}
-        {multiCard && !isDesktop && (
-          <div style={{ display: "flex", alignItems: "center", gap: 12, paddingTop: 4 }}>
-            {arrowBtn("prev")}
-            {showDots && (
-              <div style={{ display: "flex", gap: 6 }}>
-                {items.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={(e) => { e.stopPropagation(); goTo(i); }}
-                    style={{
-                      width: i === currentIndex ? 20 : 6, height: 6, borderRadius: 3,
-                      background: i === currentIndex ? "#0C0D1F" : "rgba(12,13,31,0.25)",
-                      border: "none", padding: 0, cursor: "pointer",
-                      transition: "width 200ms ease, background 200ms ease",
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-            {arrowBtn("next")}
-          </div>
-        )}
       </div>
 
       {/* Close */}
@@ -350,8 +303,8 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
         className="absolute top-6 right-6 text-[#0C0D1F] text-2xl font-bold w-10 h-10 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 transition-colors"
       >×</button>
 
-      {/* Desktop arrows — fixed to viewport sides */}
-      {multiCard && isDesktop && (
+      {/* Prev / Next arrows — fixed to viewport sides on all screen sizes */}
+      {multiCard && (
         <>
           <button
             onClick={(e) => { e.stopPropagation(); goTo(currentIndex - 1); }}
