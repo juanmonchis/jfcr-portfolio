@@ -778,7 +778,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     >
 
       {/* Left column: logo → title → description */}
-      <div className="w-full wide:w-1/3 shrink-0 flex flex-col wide:gap-6 px-6 wide:px-0 wide:pr-8 items-center wide:items-start text-center wide:text-left" style={{ gap: isDesktop ? undefined : "0.5rem", paddingTop: 0, marginTop: 0, position: "relative" }}>
+      <div className="w-full wide:w-1/3 shrink-0 flex flex-col wide:gap-6 px-6 wide:px-0 wide:pl-12 wide:pr-8 items-center wide:items-start text-center wide:text-left" style={{ gap: isDesktop ? undefined : "0.5rem", paddingTop: 0, marginTop: 0, position: "relative" }}>
         {showLogo && <LogoIcon variant="color" cropPx={50} href="https://www.jfcr.design/" />}
         {title && (
           <h2 className="type-case-subtitle">{title}</h2>
