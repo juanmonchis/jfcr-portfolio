@@ -338,7 +338,7 @@ function SelectionPack({ version, rotate, tx, ty, z, transitioning, onClick, isD
         marginLeft: -100,
         marginTop:  -175,
         transform:  isSelected
-          ? "rotate(0deg) translate(0px, 0px) scale(1)"
+          ? `rotate(0deg) translate(0px, 0px) scale(${isDesktop ? 1 : 0.7})`
           : `rotate(${rotate}deg) translate(${tx}px, ${currentTy}px) scale(${mobileScale})`,
         zIndex:     isSelected ? 20 : z,
         opacity:    isDismissed ? 0 : 1,
