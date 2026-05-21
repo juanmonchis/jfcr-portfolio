@@ -1136,7 +1136,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     {collected.length > 0 && (
       <div className="w-full px-12 pb-20 pt-[150px] wide:pt-4">
         <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start mb-6">
-          <p className="mr-2 text-[#0C0D1F]/40" style={{ fontFamily: "var(--font-migra), serif", fontSize: "1rem" }}>
+          <p className="mr-2 text-[#0C0D1F]/40" style={{ fontFamily: "var(--font-migra), serif", fontSize: "1.75rem", fontWeight: 700 }}>
             Collected — <span>{collected.length}</span> / <span>{allImages.length}</span>
           </p>
           {Array.from(new Set(collected.flatMap(c => c.project ?? []))).map(p => (
