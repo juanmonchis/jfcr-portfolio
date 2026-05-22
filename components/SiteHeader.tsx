@@ -84,6 +84,7 @@ function NavPill({
   active = false,
   color = "#0C0D1F",
   size = "md",
+  hoverTextColor = "#DDED3C",
 }: {
   children: React.ReactNode;
   onClick?: () => void;
@@ -91,17 +92,19 @@ function NavPill({
   active?: boolean;
   color?: string;
   size?: "sm" | "md";
+  hoverTextColor?: string;
 }) {
   const base =
     size === "sm"
-      ? "flex items-center gap-2 border rounded-full transition-colors duration-200 cursor-pointer select-none px-4 py-1.5"
-      : "w-full max-w-[520px] flex items-center gap-4 border-2 rounded-full transition-colors duration-200 cursor-pointer select-none px-7 py-4";
+      ? "nav-pill flex items-center gap-2 border rounded-full transition-colors duration-200 cursor-pointer select-none px-4 py-1.5"
+      : "nav-pill w-full max-w-[520px] flex items-center gap-4 border-2 rounded-full transition-colors duration-200 cursor-pointer select-none px-7 py-4";
 
   const style = {
     borderColor: color,
     background: active ? color : "transparent",
     color: active ? (color === "#0C0D1F" ? "#DDED3C" : "#0C0D1F") : color,
-  };
+    "--nav-pill-hover-text": hoverTextColor,
+  } as React.CSSProperties;
 
   if (href) {
     return (
@@ -135,7 +138,7 @@ export default function SiteHeader({
           {/* ── Desktop nav — permanent pill stack, top-right ─────────────── */}
           <nav className="hidden md:flex flex-col items-end gap-2">
             {NAV_LINKS.map(({ label, href }) => (
-              <NavPill key={label} href={href} color={color} size="sm">
+              <NavPill key={label} href={href} color={color} size="sm" hoverTextColor={mobileOverlayColor}>
                 <span className="text-sm">→</span>
                 <span className="type-tag" style={{ color: "inherit" }}>{label}</span>
               </NavPill>
@@ -150,6 +153,7 @@ export default function SiteHeader({
                 color={color}
                 size="sm"
                 active={socialsOpen}
+                hoverTextColor={mobileOverlayColor}
                 onClick={() => setSocialsOpen(s => !s)}
               >
                 <span className="text-sm">{socialsOpen ? "↓" : "→"}</span>
@@ -212,7 +216,7 @@ export default function SiteHeader({
         {/* Pill list */}
         <nav className="flex flex-col items-center justify-center flex-1 gap-4 px-6 pb-8">
           {NAV_LINKS.map(({ label, href }) => (
-            <NavPill key={label} href={href} color="#0C0D1F" size="md" onClick={() => setOpen(false)}>
+            <NavPill key={label} href={href} color="#0C0D1F" size="md" hoverTextColor={mobileOverlayColor} onClick={() => setOpen(false)}>
               <span className="text-xl">→</span>
               <span className="flex-1 text-center type-cta tracking-widest uppercase" style={{ color: "inherit" }}>
                 {label}
@@ -229,6 +233,7 @@ export default function SiteHeader({
               color="#0C0D1F"
               size="md"
               active={socialsOpen}
+              hoverTextColor={mobileOverlayColor}
               onClick={() => setSocialsOpen(s => !s)}
             >
               <span className="text-xl">{socialsOpen ? "↓" : "→"}</span>
