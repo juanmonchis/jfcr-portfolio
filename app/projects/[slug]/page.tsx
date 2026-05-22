@@ -105,17 +105,9 @@ export default async function CaseStudyPage({ params }: Props) {
 
   return (
     <main>
-      {hasCardDeck && (
-        <SiteHeader
-          logoSize={100}
-          logoVariant="light"
-          color="#F2EBD9"
-          mobileOverlayColor={project.cardColor}
-        />
-      )}
       {!hasCardDeck && (
         <div className="relative">
-          <SiteHeader logoSize={100} />
+          <SiteHeader logoSize={100} mobileOverlayColor={project.cardColor} />
         <section
           className="pt-[calc(20vw+48px)] pb-12 px-6 md:px-12 md:pt-32 md:pb-12"
           style={{ background: project.cardColor }}
