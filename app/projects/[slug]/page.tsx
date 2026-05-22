@@ -105,6 +105,14 @@ export default async function CaseStudyPage({ params }: Props) {
 
   return (
     <main>
+      {hasCardDeck && (
+        <SiteHeader
+          logoSize={100}
+          logoVariant="light"
+          color="#F2EBD9"
+          mobileOverlayColor={project.cardColor}
+        />
+      )}
       {!hasCardDeck && (
         <div className="relative">
           <SiteHeader logoSize={100} />

@@ -8,6 +8,8 @@ interface SiteHeaderProps {
   logoVariant?: LogoVariant;
   logoSize?: number;
   color?: string;
+  /** Background colour of the mobile full-screen overlay. Defaults to #DDED3C. */
+  mobileOverlayColor?: string;
 }
 
 const NAV_LINKS = [
@@ -119,6 +121,7 @@ export default function SiteHeader({
   logoVariant = "dark",
   logoSize = 70,
   color = "#0C0D1F",
+  mobileOverlayColor = "#DDED3C",
 }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
   const [socialsOpen, setSocialsOpen] = useState(false);
@@ -193,7 +196,7 @@ export default function SiteHeader({
       {/* ── Mobile full-screen overlay ──────────────────────────────────── */}
       <div
         className={`fixed inset-0 z-[200] flex flex-col transition-opacity duration-300 md:hidden ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-        style={{ backgroundColor: "#DDED3C" }}
+        style={{ backgroundColor: mobileOverlayColor }}
       >
         {/* Top bar */}
         <div className="flex items-center justify-between px-6 pt-8 pb-4">
