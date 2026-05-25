@@ -103,7 +103,7 @@ function NavPill({
   const style = {
     borderColor: color,
     background: active ? color : "transparent",
-    color: active ? (color === "#0C0D1F" ? "#DDED3C" : "#0C0D1F") : color,
+    color: active ? hoverTextColor : color,
     "--nav-pill-hover-text": hoverTextColor,
     "--nav-pill-hover-bg": hoverBgColor,
   } as React.CSSProperties;
