@@ -170,8 +170,8 @@ export default function SiteHeader({
                       rel="noopener noreferrer"
                       aria-label={label}
                       title={label}
-                      className="w-8 h-8 flex items-center justify-center rounded-full border hover:opacity-60 transition-opacity duration-200"
-                      style={{ borderColor: `${color}55`, color }}
+                      className="flex items-center justify-center hover:opacity-60 transition-opacity duration-200"
+                      style={{ color }}
                     >
                       {icon}
                     </a>
@@ -251,7 +251,7 @@ export default function SiteHeader({
                     rel="noopener noreferrer"
                     aria-label={label}
                     title={label}
-                    className="w-11 h-11 flex items-center justify-center rounded-full border-2 border-[#0C0D1F] hover:bg-[#0C0D1F] hover:text-[#DDED3C] transition-colors duration-200"
+                    className="flex items-center justify-center hover:opacity-60 transition-opacity duration-200"
                     style={{ color: "#0C0D1F" }}
                   >
                     {icon}
