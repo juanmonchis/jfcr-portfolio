@@ -10,6 +10,8 @@ interface SiteHeaderProps {
   color?: string;
   /** Background colour of the mobile full-screen overlay. Defaults to #DDED3C. */
   mobileOverlayColor?: string;
+  /** Hide the logo — renders only the nav pills and mobile hamburger. Defaults to true. */
+  showLogo?: boolean;
 }
 
 const NAV_LINKS = [
@@ -118,6 +120,7 @@ export default function SiteHeader({
   logoSize = 70,
   color = "#0C0D1F",
   mobileOverlayColor = "#DDED3C",
+  showLogo = true,
 }: SiteHeaderProps) {
   const [open, setOpen] = useState(false);
   const [socialsOpen, setSocialsOpen] = useState(false);
@@ -125,8 +128,8 @@ export default function SiteHeader({
   return (
     <>
       <header className="absolute top-0 left-0 right-0 z-50">
-        <div className="w-full px-6 md:px-12 lg:px-20 pt-[20vw] pb-4 md:pt-8 md:pb-6 flex items-start justify-between">
-          <LogoIcon variant={logoVariant} size={logoSize} />
+        <div className={`w-full px-6 md:px-12 lg:px-20 pt-[20vw] pb-4 md:pt-8 md:pb-6 flex items-start ${showLogo ? "justify-between" : "justify-end"}`}>
+          {showLogo && <LogoIcon variant={logoVariant} size={logoSize} />}
 
           {/* ── Desktop nav — permanent pill stack, top-right ─────────────── */}
           <nav className="hidden md:flex flex-col items-end gap-2">
