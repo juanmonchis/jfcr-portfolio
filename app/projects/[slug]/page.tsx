@@ -109,8 +109,7 @@ export default async function CaseStudyPage({ params }: Props) {
         <SiteHeader
           logoSize={100}
           showLogo={false}
-          logoVariant="light"
-          color="#F2EBD9"
+          color="#3E11E1"
           mobileOverlayColor={project.cardColor}
         />
       )}
