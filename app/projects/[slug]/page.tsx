@@ -111,6 +111,8 @@ export default async function CaseStudyPage({ params }: Props) {
           showLogo={false}
           color="#3E11E1"
           mobileOverlayColor={project.cardColor}
+          navHoverBg="#3E11E1"
+          navHoverText="#FFFFFF"
         />
       )}
       {!hasCardDeck && (
