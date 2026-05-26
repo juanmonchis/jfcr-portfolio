@@ -388,11 +388,12 @@ function BlockItem({
                     value={item.version ?? "common"}
                     onChange={(e) => updateItem({ version: e.target.value as PackVersion })}
                   >
-                    <option value="common">Common (all versions)</option>
-                    <option value="V1">V1</option>
-                    <option value="V2">V2</option>
-                    <option value="V3">V3</option>
-                    <option value="rare">Rare</option>
+                    <option value="common">Common (all packs)</option>
+                    <option value="special">Special (all packs + glint)</option>
+                    <option value="V1">V1 only</option>
+                    <option value="V2">V2 only</option>
+                    <option value="V3">V3 only</option>
+                    <option value="rare">Rare pack only + glint</option>
                   </select>
                 </div>
               );
