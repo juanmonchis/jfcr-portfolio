@@ -626,8 +626,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
 
   function imagesForVersion(version: PackVersion): GridImage[] {
     // common / no version  → every pack
-    // special              → every pack (+ gets the glint)
-    // rare                 → rare pack only (+ gets the glint)
+    // special              → every pack (max 2 per draw — enforced in buildPackDraw)
+    // rare                 → rare pack only
     // V1 / V2 / V3        → their own pack only
     return allImages.filter(img =>
       !img.version ||
@@ -635,6 +635,14 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
       img.version === "special" ||
       img.version === version
     );
+  }
+
+  /** Draws up to MAX_GRID_IMAGES cards for a pack, capping special cards at 2. */
+  function buildPackDraw(version: PackVersion): GridImage[] {
+    const pool     = shuffle(imagesForVersion(version));
+    const specials = pool.filter(img => img.version === "special").slice(0, 2);
+    const others   = pool.filter(img => img.version !== "special");
+    return shuffle([...specials, ...others]).slice(0, MAX_GRID_IMAGES);
   }
 
   function makeStack(imgs: GridImage[]): CardState[] {
@@ -648,7 +656,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
 
   useEffect(() => {
     setMounted(true);
-    setStack(makeStack(shuffle(imagesForVersion(selectedVersion)).slice(0, MAX_GRID_IMAGES)));
+    setStack(makeStack(buildPackDraw(selectedVersion)));
     try {
       const stored = localStorage.getItem(storageKey);
       if (stored) {
@@ -700,7 +708,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
 
   useEffect(() => {
     if (!mounted) return;
-    setStack(makeStack(shuffle(imagesForVersion(selectedVersion)).slice(0, MAX_GRID_IMAGES)));
+    setStack(makeStack(buildPackDraw(selectedVersion)));
     resetPackState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedVersion]);
@@ -1018,7 +1026,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                   setPackTransitioningTo(version);
                   setSelectedVersion(version);
                   // Always rebuild the stack so same-version re-picks get a fresh shuffle
-                  setStack(makeStack(shuffle(imagesForVersion(version)).slice(0, MAX_GRID_IMAGES)));
+                  setStack(makeStack(buildPackDraw(version)));
                   packTransitionTimer.current = setTimeout(() => {
                     packTransitionTimer.current = null;
                     setPackSelectionPhase(false);
