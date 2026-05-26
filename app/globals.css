@@ -399,9 +399,9 @@ body {
   border-color: var(--nav-pill-hover-bg, #0C0D1F) !important;
 }
 
-@keyframes rareGlint {
-  0%, 100% { opacity: 0.55; transform: scale(0.8)  rotate(-12deg); }
-  50%       { opacity: 1;   transform: scale(1.2)  rotate(12deg);  }
+@keyframes spinStar {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 @keyframes cardAura {

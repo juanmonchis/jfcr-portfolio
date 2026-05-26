@@ -1123,19 +1123,28 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                 onClick={() => {}}
                 lazy
               />
-              {/* Glint — twinkling star for rare and special cards */}
+              {/* Spinning star badge — visible on rare and special cards */}
               {(card.item.version === "rare" || card.item.version === "special") && (
                 <div style={{
-                  position:      "absolute",
-                  top:           12,
-                  right:         12,
-                  zIndex:        2,
-                  pointerEvents: "none",
-                  animation:     `rareGlint 3.2s ease-in-out ${((i * 1.1) % 3).toFixed(1)}s infinite`,
-                  filter:        "drop-shadow(0 0 5px rgba(255,230,100,0.9)) drop-shadow(0 0 10px rgba(255,255,255,0.7))",
+                  position:        "absolute",
+                  top:             10,
+                  right:           10,
+                  zIndex:          3,
+                  pointerEvents:   "none",
+                  width:           28,
+                  height:          28,
+                  borderRadius:    "50%",
+                  background:      "rgba(0,0,0,0.55)",
+                  backdropFilter:  "blur(4px)",
+                  display:         "flex",
+                  alignItems:      "center",
+                  justifyContent:  "center",
                 }}>
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M8 0 L9.4 6.6 L16 8 L9.4 9.4 L8 16 L6.6 9.4 L0 8 L6.6 6.6 Z" fill="white"/>
+                  <svg
+                    width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"
+                    style={{ animation: "spinStar 4s linear infinite", filter: "drop-shadow(0 0 3px rgba(255,210,60,0.9))" }}
+                  >
+                    <path d="M8 0 L9.4 6.6 L16 8 L9.4 9.4 L8 16 L6.6 9.4 L0 8 L6.6 6.6 Z" fill="#FFD23C"/>
                   </svg>
                 </div>
               )}
@@ -1259,16 +1268,25 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
               <MediaEl item={item} className="w-full h-auto block pointer-events-none select-none" onClick={() => {}} lazy />
               {(item.version === "rare" || item.version === "special") && (
                 <div style={{
-                  position:      "absolute",
-                  top:           8,
-                  right:         8,
-                  zIndex:        2,
-                  pointerEvents: "none",
-                  animation:     `rareGlint 3.2s ease-in-out ${((i * 1.1) % 3).toFixed(1)}s infinite`,
-                  filter:        "drop-shadow(0 0 4px rgba(255,230,100,0.9)) drop-shadow(0 0 8px rgba(255,255,255,0.7))",
+                  position:       "absolute",
+                  top:            6,
+                  right:          6,
+                  zIndex:         3,
+                  pointerEvents:  "none",
+                  width:          22,
+                  height:         22,
+                  borderRadius:   "50%",
+                  background:     "rgba(0,0,0,0.55)",
+                  backdropFilter: "blur(4px)",
+                  display:        "flex",
+                  alignItems:     "center",
+                  justifyContent: "center",
                 }}>
-                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M8 0 L9.4 6.6 L16 8 L9.4 9.4 L8 16 L6.6 9.4 L0 8 L6.6 6.6 Z" fill="white"/>
+                  <svg
+                    width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"
+                    style={{ animation: "spinStar 4s linear infinite", filter: "drop-shadow(0 0 2px rgba(255,210,60,0.9))" }}
+                  >
+                    <path d="M8 0 L9.4 6.6 L16 8 L9.4 9.4 L8 16 L6.6 9.4 L0 8 L6.6 6.6 Z" fill="#FFD23C"/>
                   </svg>
                 </div>
               )}
