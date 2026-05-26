@@ -37,7 +37,7 @@ import { createPortal } from "react-dom";
 import LogoIcon from "@/components/LogoIcon";
 import { assetPath } from "@/lib/assetPath";
 
-export type PackVersion = "common" | "V1" | "V2" | "V3" | "rare";
+export type PackVersion = "common" | "V1" | "V2" | "V3" | "rare" | "special";
 export type GridImage = { url: string; description?: string; link?: string; seriesNumber?: string; project?: string[]; version?: PackVersion };
 
 // Handles legacy string-only format and legacy project-as-string
@@ -481,11 +481,12 @@ function SelectionPack({ version, rotate, tx, ty, z, transitioning, onClick, isD
 }
 
 const PACK_IMAGES: Record<PackVersion, string> = {
-  common: "/images/cardpackageV1_jfcr.png",
-  V1:     "/images/cardpackageV1_jfcr.png",
-  V2:     "/images/cardpackageV2_jfcr.png",
-  V3:     "/images/cardpackageV3_jfcr.png",
-  rare:   "/images/cardpackagerare_jfcr.png",
+  common:  "/images/cardpackageV1_jfcr.png",
+  special: "/images/cardpackageV1_jfcr.png",
+  V1:      "/images/cardpackageV1_jfcr.png",
+  V2:      "/images/cardpackageV2_jfcr.png",
+  V3:      "/images/cardpackageV3_jfcr.png",
+  rare:    "/images/cardpackagerare_jfcr.png",
 };
 
 function buildFanVersions(unlimited: boolean, rareOpened: boolean): [PackVersion, PackVersion, PackVersion] {
@@ -576,13 +577,15 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   const [circleProgress, setCircleProgress] = useState(0);
 
   function imagesForVersion(version: PackVersion): GridImage[] {
-    // Rare cards appear in every pack so the glint is always discoverable.
-    // Version-specific cards (V1/V2/V3) are exclusive to their own pack.
+    // common / no version  → every pack
+    // special              → every pack (+ gets the glint)
+    // rare                 → rare pack only (+ gets the glint)
+    // V1 / V2 / V3        → their own pack only
     return allImages.filter(img =>
       !img.version ||
       img.version === "common" ||
-      img.version === version ||
-      img.version === "rare"
+      img.version === "special" ||
+      img.version === version
     );
   }
 
@@ -1120,8 +1123,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                 onClick={() => {}}
                 lazy
               />
-              {/* Rare glint — small twinkling star in the top-right corner */}
-              {card.item.version === "rare" && (
+              {/* Glint — twinkling star for rare and special cards */}
+              {(card.item.version === "rare" || card.item.version === "special") && (
                 <div style={{
                   position:      "absolute",
                   top:           12,
@@ -1254,7 +1257,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
               onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = "scale(1)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.15)"; }}
             >
               <MediaEl item={item} className="w-full h-auto block pointer-events-none select-none" onClick={() => {}} lazy />
-              {item.version === "rare" && (
+              {(item.version === "rare" || item.version === "special") && (
                 <div style={{
                   position:      "absolute",
                   top:           8,
