@@ -593,7 +593,13 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setStack(makeStack(shuffle(imagesForVersion(selectedVersion)).slice(0, MAX_GRID_IMAGES)));
     try {
       const stored = localStorage.getItem(storageKey);
-      if (stored) setCollected((JSON.parse(stored) as GridImage[]).map(toGridImage));
+      if (stored) {
+        // Merge cached cards with current server data by URL so that
+        // admin edits (descriptions, series numbers, etc.) are always reflected.
+        const cached = (JSON.parse(stored) as GridImage[]).map(toGridImage);
+        const byUrl = new Map(allImages.map(img => [img.url, img]));
+        setCollected(cached.map(c => byUrl.get(c.url) ?? c));
+      }
     } catch {}
     try {
       const storedPacks = localStorage.getItem(`${storageKey}-packs-used`);
