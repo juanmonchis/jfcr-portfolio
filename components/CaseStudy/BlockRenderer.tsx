@@ -147,6 +147,23 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+/** Builds a moving rainbow gradient for the foil effect on special cards.
+ *  x / y are 0–100 (percent across the card). */
+function foilGradient(x: number, y: number): string {
+  const hue   = x * 3.6;
+  const angle = 110 + y * 0.6;
+  return (
+    `linear-gradient(${angle}deg,` +
+    `hsla(${hue      },80%,62%,0.55) 0%,`  +
+    `hsla(${hue + 60 },80%,62%,0.55) 16%,` +
+    `hsla(${hue + 120},80%,62%,0.55) 33%,` +
+    `hsla(${hue + 180},80%,62%,0.55) 50%,` +
+    `hsla(${hue + 240},80%,62%,0.55) 67%,` +
+    `hsla(${hue + 300},80%,62%,0.55) 84%,` +
+    `hsla(${hue + 360},80%,62%,0.55) 100%)`
+  );
+}
+
 function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: GridImage[]; initialIndex: number; showDots?: boolean; onClose: () => void }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -254,6 +271,18 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
             transition: hovering ? "opacity 150ms ease" : "opacity 400ms ease",
             pointerEvents: "none",
           }} />
+          {item.version === "special" && (
+            <div style={{
+              position:      "absolute",
+              inset:         0,
+              borderRadius:  "0.75rem",
+              background:    foilGradient(sheen.x, sheen.y),
+              mixBlendMode:  "color-dodge",
+              opacity:       hovering ? 0.9 : 0,
+              transition:    hovering ? "opacity 150ms ease" : "opacity 400ms ease",
+              pointerEvents: "none",
+            }} />
+          )}
         </div>
 
         {/* Description + link */}
@@ -1097,6 +1126,17 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
             onPointerDown={(e) => handlePointerDown(e, i)}
             onPointerMove={(e) => handlePointerMove(e, i)}
             onPointerUp={(e)   => handlePointerUp(e, i)}
+            onMouseMove={card.item.version === "special" ? (e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              const x = ((e.clientX - r.left) / r.width) * 100;
+              const y = ((e.clientY - r.top)  / r.height) * 100;
+              const foil = e.currentTarget.querySelector<HTMLElement>(".foil-overlay");
+              if (foil) { foil.style.background = foilGradient(x, y); foil.style.opacity = "0.9"; }
+            } : undefined}
+            onMouseLeave={card.item.version === "special" ? (e) => {
+              const foil = e.currentTarget.querySelector<HTMLElement>(".foil-overlay");
+              if (foil) foil.style.opacity = "0";
+            } : undefined}
           >
             {/* 3D tilt wrapper — also owns the shadow and radius so they follow the tilt */}
             <div style={{
@@ -1123,8 +1163,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                 onClick={() => {}}
                 lazy
               />
-              {/* Spinning star badge — visible on rare and special cards */}
-              {(card.item.version === "rare" || card.item.version === "special") && (
+              {/* Spinning star badge — visible on rare cards only */}
+              {card.item.version === "rare" && (
                 <div style={{
                   position:        "absolute",
                   top:             10,
@@ -1147,6 +1187,10 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                     <path d="M8 0 L9.4 6.6 L16 8 L9.4 9.4 L8 16 L6.6 9.4 L0 8 L6.6 6.6 Z" fill="#FFD23C"/>
                   </svg>
                 </div>
+              )}
+              {/* Foil — rainbow shimmer on special cards, activated by mouse position */}
+              {card.item.version === "special" && (
+                <div className="foil-overlay" />
               )}
               {/* Sheen — slow sweep when over drop zone, quick loop while dragging a new card */}
               {(isZoneCard || showRainbow) && (
@@ -1263,10 +1307,23 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                 transition:   "transform 200ms ease, box-shadow 200ms ease",
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = "scale(1.05)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 24px rgba(0,0,0,0.22)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = "scale(1)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.15)"; }}
+              onMouseMove={item.version === "special" ? (e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                const x = ((e.clientX - r.left) / r.width) * 100;
+                const y = ((e.clientY - r.top)  / r.height) * 100;
+                const foil = e.currentTarget.querySelector<HTMLElement>(".foil-overlay");
+                if (foil) { foil.style.background = foilGradient(x, y); foil.style.opacity = "0.9"; }
+              } : undefined}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLDivElement).style.transform = "scale(1)";
+                (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.15)";
+                const foil = e.currentTarget.querySelector<HTMLElement>(".foil-overlay");
+                if (foil) foil.style.opacity = "0";
+              }}
             >
               <MediaEl item={item} className="w-full h-auto block pointer-events-none select-none" onClick={() => {}} lazy />
-              {(item.version === "rare" || item.version === "special") && (
+              {item.version === "special" && <div className="foil-overlay" />}
+              {item.version === "rare" && (
                 <div style={{
                   position:       "absolute",
                   top:            6,
