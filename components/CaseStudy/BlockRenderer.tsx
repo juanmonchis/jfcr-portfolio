@@ -576,7 +576,14 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   const [circleProgress, setCircleProgress] = useState(0);
 
   function imagesForVersion(version: PackVersion): GridImage[] {
-    return allImages.filter(img => !img.version || img.version === "common" || img.version === version);
+    // Rare cards appear in every pack so the glint is always discoverable.
+    // Version-specific cards (V1/V2/V3) are exclusive to their own pack.
+    return allImages.filter(img =>
+      !img.version ||
+      img.version === "common" ||
+      img.version === version ||
+      img.version === "rare"
+    );
   }
 
   function makeStack(imgs: GridImage[]): CardState[] {
