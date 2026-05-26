@@ -16,6 +16,8 @@ interface SiteHeaderProps {
   navHoverBg?: string;
   /** Override the pill hover text colour. Defaults to mobileOverlayColor. */
   navHoverText?: string;
+  /** Override the header z-index (Tailwind class, e.g. "z-[0]"). Defaults to "z-50". */
+  headerZ?: string;
 }
 
 const NAV_LINKS = [
@@ -130,6 +132,7 @@ export default function SiteHeader({
   showLogo = true,
   navHoverBg,
   navHoverText,
+  headerZ = "z-50",
 }: SiteHeaderProps) {
   const pillHoverBg = navHoverBg ?? "#0C0D1F";
   const pillHoverText = navHoverText ?? mobileOverlayColor;
@@ -138,7 +141,7 @@ export default function SiteHeader({
 
   return (
     <>
-      <header className="absolute top-0 left-0 right-0 z-50">
+      <header className={`absolute top-0 left-0 right-0 ${headerZ}`}>
         <div className={`w-full px-6 md:px-12 lg:px-20 pt-[20vw] pb-4 md:pt-8 md:pb-6 flex items-start ${showLogo ? "justify-between" : "justify-end"}`}>
           {showLogo && <LogoIcon variant={logoVariant} size={logoSize} />}
 
