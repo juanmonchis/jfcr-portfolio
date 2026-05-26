@@ -1113,6 +1113,22 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                 onClick={() => {}}
                 lazy
               />
+              {/* Rare glint — small twinkling star in the top-right corner */}
+              {card.item.version === "rare" && (
+                <div style={{
+                  position:      "absolute",
+                  top:           12,
+                  right:         12,
+                  zIndex:        2,
+                  pointerEvents: "none",
+                  animation:     `rareGlint 3.2s ease-in-out ${((i * 1.1) % 3).toFixed(1)}s infinite`,
+                  filter:        "drop-shadow(0 0 5px rgba(255,230,100,0.9)) drop-shadow(0 0 10px rgba(255,255,255,0.7))",
+                }}>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M8 0 L9.4 6.6 L16 8 L9.4 9.4 L8 16 L6.6 9.4 L0 8 L6.6 6.6 Z" fill="white"/>
+                  </svg>
+                </div>
+              )}
               {/* Sheen — slow sweep when over drop zone, quick loop while dragging a new card */}
               {(isZoneCard || showRainbow) && (
                 <div style={{
@@ -1231,6 +1247,21 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
               onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = "scale(1)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 16px rgba(0,0,0,0.15)"; }}
             >
               <MediaEl item={item} className="w-full h-auto block pointer-events-none select-none" onClick={() => {}} lazy />
+              {item.version === "rare" && (
+                <div style={{
+                  position:      "absolute",
+                  top:           8,
+                  right:         8,
+                  zIndex:        2,
+                  pointerEvents: "none",
+                  animation:     `rareGlint 3.2s ease-in-out ${((i * 1.1) % 3).toFixed(1)}s infinite`,
+                  filter:        "drop-shadow(0 0 4px rgba(255,230,100,0.9)) drop-shadow(0 0 8px rgba(255,255,255,0.7))",
+                }}>
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M8 0 L9.4 6.6 L16 8 L9.4 9.4 L8 16 L6.6 9.4 L0 8 L6.6 6.6 Z" fill="white"/>
+                  </svg>
+                </div>
+              )}
               {item.seriesNumber && (
                 <div style={{
                   position:      "absolute",
