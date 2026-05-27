@@ -96,7 +96,7 @@ export default function CvCta() {
         Interested in more detailed info about my past jobs and experience?
       </p>
       <a
-        href="/jfcr_CV_2026.pdf"
+        href={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/jfcr_CV_2026.pdf`}
         target="_blank"
         rel="noopener noreferrer"
         onMouseEnter={() => setCtaHovered(true)}
