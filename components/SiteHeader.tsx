@@ -141,12 +141,12 @@ export default function SiteHeader({
 
   return (
     <>
-      <header className={`absolute top-0 left-0 right-0 ${headerZ}`}>
+      <header className={`absolute top-0 left-0 right-0 ${headerZ} pointer-events-none`}>
         <div className={`w-full px-6 md:px-12 lg:px-20 pt-[20vw] pb-4 md:pt-8 md:pb-6 flex items-start ${showLogo ? "justify-between" : "justify-end"}`}>
           {showLogo && <LogoIcon variant={logoVariant} size={logoSize} />}
 
           {/* ── Desktop nav — permanent pill stack, top-right ─────────────── */}
-          <nav className="hidden md:flex flex-col items-end gap-2">
+          <nav className="hidden md:flex flex-col items-end gap-2 pointer-events-auto">
             {NAV_LINKS.map(({ label, href }) => (
               <NavPill key={label} href={href} color={color} size="sm" hoverTextColor={pillHoverText} hoverBgColor={pillHoverBg}>
                 <span className="text-sm">→</span>
@@ -197,7 +197,7 @@ export default function SiteHeader({
 
           {/* ── Mobile hamburger ──────────────────────────────────────────── */}
           <button
-            className="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10"
+            className="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10 pointer-events-auto"
             onClick={() => { setOpen(true); setSocialsOpen(false); }}
             aria-label="Open menu"
           >
