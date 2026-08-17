@@ -23,6 +23,7 @@ interface SiteHeaderProps {
 const NAV_LINKS = [
   { label: "MY WORK",    href: "/#projects" },
   { label: "DRAFTS",     href: "/blog" },
+  { label: "BOOKS",      href: "/books" },
   { label: "WHO'S THAT", href: "/about" },
 ];
 
@@ -143,7 +144,7 @@ export default function SiteHeader({
     <>
       <header className={`absolute top-0 left-0 right-0 ${headerZ} pointer-events-none`}>
         <div className={`w-full px-6 md:px-12 lg:px-20 pt-[20vw] pb-4 md:pt-8 md:pb-6 flex items-start ${showLogo ? "justify-between" : "justify-end"}`}>
-          {showLogo && <LogoIcon variant={logoVariant} size={logoSize} />}
+          {showLogo && <span className="pointer-events-auto"><LogoIcon variant={logoVariant} size={logoSize} /></span>}
 
           {/* ── Desktop nav — permanent pill stack, top-right ─────────────── */}
           <nav className="hidden md:flex flex-col items-end gap-2 pointer-events-auto">

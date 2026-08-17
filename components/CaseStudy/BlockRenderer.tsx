@@ -780,6 +780,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   }
 
   function cardOverlapsZone(_zoneEl: HTMLDivElement | null): boolean {
+    if (!isDesktop) return false;
     const cardEl = draggingCardRef.current;
     if (!cardEl) return false;
     const c = cardEl.getBoundingClientRect();
@@ -1220,8 +1221,8 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
 
     </div>{/* end flex row */}
 
-    {/* Summon zone — bottom bar on mobile, centered pill on desktop */}
-    {mounted && (
+    {/* Summon zone — desktop only */}
+    {mounted && isDesktop && (
       <div
         ref={mobileDropRef}
         style={{
