@@ -22,8 +22,6 @@ interface SiteHeaderProps {
 
 const NAV_LINKS = [
   { label: "MY WORK",    href: "/#projects" },
-  { label: "DRAFTS",     href: "/blog" },
-  { label: "BOOKS",      href: "/books" },
   { label: "WHO'S THAT", href: "/about" },
 ];
 

@@ -286,6 +286,35 @@ html, body {
   to   { opacity: 1; }
 }
 
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-enter {
+  animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hero-enter-1 { animation-delay: 0.1s; }
+.hero-enter-2 { animation-delay: 0.25s; }
+.hero-enter-3 { animation-delay: 0.4s; }
+
+@keyframes wordPop {
+  from { opacity: 0; transform: translateY(18px) scale(0.88); }
+  50%  { opacity: 1; transform: translateY(0)    scale(1.07); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.hero-word {
+  display: inline-block;
+  opacity: 0;
+}
+.hero-word-in {
+  animation-name: wordPop;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+  animation-duration: 0.5s; /* overridden per-word via inline style */
+}
+
 @keyframes fadeOut {
   from { opacity: 1; }
   to   { opacity: 0; }
