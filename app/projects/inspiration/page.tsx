@@ -17,7 +17,7 @@ const BG     = "#0C0D1F";
 
 const influences = [
   { name: "01_ndee.obj",      href: "https://www.instagram.com/01_ndee.obj/" },
-  { name: "kaikundler",       href: "https://www.galacticgarrison.com/" },
+  { name: "kaikundler",       href: "https://www.instagram.com/kaikundler/" },
   { name: "sahlooter",        href: "https://www.instagram.com/sahlooter/" },
   { name: "loopinglovers",    href: "https://www.instagram.com/loopinglovers/" },
   { name: "a_garbutt",        href: "https://www.instagram.com/a_garbutt/" },
