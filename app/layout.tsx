@@ -60,6 +60,10 @@ export const metadata: Metadata = {
     template: "%s — JFCR",
   },
   description: "A digital designer focused on exceptional products, brands and sometimes silly animations.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/icon.png",
+  },
   openGraph: {
     type: "website",
     siteName: "JFCR",
