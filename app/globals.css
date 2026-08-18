@@ -80,7 +80,7 @@ a:hover .insp-item-text { color: #DDED3C !important; }
 
 /* Stop Using Inter page list item text — ink default, green on row hover */
 .sui-item-text { color: #0C0D1F !important; }
-a:hover .sui-item-text { color: #DDED3C !important; }
+a:hover .sui-item-text { color: #FF2F01 !important; }
 
 /* Same as type-homepage-hero but left-aligned */
 .type-homepage-hero-left {
