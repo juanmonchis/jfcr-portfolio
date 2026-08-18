@@ -38,8 +38,12 @@ export default function HeroSequence() {
             {WORDS.slice(0, wordCount).map((word, i) => (
               <span key={word} style={{ display: "inline" }}>
                 <span
-                  className="hero-word hero-word-in"
-                  style={{ marginRight: "0.28em", "--word-dur": `${WORD_DURATIONS[i]}s` } as React.CSSProperties}
+                  className="hero-word"
+                  style={{
+                    marginRight: "0.28em",
+                    animation: `wordPop ${WORD_DURATIONS[i]}s cubic-bezier(0.16,1,0.3,1) 1ms both`,
+                    willChange: "transform, opacity",
+                  }}
                 >
                   {word}
                 </span>

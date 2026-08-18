@@ -307,10 +307,7 @@ html, body {
 .hero-word {
   display: inline-block;
 }
-.hero-word-in {
-  animation: wordPop var(--word-dur, 0.5s) cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: transform, opacity;
-}
+/* animation applied fully inline per-word — no class-level animation needed */
 
 @keyframes fadeOut {
   from { opacity: 1; }
