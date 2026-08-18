@@ -620,13 +620,14 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     startPX: number; startPY: number;
     startCX: number; startCY: number;
     prevPX: number; prevPY: number;
-    lastVY: number;
+    lastVX: number; lastVY: number;
     moved: boolean;
     restingZ: number;
     prevAngle: number | null;
     accumulatedAngle: number;
   } | null>(null);
   const [circleProgress, setCircleProgress] = useState(0);
+  const [justReleasedIdx, setJustReleasedIdx] = useState<number | null>(null);
 
   function imagesForVersion(version: PackVersion): GridImage[] {
     // common / no version  → every pack
@@ -777,7 +778,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
       startCX: stack[idx]?.x ?? 0,
       startCY: stack[idx]?.y ?? 0,
       prevPX: e.clientX, prevPY: e.clientY,
-      lastVY: 0,
+      lastVX: 0, lastVY: 0,
       moved: false,
       restingZ,
       prevAngle: null,
@@ -818,7 +819,11 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
       d.moved = true;
     }
     const vx = e.clientX - d.prevPX;
+    const vy = e.clientY - d.prevPY;
     const dragTilt = Math.max(-22, Math.min(22, vx * 0.6));
+    // EMA velocity — smooths jitter while staying responsive
+    d.lastVX = d.lastVX * 0.6 + vx * 0.4;
+    d.lastVY = d.lastVY * 0.6 + vy * 0.4;
     d.prevPX = e.clientX;
     d.prevPY = e.clientY;
 
@@ -882,9 +887,11 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     const d = dragRef.current;
     if (!d || d.idx !== idx) return;
     if (zoneShowTimer.current) { clearTimeout(zoneShowTimer.current); zoneShowTimer.current = null; }
-    // Cancel pending rAF and capture final drag position before clearing
+    // Cancel pending rAF and capture final drag position + velocity before clearing
     if (rafDragRef.current !== null) { cancelAnimationFrame(rafDragRef.current); rafDragRef.current = null; }
     const finalPos = liveDragPos.current;
+    const releaseVX = d.lastVX;
+    const releaseVY = d.lastVY;
     liveDragPos.current = null;
     // Restore transition so release animations (scale-down, filter) play correctly
     if (draggingCardRef.current) {
@@ -894,11 +901,23 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     const droppedOnZone = cardOverlapsZone(mobileDropRef.current);
     const restingZ = d.restingZ;
     dragRef.current = null;
+    // Compute throw position — card coasts in the release direction, capped to avoid overflow
+    const THROW = 8;
+    const CAP = 130;
+    const baseX = finalPos?.x ?? 0;
+    const baseY = finalPos?.y ?? 0;
+    const throwX = baseX + Math.max(-CAP, Math.min(CAP, releaseVX * THROW));
+    const throwY = baseY + Math.max(-CAP, Math.min(CAP, releaseVY * THROW));
+    const hasMomentum = d.moved && !droppedOnZone && (Math.abs(releaseVX) > 1 || Math.abs(releaseVY) > 1);
+    if (hasMomentum) {
+      setJustReleasedIdx(idx);
+      setTimeout(() => setJustReleasedIdx(null), 700);
+    }
     setDraggingIdx(null);
     setOverZone(false);
     setCircleProgress(0);
     releaseDragSelection();
-    setStack(prev => prev.map((c, i) => i === idx ? { ...c, x: finalPos?.x ?? c.x, y: finalPos?.y ?? c.y, z: droppedOnZone ? DRAG_Z : restingZ, dragTilt: 0 } : c));
+    setStack(prev => prev.map((c, i) => i === idx ? { ...c, x: hasMomentum ? throwX : baseX, y: hasMomentum ? throwY : baseY, z: droppedOnZone ? DRAG_Z : restingZ, dragTilt: 0 } : c));
     if (d.moved) addToCollection(stack[idx].item);
     if (droppedOnZone) {
       addToCollection(stack[idx].item);
@@ -1190,11 +1209,12 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                 return `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${card.rot + tilt}deg) scale(${draggingIdx === i ? 1 : 0.667})`;
               })(),
               filter:     draggingIdx !== null && draggingIdx !== i ? "blur(3px)" : "none",
-              // Dragged card: transition is managed imperatively (set to "none" during drag,
-              // restored to "" on pointerUp so release animations play via this CSS value)
+              // Dragged card: no transition during drag (direct DOM); float curve on release
               transition: draggingIdx === i
                 ? "none"
-                : "transform 300ms ease, filter 200ms ease",
+                : justReleasedIdx === i
+                  ? "transform 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 200ms ease"
+                  : "transform 300ms ease, filter 200ms ease",
               borderRadius: 16,
             }}
             onPointerDown={(e) => handlePointerDown(e, i)}
