@@ -53,7 +53,7 @@ export default function InspirationPage() {
     <main style={{ background: BG, minHeight: "100vh" }}>
       <SiteHeader logoSize={100} logoVariant="light" color={CREAM} />
 
-      <section className="px-6 md:px-12 lg:px-20 pt-40 pb-28">
+      <section className="px-6 md:px-12 lg:px-20 pt-40 pb-28 overflow-hidden">
         <div className="max-w-[1000px] mx-auto">
 
           <p className="type-tag mb-4" style={{ color: MUTED }}>ON THE SHOULDERS OF GIANTS</p>
