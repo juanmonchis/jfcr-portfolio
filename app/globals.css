@@ -78,6 +78,10 @@ html, body {
 .insp-item-text { color: #F2EBD9 !important; }
 a:hover .insp-item-text { color: #DDED3C !important; }
 
+/* Stop Using Inter page list item text — ink default, green on row hover */
+.sui-item-text { color: #0C0D1F !important; }
+a:hover .sui-item-text { color: #DDED3C !important; }
+
 /* Same as type-homepage-hero but left-aligned */
 .type-homepage-hero-left {
   font-family: var(--font-migra), serif;
