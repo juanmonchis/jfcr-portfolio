@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import SiteHeader from "@/components/SiteHeader";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Inspiration",

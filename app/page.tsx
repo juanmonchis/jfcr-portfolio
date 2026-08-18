@@ -31,6 +31,7 @@ import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
 import BorderedItemComponent from "@/components/BorderedItem";
 import Link from "next/link";
+import LogoIcon from "@/components/LogoIcon";
 
 
 
@@ -167,18 +168,23 @@ export default async function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#0C0D1F] py-16 px-6 md:px-12 lg:px-20">
+      <footer className="bg-[#0C0D1F] py-28 px-6 md:px-12 lg:px-20 rounded-tl-2xl rounded-tr-2xl">
         <div className="max-w-[1200px] mx-auto">
-          <p className="text-white text-2xl font-bold mb-8">
-            Thanks for stopping by! 🐸
-          </p>
+          <div className="flex items-center gap-4 mb-8">
+            <p className="type-case-title !text-[#DDED3C] !text-[44px] !font-normal">
+              Thanks for stopping by!
+            </p>
+            <div style={{ filter: "brightness(0) saturate(100%) invert(95%) sepia(60%) saturate(500%) hue-rotate(18deg) brightness(1.05)" }}>
+              <LogoIcon variant="light" size={70} noLink alwaysPlay />
+            </div>
+          </div>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-center gap-6">
               <Link
                 href="https://instagram.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white/60 hover:text-white text-sm font-medium transition-colors"
+                className="type-tag !text-white hover:!text-white/60 transition-colors"
               >
                 Instagram
               </Link>
@@ -186,7 +192,7 @@ export default async function HomePage() {
                 href="https://linkedin.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white/60 hover:text-white text-sm font-medium transition-colors"
+                className="type-tag !text-white hover:!text-white/60 transition-colors"
               >
                 LinkedIn
               </Link>
@@ -194,12 +200,12 @@ export default async function HomePage() {
                 href="https://letterboxd.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white/60 hover:text-white text-sm font-medium transition-colors"
+                className="type-tag !text-white hover:!text-white/60 transition-colors"
               >
                 Letterboxd
               </Link>
             </div>
-            <p className="text-white/30 text-sm">JFCR 2025</p>
+            <p className="type-tag !text-white/30">JFCR 2025</p>
           </div>
         </div>
       </footer>

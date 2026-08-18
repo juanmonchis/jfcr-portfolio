@@ -55,9 +55,11 @@ interface LogoIconProps {
   noLink?: boolean;
   /** Override the default "/" href — use for external links */
   href?: string;
+  /** Always autoplay and loop regardless of platform */
+  alwaysPlay?: boolean;
 }
 
-export default function LogoIcon({ variant = "light", size = 175, cropPx = 0, playing, noLink, href }: LogoIconProps) {
+export default function LogoIcon({ variant = "light", size = 175, cropPx = 0, playing, noLink, href, alwaysPlay }: LogoIconProps) {
   const lottieRef = useRef<LottieRefCurrentProps>(null);
   const [isMobile, setIsMobile] = useState(false);
   const externalControl = playing !== undefined;
@@ -95,8 +97,8 @@ export default function LogoIcon({ variant = "light", size = 175, cropPx = 0, pl
       <Lottie
         lottieRef={lottieRef}
         animationData={animations[variant]}
-        autoplay={!externalControl && isMobile}
-        loop={!externalControl && isMobile}
+        autoplay={alwaysPlay || (!externalControl && isMobile)}
+        loop={alwaysPlay || (!externalControl && isMobile)}
         style={{ width: size, height: size, position: "absolute", top: -cropPx, left: -cropPx }}
       />
     </div>
