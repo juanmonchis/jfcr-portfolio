@@ -628,6 +628,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     accumulatedAngle: number;
   } | null>(null);
   const [circleProgress, setCircleProgress] = useState(0);
+  const [justReleasedIdx, setJustReleasedIdx] = useState<number | null>(null);
 
   function imagesForVersion(version: PackVersion): GridImage[] {
     // common / no version  → every pack
@@ -901,12 +902,23 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     }
     const droppedOnZone = cardOverlapsZone(mobileDropRef.current);
     const restingZ = d.restingZ;
+    const baseX = finalPos?.x ?? 0;
+    const baseY = finalPos?.y ?? 0;
+    const THROW = 12;
+    const CAP   = 200;
+    const throwX = baseX + Math.max(-CAP, Math.min(CAP, d.lastVX * THROW));
+    const throwY = baseY + Math.max(-CAP, Math.min(CAP, d.lastVY * THROW));
+    const hasMomentum = d.moved && !droppedOnZone && (Math.abs(d.lastVX) > 1 || Math.abs(d.lastVY) > 1);
+    if (hasMomentum) {
+      setJustReleasedIdx(idx);
+      setTimeout(() => setJustReleasedIdx(null), 750);
+    }
     dragRef.current = null;
     setDraggingIdx(null);
     setOverZone(false);
     setCircleProgress(0);
     releaseDragSelection();
-    setStack(prev => prev.map((c, i) => i === idx ? { ...c, x: finalPos?.x ?? c.x, y: finalPos?.y ?? c.y, z: droppedOnZone ? DRAG_Z : restingZ, dragTilt: 0 } : c));
+    setStack(prev => prev.map((c, i) => i === idx ? { ...c, x: hasMomentum ? throwX : baseX, y: hasMomentum ? throwY : baseY, z: droppedOnZone ? DRAG_Z : restingZ, dragTilt: 0 } : c));
     if (d.moved) addToCollection(stack[idx].item);
     if (droppedOnZone) {
       addToCollection(stack[idx].item);
@@ -1198,10 +1210,12 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
                 return `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${card.rot + tilt}deg) scale(${draggingIdx === i ? 1 : 0.667})`;
               })(),
               filter:     draggingIdx !== null && draggingIdx !== i ? "blur(3px)" : "none",
-              // Dragged card: no transition during drag (direct DOM); soft ease-out on release
+              // Dragged card: no transition during drag (direct DOM); float on release
               transition: draggingIdx === i
                 ? "none"
-                : "transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 200ms ease",
+                : justReleasedIdx === i
+                  ? "transform 750ms cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 200ms ease"
+                  : "transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 200ms ease",
               borderRadius: 16,
             }}
             onPointerDown={(e) => handlePointerDown(e, i)}
