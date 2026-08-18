@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Inspiration — JFCR",
     description: "A list of designers and artists that I admire.",
-    url: "https://www.jfcr.design/inspiration",
+    url: "https://www.jfcr.design/projects/inspiration",
   },
 };
 
