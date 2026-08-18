@@ -141,7 +141,7 @@ export default function SiteHeader({
   return (
     <>
       <header className={`absolute top-0 left-0 right-0 ${headerZ} pointer-events-none`}>
-        <div className={`w-full px-6 md:px-12 lg:px-20 pt-[20vw] pb-4 md:pt-8 md:pb-6 flex items-start ${showLogo ? "justify-between" : "justify-end"}`}>
+        <div className={`w-full px-6 md:px-12 lg:px-20 pt-6 pb-4 md:pt-8 md:pb-6 flex items-center ${showLogo ? "justify-between" : "justify-end"}`}>
           {showLogo && <span className="pointer-events-auto"><LogoIcon variant={logoVariant} size={logoSize} /></span>}
 
           {/* ── Desktop nav — permanent pill stack, top-right ─────────────── */}

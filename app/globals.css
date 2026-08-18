@@ -88,6 +88,13 @@ a:hover .insp-item-text { color: #DDED3C !important; }
   text-align: left;
 }
 
+@media (min-width: 440px) {
+  .type-homepage-hero-left {
+    font-size: 60px;
+    line-height: 50px;
+  }
+}
+
 @media (min-width: 768px) {
   .type-homepage-hero-left {
     font-size: 169px;
