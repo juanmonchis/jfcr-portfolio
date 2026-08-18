@@ -70,7 +70,7 @@ export default function ProjectCard({
 }: ProjectCardProps) {
   const hasOverride = ctaHref && ctaHref !== "#";
   const resolvedCtaHref = hasOverride ? ctaHref : (caseStudySlug ? `/projects/${caseStudySlug}` : "#");
-  const resolvedTarget = hasOverride ? "_blank" : undefined;
+  const resolvedTarget = hasOverride && !resolvedCtaHref.startsWith("/") ? "_blank" : undefined;
   const resolvedRel = caseStudySlug ? undefined : "noopener noreferrer";
   const glowStyle = {
     "--card-glow": `${cardColor}66`,
