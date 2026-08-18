@@ -665,8 +665,10 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   const [unlockedUnlimited, setUnlockedUnlimited] = useState(false);
   const [rareOpened, setRareOpened] = useState(false);
   const [fanVersions, setFanVersions] = useState<[PackVersion, PackVersion, PackVersion]>(["V3", "V1", "V2"]);
+  const [foilFlashUrl, setFoilFlashUrl] = useState<string | null>(null);
 
   const draggingCardRef = useRef<HTMLDivElement | null>(null);
+  const specialCollectedRef = useRef<GridImage[]>([]);
   // Live drag position stored imperatively — avoids setStack on every pointermove
   const liveDragPos = useRef<{ x: number; y: number; dragTilt: number } | null>(null);
   // rAF handle for throttling overZone + circleProgress state updates during drag
@@ -760,6 +762,25 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     try { localStorage.setItem(storageKey, JSON.stringify(collected)); } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collected]);
+
+  // Keep the ref in sync so the foil-flash interval always reads the latest special/rare cards
+  useEffect(() => {
+    specialCollectedRef.current = collected.filter(c => c.version === "special" || c.version === "rare");
+  }, [collected]);
+
+  // Periodically flash the foil animation on a random collected special/rare card — mobile only
+  useEffect(() => {
+    if (isDesktop) return;
+    const timer = setInterval(() => {
+      const items = specialCollectedRef.current;
+      if (items.length === 0) return;
+      const pick = items[Math.floor(Math.random() * items.length)];
+      setFoilFlashUrl(pick.url);
+      setTimeout(() => setFoilFlashUrl(null), 1600);
+    }, 3500);
+    return () => clearInterval(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDesktop]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -1480,7 +1501,16 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
               }}
             >
               <MediaEl item={item} className="w-full h-auto block pointer-events-none select-none" onClick={() => {}} lazy />
-              {(item.version === "special" || item.version === "rare") && <div className="foil-overlay" />}
+              {(item.version === "special" || item.version === "rare") && (
+                <div
+                  className="foil-overlay"
+                  style={!isDesktop && foilFlashUrl === item.url ? {
+                    background: item.version === "rare" ? rareGradient(50, 50) : foilGradient(50, 50),
+                    animation: "foilFlash 1.6s ease forwards",
+                    transition: "none",
+                  } : undefined}
+                />
+              )}
               {item.seriesNumber && (
                 <div style={{
                   position:      "absolute",
