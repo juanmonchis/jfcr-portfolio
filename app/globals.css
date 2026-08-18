@@ -74,6 +74,27 @@ html, body {
   }
 }
 
+/* Inspiration page list item text — cream default, green on row hover */
+.insp-item-text { color: #F2EBD9 !important; }
+a:hover .insp-item-text { color: #DDED3C !important; }
+
+/* Same as type-homepage-hero but left-aligned */
+.type-homepage-hero-left {
+  font-family: var(--font-migra), serif;
+  font-size: 120px;
+  line-height: 118px;
+  font-weight: 800;
+  color: #0d0c27;
+  text-align: left;
+}
+
+@media (min-width: 768px) {
+  .type-homepage-hero-left {
+    font-size: 169px;
+    line-height: 159px;
+  }
+}
+
 /* Case study opening title — the largest heading on a case study page */
 .type-case-main-title {
   font-family: var(--font-migra), serif;

@@ -51,13 +51,13 @@ const influences = [
 export default function InspirationPage() {
   return (
     <main style={{ background: BG, minHeight: "100vh" }}>
-      <SiteHeader logoSize={100} logoVariant="dark" color={CREAM} />
+      <SiteHeader logoSize={100} logoVariant="light" color={CREAM} />
 
       <section className="px-6 md:px-12 lg:px-20 pt-40 pb-28">
         <div className="max-w-[1000px] mx-auto">
 
           <p className="type-tag mb-4" style={{ color: MUTED }}>ON THE SHOULDERS OF GIANTS</p>
-          <h1 className="type-homepage-hero mb-10" style={{ color: CREAM }}>Inspiration</h1>
+          <h1 className="type-homepage-hero-left mb-10" style={{ color: CREAM }}>Inspiration</h1>
 
           <p className="type-paragraph max-w-xl mb-16" style={{ color: MUTED }}>
             A social media addiction and a set of short-lived recurring obsessions have led me to
@@ -81,18 +81,16 @@ export default function InspirationPage() {
                   style={{ borderColor: "rgba(242,235,217,0.1)" }}
                 >
                   <span
-                    className="type-case-heading-sm transition-colors duration-200 group-hover:opacity-50"
-                    style={{ color: CREAM }}
+                    className="type-case-heading-sm transition-colors duration-200 insp-item-text"
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span
-                    className="type-case-heading-sm flex-1 ml-8 transition-colors duration-200 group-hover:opacity-50"
-                    style={{ color: CREAM }}
+                    className="type-case-heading-sm flex-1 ml-8 transition-colors duration-200 insp-item-text"
                   >
                     {person.name}
                   </span>
-                  <span className="type-tag transition-colors duration-200 group-hover:opacity-50" style={{ color: MUTED }}>
+                  <span className="type-tag transition-colors duration-200 insp-item-text">
                     →
                   </span>
                 </a>
