@@ -68,8 +68,9 @@ export default function ProjectCard({
   showThumbnailOnMobile,
   caseStudySlug,
 }: ProjectCardProps) {
-  const resolvedCtaHref = caseStudySlug ? `/projects/${caseStudySlug}` : ctaHref;
-  const resolvedTarget = caseStudySlug ? undefined : "_blank";
+  const hasOverride = ctaHref && ctaHref !== "#";
+  const resolvedCtaHref = hasOverride ? ctaHref : (caseStudySlug ? `/projects/${caseStudySlug}` : "#");
+  const resolvedTarget = hasOverride ? "_blank" : undefined;
   const resolvedRel = caseStudySlug ? undefined : "noopener noreferrer";
   const glowStyle = {
     "--card-glow": `${cardColor}66`,

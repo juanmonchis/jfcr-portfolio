@@ -166,6 +166,19 @@ export default function ProjectForm({ initialData, mode }: ProjectFormProps) {
       </div>
 
       <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          CTA Link <span className="font-normal text-gray-400">(optional — overrides default case study link)</span>
+        </label>
+        <input
+          type="text"
+          value={form.ctaHref === "#" ? "" : form.ctaHref}
+          onChange={(e) => setForm((p) => ({ ...p, ctaHref: e.target.value || "#" }))}
+          className={inputClass}
+          placeholder="https://... or /projects/custom-page"
+        />
+      </div>
+
+      <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">Thumbnail</label>
         <div className="flex items-center gap-3">
           <label className="cursor-pointer bg-[#0C0D1F] text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:opacity-80 transition-opacity whitespace-nowrap">
