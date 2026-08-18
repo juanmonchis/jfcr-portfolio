@@ -600,6 +600,10 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   const [fanVersions, setFanVersions] = useState<[PackVersion, PackVersion, PackVersion]>(["V3", "V1", "V2"]);
 
   const draggingCardRef = useRef<HTMLDivElement | null>(null);
+  // Live drag position stored imperatively — avoids setStack on every pointermove
+  const liveDragPos = useRef<{ x: number; y: number; dragTilt: number } | null>(null);
+  // rAF handle for throttling overZone + circleProgress state updates during drag
+  const rafDragRef = useRef<number | null>(null);
   const [isDesktop, setIsDesktop] = useState(true);
   useEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 1000);
@@ -735,6 +739,9 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     if (!d) return;
     const link = stack[idx]?.item.link;
     const restingZ = d.restingZ;
+    if (rafDragRef.current !== null) { cancelAnimationFrame(rafDragRef.current); rafDragRef.current = null; }
+    const finalPos = liveDragPos.current;
+    liveDragPos.current = null;
     dragRef.current = null;
     setDraggingIdx(null);
     setOverZone(false);
@@ -742,7 +749,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setCircleProgress(0);
     releaseDragSelection();
     addToCollection(stack[idx].item);
-    setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: restingZ, dragTilt: 0 } : c));
+    setStack(prev => prev.map((c, i) => i === idx ? { ...c, x: finalPos?.x ?? c.x, y: finalPos?.y ?? c.y, z: restingZ, dragTilt: 0 } : c));
     if (link) {
       setSummoning(true);
       openAfterDelay(link, 2000);
@@ -812,15 +819,26 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     }
     const vx = e.clientX - d.prevPX;
     const dragTilt = Math.max(-22, Math.min(22, vx * 0.6));
-
     d.prevPX = e.clientX;
     d.prevPY = e.clientY;
-    setOverZone(cardOverlapsZone(mobileDropRef.current));
-    setStack(prev => prev.map((c, i) =>
-      i === idx ? { ...c, x: d.startCX + dx, y: d.startCY + dy, dragTilt } : c
-    ));
 
-    // Circle gesture detection — desktop only
+    const newX = d.startCX + dx;
+    const newY = d.startCY + dy;
+
+    // Store live position so any React re-render triggered by other state
+    // (overZone, circleProgress) reads the correct drag coordinates
+    liveDragPos.current = { x: newX, y: newY, dragTilt };
+
+    // Direct DOM update — zero React overhead, cursor-accurate
+    const el = draggingCardRef.current;
+    if (el) {
+      el.style.willChange = "transform";
+      el.style.transition = "none";
+      el.style.transform = `translate(calc(-50% + ${newX}px), calc(-50% + ${newY}px)) rotate(${(stack[idx]?.rot ?? 0) + dragTilt}deg) scale(1)`;
+    }
+
+    // Circle gesture detection — must run on every event for accurate angle accumulation
+    let capturedProgress: number | null = null;
     if (isDesktop && d.moved) {
       const rdx = e.clientX - d.startPX;
       const rdy = e.clientY - d.startPY;
@@ -835,8 +853,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
           if (d.accumulatedAngle === 0 || delta * d.accumulatedAngle >= 0) {
             d.accumulatedAngle += delta;
           }
-          const progress = Math.min(Math.abs(d.accumulatedAngle) / (3 * 2 * Math.PI), 1);
-          setCircleProgress(progress);
+          capturedProgress = Math.min(Math.abs(d.accumulatedAngle) / (3 * 2 * Math.PI), 1);
           if (Math.abs(d.accumulatedAngle) >= 3 * 2 * Math.PI) {
             triggerCircleSummon(idx);
             return;
@@ -849,12 +866,31 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
         d.prevAngle = null;
       }
     }
+
+    // Throttle React state updates (overZone highlight, circle progress) to one per frame
+    if (rafDragRef.current !== null) return;
+    const capturedOver = cardOverlapsZone(mobileDropRef.current);
+    const capturedCircle = capturedProgress;
+    rafDragRef.current = requestAnimationFrame(() => {
+      rafDragRef.current = null;
+      setOverZone(capturedOver);
+      if (capturedCircle !== null) setCircleProgress(capturedCircle);
+    });
   }
 
   function handlePointerUp(e: React.PointerEvent<HTMLDivElement>, idx: number) {
     const d = dragRef.current;
     if (!d || d.idx !== idx) return;
     if (zoneShowTimer.current) { clearTimeout(zoneShowTimer.current); zoneShowTimer.current = null; }
+    // Cancel pending rAF and capture final drag position before clearing
+    if (rafDragRef.current !== null) { cancelAnimationFrame(rafDragRef.current); rafDragRef.current = null; }
+    const finalPos = liveDragPos.current;
+    liveDragPos.current = null;
+    // Restore transition so release animations (scale-down, filter) play correctly
+    if (draggingCardRef.current) {
+      draggingCardRef.current.style.transition = "";
+      draggingCardRef.current.style.willChange = "auto";
+    }
     const droppedOnZone = cardOverlapsZone(mobileDropRef.current);
     const restingZ = d.restingZ;
     dragRef.current = null;
@@ -862,7 +898,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setOverZone(false);
     setCircleProgress(0);
     releaseDragSelection();
-    setStack(prev => prev.map((c, i) => i === idx ? { ...c, z: droppedOnZone ? DRAG_Z : restingZ, dragTilt: 0 } : c));
+    setStack(prev => prev.map((c, i) => i === idx ? { ...c, x: finalPos?.x ?? c.x, y: finalPos?.y ?? c.y, z: droppedOnZone ? DRAG_Z : restingZ, dragTilt: 0 } : c));
     if (d.moved) addToCollection(stack[idx].item);
     if (droppedOnZone) {
       addToCollection(stack[idx].item);
@@ -1144,10 +1180,20 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
               cursor:     draggingIdx === i ? "grabbing" : "grab",
               userSelect: "none",
               touchAction:"none",
-              transform:  `translate(calc(-50% + ${card.x}px), calc(-50% + ${card.y}px)) rotate(${card.rot + card.dragTilt}deg) scale(${draggingIdx === i ? 1 : 0.667})`,
+              transform:  (() => {
+                // During drag, read from liveDragPos so any React re-render from
+                // other state (overZone, circleProgress) uses the correct live coords
+                const live = draggingIdx === i ? liveDragPos.current : null;
+                const x = live ? live.x : card.x;
+                const y = live ? live.y : card.y;
+                const tilt = live ? live.dragTilt : card.dragTilt;
+                return `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${card.rot + tilt}deg) scale(${draggingIdx === i ? 1 : 0.667})`;
+              })(),
               filter:     draggingIdx !== null && draggingIdx !== i ? "blur(3px)" : "none",
+              // Dragged card: transition is managed imperatively (set to "none" during drag,
+              // restored to "" on pointerUp so release animations play via this CSS value)
               transition: draggingIdx === i
-                ? "transform 200ms ease"
+                ? "none"
                 : "transform 300ms ease, filter 200ms ease",
               borderRadius: 16,
             }}
