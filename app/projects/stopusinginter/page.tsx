@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   },
 };
 
-const BG   = "#F2EBD9";
+const BG   = "#7B827A";
 const INK  = "#0C0D1F";
 const MUTED = "rgba(12,13,31,0.45)";
 
