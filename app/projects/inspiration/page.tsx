@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 const CREAM  = "#F2EBD9";
 const MUTED  = "rgba(242,235,217,0.5)";
-const BG     = "#0C0D1F";
+const BG     = "#3e11e1";
 
 const influences = [
   { name: "01_ndee.obj",      href: "https://www.instagram.com/01_ndee.obj/" },
