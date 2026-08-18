@@ -188,7 +188,12 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
   const [sheen, setSheen] = useState({ x: 50, y: 50 });
   const [hovering, setHovering] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [gyroOffset, setGyroOffset] = useState({ x: 0, y: 0 });
+  const [needsGyroPermission, setNeedsGyroPermission] = useState(false);
   const settled = useRef(false);
+  const betaNeutralRef = useRef<number | null>(null);
+  const gyroRafRef = useRef<number | null>(null);
+  const gyroCleanupRef = useRef<(() => void) | null>(null);
 
   const item = items[currentIndex];
 
@@ -204,6 +209,51 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
   useEffect(() => {
     const t = setTimeout(() => { settled.current = true; }, 350);
     return () => clearTimeout(t);
+  }, []);
+
+  function setupGyroListener() {
+    betaNeutralRef.current = null;
+    function onOrientation(e: DeviceOrientationEvent) {
+      const beta  = e.beta  ?? 0;
+      const gamma = e.gamma ?? 0;
+      if (betaNeutralRef.current === null) betaNeutralRef.current = beta;
+      const dBeta = Math.max(-30, Math.min(30, beta - betaNeutralRef.current));
+      const clampedGamma = Math.max(-30, Math.min(30, gamma));
+      if (gyroRafRef.current !== null) return;
+      gyroRafRef.current = requestAnimationFrame(() => {
+        gyroRafRef.current = null;
+        setTilt({ x: dBeta * -0.2, y: clampedGamma * 0.2 });
+        setGyroOffset({ x: Math.max(-60, Math.min(60, clampedGamma * -4)), y: Math.max(-60, Math.min(60, dBeta * -4)) });
+        setSheen({ x: Math.max(0, Math.min(100, 50 - clampedGamma * 1.5)), y: Math.max(0, Math.min(100, 50 + dBeta * 1.5)) });
+        setHovering(true);
+      });
+    }
+    window.addEventListener("deviceorientation", onOrientation);
+    gyroCleanupRef.current = () => window.removeEventListener("deviceorientation", onOrientation);
+  }
+
+  async function requestGyroPermission() {
+    try {
+      const result = await (DeviceOrientationEvent as unknown as { requestPermission: () => Promise<string> }).requestPermission();
+      if (result === "granted") {
+        setNeedsGyroPermission(false);
+        setupGyroListener();
+      }
+    } catch {}
+  }
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (typeof (DeviceOrientationEvent as unknown as { requestPermission?: unknown }).requestPermission === "function") {
+      setNeedsGyroPermission(true);
+    } else if ("ondeviceorientation" in window) {
+      setupGyroListener();
+    }
+    return () => {
+      if (gyroCleanupRef.current) gyroCleanupRef.current();
+      if (gyroRafRef.current !== null) cancelAnimationFrame(gyroRafRef.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleClose() {
@@ -262,7 +312,7 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={handleMouseLeave}
           style={{
-            transform:    `perspective(700px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+            transform:    `translate(${gyroOffset.x}px, ${gyroOffset.y}px) perspective(700px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
             transition:   hovering ? "transform 80ms ease" : "transform 400ms ease",
             borderRadius: "0.75rem",
             overflow:     "hidden",
@@ -350,6 +400,23 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
         onClick={handleClose}
         className="absolute top-6 right-6 text-[#0C0D1F] text-2xl font-bold w-10 h-10 flex items-center justify-center rounded-full bg-black/10 hover:bg-black/20 transition-colors"
       >×</button>
+
+      {/* iOS gyroscope permission — only shown before the user taps to enable tilt */}
+      {needsGyroPermission && (
+        <button
+          onClick={(e) => { e.stopPropagation(); requestGyroPermission(); }}
+          style={{
+            position: "fixed", bottom: 80, left: "50%", transform: "translateX(-50%)",
+            background: "rgba(255,255,255,0.85)", backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            border: "1px solid rgba(12,13,31,0.12)", borderRadius: 20,
+            padding: "6px 14px", fontSize: 11, color: "#0C0D1F",
+            cursor: "pointer", zIndex: 10, whiteSpace: "nowrap",
+          }}
+        >
+          ↕ Enable tilt
+        </button>
+      )}
 
       {/* Prev / Next arrows — fixed to viewport sides on all screen sizes */}
       {multiCard && (
@@ -844,6 +911,18 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
       el.style.willChange = "transform";
       el.style.transition = "none";
       el.style.transform = `translate(calc(-50% + ${newX}px), calc(-50% + ${newY}px)) rotate(${(stack[idx]?.rot ?? 0) + dragTilt}deg) scale(1)`;
+
+      // Show foil animation on special/rare cards during mobile drag
+      if (!isDesktop && (stack[idx]?.item.version === "special" || stack[idx]?.item.version === "rare")) {
+        const r = el.getBoundingClientRect();
+        const fx = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+        const fy = Math.max(0, Math.min(100, ((e.clientY - r.top)  / r.height) * 100));
+        const foil = el.querySelector<HTMLElement>(".foil-overlay");
+        if (foil) {
+          foil.style.background = stack[idx].item.version === "rare" ? rareGradient(fx, fy) : foilGradient(fx, fy);
+          foil.style.opacity = "0.9";
+        }
+      }
     }
 
     // Circle gesture detection — must run on every event for accurate angle accumulation
@@ -899,6 +978,9 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     if (draggingCardRef.current) {
       draggingCardRef.current.style.transition = "";
       draggingCardRef.current.style.willChange = "auto";
+      // Hide foil that was lit during mobile drag
+      const foil = draggingCardRef.current.querySelector<HTMLElement>(".foil-overlay");
+      if (foil) foil.style.opacity = "0";
     }
     const droppedOnZone = cardOverlapsZone(mobileDropRef.current);
     const restingZ = d.restingZ;
