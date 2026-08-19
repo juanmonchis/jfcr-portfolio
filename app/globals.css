@@ -469,6 +469,11 @@ body {
   pointer-events: none;
 }
 
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 @keyframes foilFlash {
   0%   { opacity: 0; }
   20%  { opacity: 0.85; }

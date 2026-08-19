@@ -32,6 +32,7 @@ import ProjectCard from "@/components/ProjectCard";
 import BorderedItemComponent from "@/components/BorderedItem";
 import Link from "next/link";
 import LogoIcon from "@/components/LogoIcon";
+import PillMarquee from "@/components/PillMarquee";
 
 
 
@@ -60,6 +61,9 @@ export default async function HomePage() {
     <main>
       {/* Hero */}
       <Hero />
+
+      {/* Pill marquee */}
+      <PillMarquee />
 
       {/* Projects Section */}
       <section id="projects" className="bg-[#0C0D1F] py-20 px-6 md:px-12 lg:px-20">
