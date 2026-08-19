@@ -22,22 +22,8 @@ export default function PillMarquee() {
         }}
       >
         {items.map((pill, i) => (
-          <Link
-            key={i}
-            href={pill.href}
-            style={{
-              border: "1.5px solid #0C0D1F",
-              borderRadius: 9999,
-              padding: "36px 96px",
-              flexShrink: 0,
-              textDecoration: "none",
-              display: "block",
-            }}
-          >
-            <span
-              className="type-homepage-hero"
-              style={{ color: "#0C0D1F", display: "block" }}
-            >
+          <Link key={i} href={pill.href} className="pill-marquee-item">
+            <span className="type-homepage-hero" style={{ color: "#0C0D1F", display: "block" }}>
               {pill.label}
             </span>
           </Link>
