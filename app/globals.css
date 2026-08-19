@@ -484,7 +484,7 @@ body {
 }
 
 .pill-marquee-item .type-homepage-hero {
-  transition: color 250ms ease, text-shadow 250ms ease 50ms;
+  transition: color 250ms ease, text-shadow 600ms ease 50ms;
 }
 
 .pill-marquee-item:hover .type-homepage-hero {
