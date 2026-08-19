@@ -104,7 +104,7 @@ export const BOOKS: BookData[] = [
   {
     id: 10,
     title: "Create Dangerously",
-    author: "Edwidge Danticat",
+    author: "Albert Camus",
     coverUrl: "/images/books/create-dangerously.jpg",
     spineColor: "#922B21",
     genre: "Essays",
