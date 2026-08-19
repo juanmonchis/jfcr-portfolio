@@ -141,33 +141,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Other Projects Section */}
-      <section className="bg-white py-20 px-6 md:px-12 lg:px-20">
-        <div className="max-w-[1200px] mx-auto">
-        <h2 className="text-[#0C0D1F] text-2xl md:text-3xl font-bold mb-12 max-w-2xl">
-          These are some other projects not entirely related to product but that I really enjoyed working on
-        </h2>
-        {borderedItems.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {borderedItems.map((item) => (
-              <BorderedItemComponent
-                key={item.id}
-                title={item.title}
-                tags={parseTags(item.tags)}
-                href={item.href}
-                bgColor={item.bgColor}
-                textColor={item.textColor}
-                tagColor={item.tagColor}
-                glowColor={item.glowColor}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="text-[#0C0D1F]/40 text-sm">No items yet. Add some in the admin panel.</p>
-        )}
-        </div>
-      </section>
-
       {/* Pill marquee */}
       <PillMarquee />
 
