@@ -188,11 +188,10 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
   const [sheen, setSheen] = useState({ x: 50, y: 50 });
   const [hovering, setHovering] = useState(false);
   const [closing, setClosing] = useState(false);
-  const [gyroOffset, setGyroOffset] = useState({ x: 0, y: 0 });
+  const [gyroRotZ, setGyroRotZ] = useState(0);
   const [needsGyroPermission, setNeedsGyroPermission] = useState(false);
   const settled = useRef(false);
   const mountedRef = useRef(true);
-  const betaNeutralRef = useRef<number | null>(null);
   const gyroRafRef = useRef<number | null>(null);
   const gyroCleanupRef = useRef<(() => void) | null>(null);
 
@@ -213,20 +212,14 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
   }, []);
 
   function setupGyroListener() {
-    betaNeutralRef.current = null;
     function onOrientation(e: DeviceOrientationEvent) {
-      const beta  = e.beta  ?? 0;
-      const gamma = e.gamma ?? 0;
-      if (betaNeutralRef.current === null) betaNeutralRef.current = beta;
-      const dBeta = Math.max(-30, Math.min(30, beta - betaNeutralRef.current));
-      const g     = Math.max(-30, Math.min(30, gamma));
+      const g = Math.max(-30, Math.min(30, e.gamma ?? 0));
       if (gyroRafRef.current !== null) return;
       gyroRafRef.current = requestAnimationFrame(() => {
         gyroRafRef.current = null;
-        if (!mountedRef.current) return; // guard against post-unmount setState
-        setTilt({ x: dBeta * -0.2, y: g * 0.2 });
-        setGyroOffset({ x: Math.max(-60, Math.min(60, g * -4)), y: Math.max(-60, Math.min(60, dBeta * -4)) });
-        setSheen({ x: Math.max(0, Math.min(100, 50 - g * 1.5)), y: Math.max(0, Math.min(100, 50 + dBeta * 1.5)) });
+        if (!mountedRef.current) return;
+        setGyroRotZ(g * 0.5);
+        setSheen({ x: Math.max(0, Math.min(100, 50 - g * 1.5)), y: 50 });
         setHovering(true);
       });
     }
@@ -323,7 +316,7 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={handleMouseLeave}
           style={{
-            transform:    `translate(${gyroOffset.x}px, ${gyroOffset.y}px) perspective(700px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+            transform:    `rotateZ(${gyroRotZ}deg) perspective(700px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
             transition:   hovering ? "transform 80ms ease" : "transform 400ms ease",
             borderRadius: "0.75rem",
             overflow:     "hidden",
