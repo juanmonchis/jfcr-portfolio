@@ -472,7 +472,7 @@ body {
 .pill-marquee-item {
   border: 1.5px solid #0C0D1F;
   border-radius: 9999px;
-  padding: 72px 96px 8px;
+  padding: 36px 96px;
   flex-shrink: 0;
   text-decoration: none;
   display: block;
@@ -484,6 +484,7 @@ body {
 }
 
 .pill-marquee-item .type-homepage-hero {
+  line-height: 1;
   transition: color 250ms ease, text-shadow 600ms ease 50ms;
 }
 
