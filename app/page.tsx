@@ -62,9 +62,6 @@ export default async function HomePage() {
       {/* Hero */}
       <Hero />
 
-      {/* Pill marquee */}
-      <PillMarquee />
-
       {/* Projects Section */}
       <section id="projects" className="bg-[#0C0D1F] py-20 px-6 md:px-12 lg:px-20">
         <div className="max-w-[1200px] mx-auto">
@@ -170,6 +167,9 @@ export default async function HomePage() {
         )}
         </div>
       </section>
+
+      {/* Pill marquee */}
+      <PillMarquee />
 
       {/* Footer */}
       <footer className="bg-[#0C0D1F] py-28 px-6 md:px-12 lg:px-20 rounded-tl-2xl rounded-tr-2xl">

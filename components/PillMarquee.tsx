@@ -22,7 +22,7 @@ export default function PillMarquee() {
             style={{
               border: "1.5px solid rgba(242,235,217,0.3)",
               borderRadius: 9999,
-              padding: "0.1em 0.6em",
+              padding: "36px 96px",
               flexShrink: 0,
             }}
           >
