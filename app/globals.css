@@ -472,7 +472,7 @@ body {
 .pill-marquee-item {
   border: 1.5px solid #0C0D1F;
   border-radius: 9999px;
-  padding: 36px 96px;
+  padding: 72px 96px 8px;
   flex-shrink: 0;
   text-decoration: none;
   display: block;
