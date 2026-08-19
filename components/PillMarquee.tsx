@@ -12,7 +12,7 @@ export default function PillMarquee() {
   const items = [...PILLS, ...PILLS, ...PILLS, ...PILLS];
 
   return (
-    <div className="overflow-hidden py-8" style={{ background: "#DDED3C" }}>
+    <div className="overflow-hidden py-16" style={{ background: "#DDED3C" }}>
       <div
         style={{
           display: "flex",

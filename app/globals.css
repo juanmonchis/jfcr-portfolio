@@ -495,10 +495,10 @@ body {
 
 @media (max-width: 767px) {
   .pill-marquee-item {
-    padding: 25px 67px;
+    padding: 15px 40px;
   }
   .pill-marquee-item .type-homepage-hero {
-    font-size: 84px !important;
+    font-size: 50px !important;
   }
 }
 
