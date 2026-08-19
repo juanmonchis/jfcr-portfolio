@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const PILLS = [
   { label: "Book Recs", href: "/books" },
-  { label: "Drafts", href: "/blog"   },
+  { label: "Notes",  href: "/blog"   },
 ];
 
 export default function PillMarquee() {
