@@ -58,7 +58,7 @@ export default async function HomePage() {
   }
 
   return (
-    <main>
+    <main className="bg-[#DDED3C]">
       {/* Hero */}
       <Hero />
 
