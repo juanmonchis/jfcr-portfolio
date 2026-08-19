@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 const PILLS = [
-  { label: "Books",  href: "/books"  },
+  { label: "Book Recs", href: "/books" },
   { label: "Drafts", href: "/blog"   },
 ];
 
