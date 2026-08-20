@@ -118,7 +118,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
                   <div
                     style={{
                       aspectRatio: "2 / 3",
-                      border: `1px solid ${isHoveredCell ? "rgba(242,235,217,0.45)" : "rgba(242,235,217,0.12)"}`,
+                      border: `1px solid ${isHoveredCell ? "#DDED3C" : "rgba(242,235,217,0.12)"}`,
                       borderRadius: 16,
                       display: "flex",
                       flexDirection: "column",
@@ -134,23 +134,25 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
                   >
                     <p
                       style={{
-                        color: "#F2EBD9",
+                        color: isHoveredCell ? "#DDED3C" : "#F2EBD9",
                         textAlign: "center",
                         fontFamily: "var(--font-telegraf), sans-serif",
                         fontWeight: 600,
                         fontSize: "clamp(0.6rem, 0.9vw, 0.85rem)",
                         lineHeight: 1.25,
+                        transition: "color 0.2s ease",
                       }}
                     >
                       {book.title}
                     </p>
                     <p
                       style={{
-                        color: "rgba(242,235,217,0.4)",
+                        color: isHoveredCell ? "#DDED3C" : "rgba(242,235,217,0.4)",
                         textAlign: "center",
                         fontFamily: "var(--font-telegraf), sans-serif",
                         fontWeight: 400,
                         fontSize: "clamp(0.5rem, 0.75vw, 0.72rem)",
+                        transition: "color 0.2s ease",
                       }}
                     >
                       {book.author}

@@ -41,7 +41,6 @@ export default function BookMesh({
   reducedMotion,
 }: BookProps) {
   const meshRef        = useRef<THREE.Mesh>(null)
-  const spinTimeRef    = useRef(phaseOffset)
   const hoverLerpPos   = useRef<[number, number]>([0, 0])
   const needsHoverInit = useRef(false)
 
@@ -75,7 +74,6 @@ export default function BookMesh({
   useEffect(() => {
     if (isHovered && !isSelected) {
       needsHoverInit.current = true
-      spinTimeRef.current    = 0
       api.start({
         scale:   1.08,
         opacity: 1,
@@ -127,15 +125,15 @@ export default function BookMesh({
 
       meshRef.current.position.set(hoverLerpPos.current[0], hoverLerpPos.current[1], 0.35)
 
-      // Aim toward mouse: Y and X rotation track absolute NDC position
-      const aimY = -ndc.x * 0.35
-      const aimX =  ndc.y * 0.25
+      // The lag vector (mouse target minus current book position) points in the direction
+      // the book is being pulled. Rotate the cover to face that direction in 3D.
+      const lag_dx = tx - hoverLerpPos.current[0]
+      const lag_dy = ty - hoverLerpPos.current[1]
 
-      // Continuous Z spin
-      if (!reducedMotion) spinTimeRef.current += delta
-      const spinZ = spinTimeRef.current * 1.0
+      const aimY = -Math.tanh(lag_dx * 5) * (Math.PI * 0.30) // cover tilts left/right
+      const aimX = -Math.tanh(lag_dy * 5) * (Math.PI * 0.22) // cover tilts up/down
 
-      meshRef.current.rotation.set(aimX, aimY, spinZ)
+      meshRef.current.rotation.set(aimX, aimY, 0)
     } else {
       const [px, py, pz] = spring.pos.get()
       const [rx, ry, rz] = spring.rot.get()

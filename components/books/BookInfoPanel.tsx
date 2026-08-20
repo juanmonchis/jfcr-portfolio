@@ -56,23 +56,24 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
           style={{
             display: "flex",
             flexDirection: "row",
-            gap: "2rem",
+            flexWrap: "wrap",
+            gap: "1.5rem",
             border: "1px solid rgba(242,235,217,0.18)",
             borderRadius: 20,
-            padding: "2rem",
+            padding: "1.75rem",
             background: "rgba(12,13,31,0.96)",
             backdropFilter: "blur(16px)",
-            width: "min(90vw, 620px)",
+            width: "min(90vw, 520px)",
             transform: visible ? "translateY(0) scale(1)" : "translateY(16px) scale(0.97)",
             transition: "transform 0.45s cubic-bezier(0.4,0,0.2,1)",
           }}
         >
-          {/* Cover image — 50% compact */}
+          {/* Cover image — large */}
           <div
             style={{
               flexShrink: 0,
-              width: 120,
-              borderRadius: 8,
+              width: 200,
+              borderRadius: 10,
               overflow: "hidden",
               alignSelf: "flex-start",
               aspectRatio: "2 / 3",
@@ -94,6 +95,7 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
               flexDirection: "column",
               gap: "0.65rem",
               minWidth: 0,
+              maxWidth: 220,
             }}
           >
             {book.genre && (
