@@ -61,7 +61,7 @@ html, body {
 .type-homepage-hero {
   font-family: var(--font-migra), serif;
   font-size: 120px;
-  line-height: 118px;
+  line-height: 100px;
   font-weight: 800; /* ⚠ Mapped to Extrabold — Migra has no 700 */
   color: #0d0c27;
   text-align: center;

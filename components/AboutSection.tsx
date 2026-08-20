@@ -32,7 +32,7 @@ const thoughtsOnDesign = [
 
 export default function AboutSection() {
   return (
-    <section id="about" style={{ background: BG }} className="pt-40 pb-20 px-6 md:px-12 lg:px-20">
+    <section id="about" style={{ background: BG }} className="pt-52 md:pt-40 pb-20 px-6 md:px-12 lg:px-20">
       <div className="max-w-[1000px] mx-auto flex flex-col items-center gap-16 text-center">
 
         {/* Title */}

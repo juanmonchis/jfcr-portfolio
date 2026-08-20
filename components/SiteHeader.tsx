@@ -10,6 +10,10 @@ interface SiteHeaderProps {
   color?: string;
   /** Background colour of the mobile full-screen overlay. Defaults to #DDED3C. */
   mobileOverlayColor?: string;
+  /** Colour of pills/text inside the mobile overlay. Defaults to #0C0D1F. */
+  mobileNavColor?: string;
+  /** LogoVariant inside the mobile overlay. Defaults to "dark". */
+  mobileLogoVariant?: LogoVariant;
   /** Hide the logo — renders only the nav pills and mobile hamburger. Defaults to true. */
   showLogo?: boolean;
   /** Override the pill hover background. Defaults to #0C0D1F. */
@@ -128,6 +132,8 @@ export default function SiteHeader({
   logoSize = 70,
   color = "#0C0D1F",
   mobileOverlayColor = "#DDED3C",
+  mobileNavColor = "#0C0D1F",
+  mobileLogoVariant = "dark",
   showLogo = true,
   navHoverBg,
   navHoverText,
@@ -213,11 +219,11 @@ export default function SiteHeader({
       >
         {/* Top bar */}
         <div className="flex items-center justify-between px-6 pt-8 pb-4">
-          <LogoIcon variant="dark" size={logoSize} />
+          <LogoIcon variant={mobileLogoVariant} size={logoSize} />
           <button onClick={() => setOpen(false)} aria-label="Close menu" className="w-10 h-10 flex items-center justify-center">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <line x1="4" y1="4" x2="20" y2="20" stroke="#0C0D1F" strokeWidth="2" strokeLinecap="round" />
-              <line x1="20" y1="4" x2="4" y2="20" stroke="#0C0D1F" strokeWidth="2" strokeLinecap="round" />
+              <line x1="4" y1="4" x2="20" y2="20" stroke={mobileNavColor} strokeWidth="2" strokeLinecap="round" />
+              <line x1="20" y1="4" x2="4" y2="20" stroke={mobileNavColor} strokeWidth="2" strokeLinecap="round" />
             </svg>
           </button>
         </div>
@@ -225,7 +231,7 @@ export default function SiteHeader({
         {/* Pill list */}
         <nav className="flex flex-col items-center justify-center flex-1 gap-4 px-6 pb-8">
           {NAV_LINKS.map(({ label, href }) => (
-            <NavPill key={label} href={href} color="#0C0D1F" size="md" hoverTextColor={pillHoverText} hoverBgColor={pillHoverBg} onClick={() => setOpen(false)}>
+            <NavPill key={label} href={href} color={mobileNavColor} size="md" hoverTextColor={pillHoverText} hoverBgColor={pillHoverBg} onClick={() => setOpen(false)}>
               <span className="text-xl">→</span>
               <span className="flex-1 text-center type-cta tracking-widest uppercase" style={{ color: "inherit" }}>
                 {label}
@@ -234,12 +240,12 @@ export default function SiteHeader({
           ))}
 
           {/* Divider */}
-          <div className="w-full max-w-[520px] h-[2px] bg-[#0C0D1F]/20 my-1" />
+          <div className="w-full max-w-[520px] h-[2px] my-1" style={{ backgroundColor: `${mobileNavColor}33` }} />
 
           {/* Socials */}
           <div className="w-full max-w-[520px]">
             <NavPill
-              color="#0C0D1F"
+              color={mobileNavColor}
               size="md"
               active={socialsOpen}
               hoverTextColor={pillHoverText} hoverBgColor={pillHoverBg}
@@ -253,9 +259,9 @@ export default function SiteHeader({
 
             <div
               className="overflow-hidden transition-all duration-300 ease-in-out"
-              style={{ maxHeight: socialsOpen ? 80 : 0, opacity: socialsOpen ? 1 : 0 }}
+              style={{ maxHeight: socialsOpen ? 200 : 0, opacity: socialsOpen ? 1 : 0 }}
             >
-              <div className="flex items-center justify-center gap-5 pt-4">
+              <div className="flex items-center justify-center" style={{ gap: "2.5rem", padding: "32px 0" }}>
                 {SOCIALS.map(({ label, href, icon }) => (
                   <a
                     key={label}
@@ -265,7 +271,7 @@ export default function SiteHeader({
                     aria-label={label}
                     title={label}
                     className="flex items-center justify-center hover:opacity-60 transition-opacity duration-200"
-                    style={{ color: "#0C0D1F" }}
+                    style={{ color: mobileNavColor, transform: "scale(2.5)", transformOrigin: "center" }}
                   >
                     {icon}
                   </a>

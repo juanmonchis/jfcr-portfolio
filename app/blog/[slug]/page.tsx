@@ -72,7 +72,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <div className="relative min-h-screen bg-[#0C0D1F]">
-      <SiteHeader logoSize={100} logoVariant="light" color="#F2EBD9" />
+      <SiteHeader logoSize={100} logoVariant="light" color="#F2EBD9" mobileOverlayColor="#0C0D1F" mobileNavColor="#F2EBD9" mobileLogoVariant="light" />
 
       {/* Hero */}
       <div className="px-6 md:px-12 lg:px-20 pt-40 pb-8 max-w-3xl mx-auto">

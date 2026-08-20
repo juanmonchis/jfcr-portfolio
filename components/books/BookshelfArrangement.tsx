@@ -17,9 +17,6 @@ export default function BookshelfArrangement({
   onSelectBook,
   reducedMotion,
 }: BookshelfArrangementProps) {
-  const arcSpread = 1.2
-  const radius = 1.8
-  const baseY = 0
   const anySelected = selectedBookId !== null
 
   const positions = useMemo(() => {
@@ -27,17 +24,24 @@ export default function BookshelfArrangement({
       const x = Math.sin(seed) * 10000
       return x - Math.floor(x)
     }
+
+    // 3+2 grid: row 0 has 3 books, row 1 has 2 books (centered)
+    // Y is shifted down so the grid sits below the title overlay
+    const colSpacing = 0.55
+    const rowY = [0.15, -0.40]
+    const rowCols = [3, 2]
+
     return books.map((book, i) => {
-      const angle = books.length === 1 ? 0 : ((i / (books.length - 1)) - 0.5) * arcSpread
-      const yOffset = (seededRandom(book.id * 7) - 0.5) * 0.15
-      const zOffset = (seededRandom(book.id * 13) - 0.5) * 0.1
+      const row = i < 3 ? 0 : 1
+      const col = i < 3 ? i : i - 3
+      const colCount = rowCols[row]
+      const xCenter = (col - (colCount - 1) / 2) * colSpacing
+      const y = rowY[row] + (seededRandom(book.id * 7) - 0.5) * 0.04
+      const z = (seededRandom(book.id * 13) - 0.5) * 0.05
+
       return {
-        position: [
-          Math.sin(angle) * radius,
-          baseY + yOffset,
-          -Math.cos(angle) * radius * 0.3 + zOffset,
-        ] as [number, number, number],
-        rotation: [0.26, -angle * 0.5, 0] as [number, number, number],
+        position: [xCenter, y, z] as [number, number, number],
+        rotation: [0.18, 0, 0] as [number, number, number],
       }
     })
   }, [books])

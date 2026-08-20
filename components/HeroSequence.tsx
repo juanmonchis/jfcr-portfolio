@@ -29,7 +29,7 @@ export default function HeroSequence() {
   }, []);
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center pt-36 pb-16">
+    <div className="flex-1 flex flex-col items-center justify-center pt-44 md:pt-36 pb-16">
       <div className="w-full max-w-[1000px] flex flex-col items-center text-center gap-10">
 
         <div className="relative w-full">

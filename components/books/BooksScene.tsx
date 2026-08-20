@@ -24,7 +24,7 @@ export default function BooksScene({ books, selectedBookId, onSelectBook }: Book
       style={{ width: "100%", height: "100vh" }}
       dpr={[1, 2]}
       gl={{ antialias: true }}
-      camera={{ position: [0, 0.1, 3.8], fov: 45 }}
+      camera={{ position: [0, 0, 1.4], fov: 62 }}
     >
       <BookshelfLighting />
       <Suspense fallback={null}>

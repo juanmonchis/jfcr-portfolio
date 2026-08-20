@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="relative">
-      <SiteHeader logoSize={100} logoVariant="light" color="#F2EBD9" />
+      <SiteHeader logoSize={100} logoVariant="light" color="#F2EBD9" mobileOverlayColor="#0C0D1F" mobileNavColor="#F2EBD9" mobileLogoVariant="light" />
       <AboutSection />
     </main>
   );

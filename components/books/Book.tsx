@@ -10,14 +10,14 @@ import { useSpineTexture } from "./useSpineTexture"
 import { RETURN_CONFIG, IMMEDIATE_CONFIG } from "./useBookSpring"
 import type { ThreeEvent } from "@react-three/fiber"
 
-const W = 0.15
-const H = 0.22
-const D = 0.035
+const W = 0.22
+const H = 0.32
+const D = 0.05
 
-// World-space position the selected book eases into (left of scene center)
-const SELECTED_POS: [number, number, number] = [-0.65, 0, 0]
+// World-space position the selected book eases into (left-center, brought forward)
+const SELECTED_POS: [number, number, number] = [-0.28, -0.1, 0.4]
 const SELECTED_ROT: [number, number, number] = [0, 0, 0]
-const SELECTED_SCALE = 6
+const SELECTED_SCALE = 3.0
 
 const EASE_CONFIG = { mass: 2.5, tension: 70, friction: 22 }
 const DESELECT_CONFIG = { mass: 1.5, tension: 100, friction: 20 }

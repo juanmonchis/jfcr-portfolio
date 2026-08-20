@@ -23,7 +23,7 @@ export default async function BlogPage() {
 
   return (
     <div className="relative min-h-screen bg-[#0C0D1F]">
-      <SiteHeader logoSize={100} logoVariant="light" color="#F2EBD9" />
+      <SiteHeader logoSize={100} logoVariant="light" color="#F2EBD9" mobileOverlayColor="#0C0D1F" mobileNavColor="#F2EBD9" mobileLogoVariant="light" />
 
       <main className="px-6 md:px-12 lg:px-20 pt-40 pb-16 max-w-5xl mx-auto">
         <h1 className="type-case-title !text-[#F2EBD9] mb-4">Blog</h1>
