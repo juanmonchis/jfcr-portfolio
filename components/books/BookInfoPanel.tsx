@@ -1,8 +1,20 @@
 "use client"
 
-import { useEffect, useId, useRef } from "react"
+import { useEffect, useId, useRef, useState } from "react"
 import { BookData } from "./types"
 import { assetPath } from "@/lib/assetPath"
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)")
+    setMobile(mq.matches)
+    const h = (e: MediaQueryListEvent) => setMobile(e.matches)
+    mq.addEventListener("change", h)
+    return () => mq.removeEventListener("change", h)
+  }, [])
+  return mobile
+}
 
 interface BookInfoPanelProps {
   book: BookData | null
@@ -12,6 +24,7 @@ interface BookInfoPanelProps {
 export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
   const titleId    = useId()
   const dismissRef = useRef<HTMLButtonElement>(null)
+  const isMobile   = useIsMobile()
   const visible    = book !== null
 
   useEffect(() => {
@@ -55,8 +68,7 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
           onClick={(e) => e.stopPropagation()}
           style={{
             display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
+            flexDirection: isMobile ? "column" : "row",
             gap: "1.5rem",
             border: "1px solid rgba(242,235,217,0.18)",
             borderRadius: 20,
@@ -72,10 +84,11 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
           <div
             style={{
               flexShrink: 0,
-              width: 200,
+              width: isMobile ? "100%" : 200,
+              maxWidth: isMobile ? 240 : undefined,
               borderRadius: 10,
               overflow: "hidden",
-              alignSelf: "flex-start",
+              alignSelf: isMobile ? "center" : "flex-start",
               aspectRatio: "2 / 3",
             }}
           >
@@ -95,7 +108,7 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
               flexDirection: "column",
               gap: "0.65rem",
               minWidth: 0,
-              maxWidth: 220,
+              maxWidth: isMobile ? "none" : 220,
             }}
           >
             {book.genre && (
