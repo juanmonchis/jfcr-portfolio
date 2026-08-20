@@ -75,7 +75,7 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
             padding: "1.75rem",
             background: "rgba(12,13,31,0.96)",
             backdropFilter: "blur(16px)",
-            width: "min(90vw, 520px)",
+            width: "min(90vw, 560px)",
             transform: visible ? "translateY(0) scale(1)" : "translateY(16px) scale(0.97)",
             transition: "transform 0.45s cubic-bezier(0.4,0,0.2,1)",
           }}
@@ -108,17 +108,17 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
               flexDirection: "column",
               gap: "0.65rem",
               minWidth: 0,
-              maxWidth: isMobile ? "none" : 220,
             }}
           >
             <h2
               id={titleId}
               style={{
                 fontFamily: "var(--font-migra), serif",
-                fontSize: isMobile ? "clamp(26px, 5vw, 36px)" : "clamp(18px, 2vw, 28px)",
+                fontSize: isMobile ? "clamp(26px, 5vw, 36px)" : 40,
                 fontWeight: 800,
                 color: "#F2EBD9",
-                lineHeight: 1.1,
+                lineHeight: 1.0,
+                letterSpacing: "-0.02em",
                 margin: 0,
               }}
             >
