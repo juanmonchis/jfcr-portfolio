@@ -136,10 +136,11 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
                       style={{
                         color: isHoveredCell ? "#DDED3C" : "#F2EBD9",
                         textAlign: "center",
-                        fontFamily: "var(--font-telegraf), sans-serif",
-                        fontWeight: 600,
-                        fontSize: "clamp(0.6rem, 0.9vw, 0.85rem)",
-                        lineHeight: 1.25,
+                        fontFamily: "var(--font-migra), serif",
+                        fontWeight: 800,
+                        fontSize: "clamp(0.65rem, 1vw, 1rem)",
+                        lineHeight: 1.1,
+                        letterSpacing: "-0.01em",
                         transition: "color 0.2s ease",
                       }}
                     >
