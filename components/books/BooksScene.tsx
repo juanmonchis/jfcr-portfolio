@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense } from "react"
+import { MutableRefObject, Suspense } from "react"
 import { Canvas } from "@react-three/fiber"
 import { Preload } from "@react-three/drei"
 import { BookData } from "./types"
@@ -11,10 +11,12 @@ import { useReducedMotion } from "@/hooks/useReducedMotion"
 interface BooksSceneProps {
   books: BookData[]
   selectedBookId: number | null
+  hoveredBookId: number | null
+  mouseNDCRef: MutableRefObject<{ x: number; y: number }>
   onSelectBook: (book: BookData) => void
 }
 
-export default function BooksScene({ books, selectedBookId, onSelectBook }: BooksSceneProps) {
+export default function BooksScene({ books, selectedBookId, hoveredBookId, mouseNDCRef, onSelectBook }: BooksSceneProps) {
   const reducedMotion = useReducedMotion()
 
   return (
@@ -31,6 +33,8 @@ export default function BooksScene({ books, selectedBookId, onSelectBook }: Book
         <BookshelfArrangement
           books={books}
           selectedBookId={selectedBookId}
+          hoveredBookId={hoveredBookId}
+          mouseNDCRef={mouseNDCRef}
           onSelectBook={onSelectBook}
           reducedMotion={reducedMotion}
         />
