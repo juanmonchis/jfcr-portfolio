@@ -38,7 +38,7 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
   // Focus dismiss button when panel opens
   useEffect(() => {
     if (visible) {
-      const t = setTimeout(() => dismissRef.current?.focus(), 50)
+      const t = setTimeout(() => dismissRef.current?.focus({ preventScroll: true }), 50)
       return () => clearTimeout(t)
     }
   }, [visible])
@@ -48,7 +48,7 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
     <div
       onClick={onDismiss}
       style={{
-        position: "absolute",
+        position: "fixed",
         inset: 0,
         zIndex: 5,
         display: "flex",
@@ -111,30 +111,11 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
               maxWidth: isMobile ? "none" : 220,
             }}
           >
-            {book.genre && (
-              <span
-                style={{
-                  display: "inline-block",
-                  padding: "2px 10px",
-                  borderRadius: 999,
-                  border: `1px solid ${book.spineColor}55`,
-                  color: book.spineColor,
-                  fontFamily: "var(--font-telegraf), sans-serif",
-                  fontSize: 11,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  alignSelf: "flex-start",
-                }}
-              >
-                {book.genre}
-              </span>
-            )}
-
             <h2
               id={titleId}
               style={{
                 fontFamily: "var(--font-migra), serif",
-                fontSize: "clamp(18px, 2vw, 28px)",
+                fontSize: isMobile ? "clamp(26px, 5vw, 36px)" : "clamp(18px, 2vw, 28px)",
                 fontWeight: 800,
                 color: "#F2EBD9",
                 lineHeight: 1.1,
@@ -163,7 +144,7 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
               <p
                 style={{
                   fontFamily: "var(--font-telegraf), sans-serif",
-                  fontSize: "clamp(13px, 1vw, 15px)",
+                  fontSize: isMobile ? "clamp(17px, 4vw, 19px)" : "clamp(13px, 1vw, 15px)",
                   color: "rgba(242,235,217,0.55)",
                   lineHeight: 1.65,
                   margin: 0,
