@@ -1655,7 +1655,14 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                   const stat = spaceIdx === -1 ? text : text.slice(0, spaceIdx);
                   const desc = spaceIdx === -1 ? "" : text.slice(spaceIdx + 1);
                   return (
-                    <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                    <div key={i} style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.4rem",
+                      border: "1.5px solid rgba(12,13,31,0.1)",
+                      borderRadius: 16,
+                      padding: "1.25rem 1.25rem 1.25rem",
+                    }}>
                       <span style={{
                         fontFamily: "var(--font-migra), serif",
                         fontSize: 52,
@@ -1667,7 +1674,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                       {desc && (
                         <span style={{
                           fontFamily: "var(--font-telegraf), sans-serif",
-                          fontSize: 13,
+                          fontSize: 17,
                           color: "rgba(12,13,31,0.6)",
                           lineHeight: 1.45,
                         }}>{desc}</span>
