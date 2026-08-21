@@ -116,6 +116,8 @@ const BLOCK_TYPES = [
   { value: "highlight", label: "Highlight Quote" },
   { value: "button", label: "Button" },
   { value: "text-boxes", label: "Text Boxes" },
+  { value: "feature-info", label: "Feature Info" },
+  { value: "card-summary", label: "Card Summary" },
 ] as const;
 
 function createBlock(type: Block["type"]): Block {
@@ -141,6 +143,10 @@ function createBlock(type: Block["type"]): Block {
       return { id, type: "button", text: "Click here", url: "", align: "left" };
     case "text-boxes":
       return { id, type: "text-boxes", items: [""] };
+    case "feature-info":
+      return { id, type: "feature-info", items: [""] };
+    case "card-summary":
+      return { id, type: "card-summary", heading: "", intro: "", items: ["01 — "] };
   }
 }
 
@@ -169,7 +175,10 @@ function BlockItem({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <span className="text-xs font-bold uppercase tracking-wide text-gray-400">
-          {block.type === "image-grid" ? "card deck" : block.type}
+          {block.type === "image-grid" ? "card deck"
+            : block.type === "feature-info" ? "feature info"
+            : block.type === "card-summary" ? "card summary"
+            : block.type}
         </span>
         <div className="flex gap-1">
           <button
@@ -500,6 +509,90 @@ function BlockItem({
             onClick={() => onUpdate({ ...block, items: [...block.items, ""] })}
             className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start"
           >+ Add item</button>
+        </div>
+      )}
+
+      {block.type === "feature-info" && (
+        <div className="flex flex-col gap-2">
+          <label className={labelClass}>Items (first word becomes the large stat)</label>
+          {block.items.map((item, i) => (
+            <div key={i} className="flex gap-2">
+              <input
+                type="text"
+                className={inputClass}
+                value={item}
+                onChange={(e) => {
+                  const items = [...block.items];
+                  items[i] = e.target.value;
+                  onUpdate({ ...block, items });
+                }}
+                placeholder={`e.g. "2× app installs doubled after the redesign"`}
+              />
+              <button
+                type="button"
+                onClick={() => onUpdate({ ...block, items: block.items.filter((_, idx) => idx !== i) })}
+                className="px-2 py-1 text-xs rounded border border-red-200 text-red-500 hover:bg-red-50 shrink-0"
+              >×</button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => onUpdate({ ...block, items: [...block.items, ""] })}
+            className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start"
+          >+ Add item</button>
+        </div>
+      )}
+
+      {block.type === "card-summary" && (
+        <div className="flex flex-col gap-3">
+          <div>
+            <label className={labelClass}>Heading</label>
+            <input
+              type="text"
+              className={inputClass}
+              value={block.heading}
+              onChange={(e) => onUpdate({ ...block, heading: e.target.value })}
+              placeholder="Section heading"
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Intro (optional)</label>
+            <input
+              type="text"
+              className={inputClass}
+              value={block.intro ?? ""}
+              onChange={(e) => onUpdate({ ...block, intro: e.target.value || undefined })}
+              placeholder="Intro paragraph shown above cards"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className={labelClass}>Cards (use "01 — Title. Body…" format for numbered cards)</label>
+            {block.items.map((item, i) => (
+              <div key={i} className="flex gap-2">
+                <textarea
+                  rows={3}
+                  className={inputClass}
+                  value={item}
+                  onChange={(e) => {
+                    const items = [...block.items];
+                    items[i] = e.target.value;
+                    onUpdate({ ...block, items });
+                  }}
+                  placeholder={`e.g. "01 — Build a brand. The visual identity…"`}
+                />
+                <button
+                  type="button"
+                  onClick={() => onUpdate({ ...block, items: block.items.filter((_, idx) => idx !== i) })}
+                  className="px-2 py-1 text-xs rounded border border-red-200 text-red-500 hover:bg-red-50 shrink-0 self-start"
+                >×</button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => onUpdate({ ...block, items: [...block.items, `${String(block.items.length + 1).padStart(2, "0")} — `] })}
+              className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start"
+            >+ Add card</button>
+          </div>
         </div>
       )}
 

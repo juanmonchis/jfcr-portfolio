@@ -68,7 +68,9 @@ export type Block =
   | { id: string; type: "divider" }
   | { id: string; type: "highlight"; text: string }
   | { id: string; type: "button"; text: string; url: string; align: "left" | "center" | "right" }
-  | { id: string; type: "text-boxes"; items: string[] };
+  | { id: string; type: "text-boxes"; items: string[] }
+  | { id: string; type: "feature-info"; items: string[] }
+  | { id: string; type: "card-summary"; heading: string; intro?: string; items: string[] };
 
 function getVideoEmbedUrl(url: string): string | null {
   try {
@@ -1641,6 +1643,85 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                     <span className="type-paragraph font-bold">{text}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {block.type === "feature-info" && (
+            <div className={textWrapper}>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                {block.items.map((text, i) => {
+                  const spaceIdx = text.indexOf(" ");
+                  const stat = spaceIdx === -1 ? text : text.slice(0, spaceIdx);
+                  const desc = spaceIdx === -1 ? "" : text.slice(spaceIdx + 1);
+                  return (
+                    <div key={i} style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                      <span style={{
+                        fontFamily: "var(--font-migra), serif",
+                        fontSize: 52,
+                        fontWeight: 800,
+                        lineHeight: 1,
+                        letterSpacing: "-0.02em",
+                        color: "#0C0D1F",
+                      }}>{stat}</span>
+                      {desc && (
+                        <span style={{
+                          fontFamily: "var(--font-telegraf), sans-serif",
+                          fontSize: 13,
+                          color: "rgba(12,13,31,0.6)",
+                          lineHeight: 1.45,
+                        }}>{desc}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {block.type === "card-summary" && (
+            <div className={textWrapper}>
+              <h2 className="type-case-subtitle mb-4">{block.heading}</h2>
+              {block.intro && (
+                <p style={{
+                  fontFamily: "var(--font-telegraf), sans-serif",
+                  fontSize: 16,
+                  color: "rgba(12,13,31,0.65)",
+                  lineHeight: 1.65,
+                  marginBottom: "2rem",
+                }}>{block.intro}</p>
+              )}
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {block.items.map((text, i) => {
+                  const dashIdx = text.indexOf(" — ");
+                  const label = dashIdx !== -1 ? text.slice(0, dashIdx) : String(i + 1).padStart(2, "0");
+                  const body = dashIdx !== -1 ? text.slice(dashIdx + 3) : text;
+                  return (
+                    <div key={i} style={{
+                      border: "1.5px solid rgba(12,13,31,0.1)",
+                      borderRadius: 16,
+                      padding: "1.5rem 1.75rem",
+                    }}>
+                      <div style={{
+                        fontFamily: "var(--font-migra), serif",
+                        fontSize: 40,
+                        fontWeight: 800,
+                        lineHeight: 1,
+                        letterSpacing: "-0.02em",
+                        color: "#0C0D1F",
+                        opacity: 0.18,
+                        marginBottom: "0.75rem",
+                      }}>{label}</div>
+                      <p style={{
+                        fontFamily: "var(--font-telegraf), sans-serif",
+                        fontSize: 15,
+                        color: "#0C0D1F",
+                        lineHeight: 1.65,
+                        margin: 0,
+                      }}>{body}</p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
