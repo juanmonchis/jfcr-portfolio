@@ -155,7 +155,7 @@ export default async function CaseStudyPage({ params }: Props) {
                 )}
 
                 {/* Title */}
-                <h1 className="type-case-main-title text-[#0C0D1F]">
+                <h1 className="type-homepage-hero-left !text-[#0C0D1F]">
                   {project.title}
                 </h1>
 
