@@ -39,7 +39,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { assetPath } from "@/lib/assetPath";
 
-export type ProjectCardSize = "default" | "small" | "xsmall";
+export type ProjectCardSize = "default" | "small" | "xsmall" | "footer-card";
 
 interface ProjectCardProps {
   title: string;
@@ -149,6 +149,43 @@ export default function ProjectCard({
               </Link>
             </div>
           </div>
+          </div>
+        </div>
+      ) : size === "footer-card" ? (
+        <div className="flex flex-col">
+          {/* Thumbnail — always visible */}
+          <div className="w-full">
+            {thumbnailUrl ? (
+              <Image src={assetPath(thumbnailUrl)} alt={title} width={0} height={0} sizes="50vw" className="w-full h-auto" />
+            ) : (
+              <div className="w-full h-24 flex items-center justify-center bg-black/10">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-black/20">
+                  <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                  <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+                  <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col flex-1 mt-5 px-5 pb-5">
+            <p className="type-card-synopsis font-semibold text-[#0C0D1F]/60 mb-2">{subtitle}</p>
+            <h3 className="type-card-title text-[#0C0D1F] mb-2">{title}</h3>
+            <div className="flex flex-wrap gap-1 mb-3">
+              {tags.map((tag) => (
+                <span key={tag} className="type-tag inline-flex items-center px-2 py-0.5 rounded-full bg-black/20 text-black/80">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <p className="type-card-description text-[#0C0D1F]/80 flex-1">{description}</p>
+            <Link
+              href={resolvedCtaHref}
+              target={resolvedTarget}
+              rel={resolvedRel}
+              className="inline-flex items-center gap-1 text-sm font-semibold border border-[#0C0D1F] text-[#0C0D1F] px-4 py-2 rounded-full hover:bg-[#0C0D1F] hover:text-[#DDED3C] transition-colors duration-300 ease-in-out type-cta mt-3 self-start"
+            >
+              {ctaLabel} →
+            </Link>
           </div>
         </div>
       ) : (

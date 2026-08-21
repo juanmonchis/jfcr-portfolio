@@ -225,7 +225,7 @@ export default async function CaseStudyPage({ params }: Props) {
                     ctaHref={p.ctaHref ?? "#"}
                     thumbnailUrl={p.thumbnailUrl ?? undefined}
                     cardColor={p.cardColor}
-                    size="xsmall"
+                    size="footer-card"
                     showThumbnailOnMobile={p.showThumbnailOnMobile}
                     caseStudySlug={cs.slug}
                   />
