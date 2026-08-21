@@ -29,6 +29,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import BlockRenderer, { Block } from "@/components/CaseStudy/BlockRenderer";
 import SiteHeader from "@/components/SiteHeader";
+import ProjectCard from "@/components/ProjectCard";
 
 export const dynamicParams = false;
 
@@ -86,12 +87,26 @@ function parseJSON<T>(value: string, fallback: T): T {
 export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params;
 
-  const caseStudy = await prisma.caseStudy.findUnique({
-    where: { slug },
-    include: { project: true },
-  });
+  const [caseStudy, allCaseStudies] = await Promise.all([
+    prisma.caseStudy.findUnique({
+      where: { slug },
+      include: { project: true },
+    }),
+    prisma.caseStudy.findMany({
+      include: { project: true },
+      orderBy: { project: { order: "asc" } },
+    }),
+  ]);
 
   if (!caseStudy) notFound();
+
+  // Pick 2 other projects for the footer, cycling from the current position
+  const others = allCaseStudies.filter((cs) => cs.slug !== slug);
+  const currentIdx = allCaseStudies.findIndex((cs) => cs.slug === slug);
+  const footerProjects = [
+    others[(currentIdx) % others.length],
+    others[(currentIdx + 1) % others.length],
+  ];
 
   const { project } = caseStudy;
   const blocks = parseBlocks(caseStudy.blocks);
@@ -190,6 +205,36 @@ export default async function CaseStudyPage({ params }: Props) {
           showLogo={hasCardDeck}
         />
       </section>
+
+      {footerProjects.length > 0 && (
+        <section className="bg-white border-t border-[#0C0D1F]/8 px-6 md:px-12 py-16">
+          <div className="max-w-[1000px] mx-auto w-full">
+            <p className="type-tag text-[#0C0D1F]/40 mb-8 uppercase tracking-widest">More work</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {footerProjects.map((cs) => {
+                const p = cs.project;
+                const pTags = (() => { try { return JSON.parse(p.tags); } catch { return []; } })();
+                return (
+                  <ProjectCard
+                    key={cs.slug}
+                    title={p.title}
+                    subtitle={p.subtitle ?? ""}
+                    tags={pTags}
+                    description={p.description ?? ""}
+                    ctaLabel={p.ctaLabel ?? "View project"}
+                    ctaHref={p.ctaHref ?? "#"}
+                    thumbnailUrl={p.thumbnailUrl ?? undefined}
+                    cardColor={p.cardColor}
+                    size="small"
+                    showThumbnailOnMobile={p.showThumbnailOnMobile}
+                    caseStudySlug={cs.slug}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
