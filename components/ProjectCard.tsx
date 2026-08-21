@@ -153,7 +153,6 @@ export default function ProjectCard({
         </div>
       ) : size === "footer-card" ? (
         <div className="flex flex-col flex-1 px-5 py-5">
-          <p className="type-card-synopsis font-semibold text-[#0C0D1F]/60 mb-2">{subtitle}</p>
           <h3 className="type-card-title text-[#0C0D1F] mb-2">{title}</h3>
           <p className="type-card-description text-[#0C0D1F]/80 flex-1">{description}</p>
           <Link
