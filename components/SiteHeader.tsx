@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import LogoIcon, { LogoVariant } from "@/components/LogoIcon";
 
@@ -27,6 +27,7 @@ interface SiteHeaderProps {
 const NAV_LINKS = [
   { label: "MY WORK",    href: "/#projects" },
   { label: "WHO'S THAT", href: "/about" },
+  { label: "BOOK RECS",  href: "/books" },
 ];
 
 const SOCIALS = [
@@ -261,7 +262,7 @@ export default function SiteHeader({
               className="overflow-hidden transition-all duration-300 ease-in-out"
               style={{ maxHeight: socialsOpen ? 200 : 0, opacity: socialsOpen ? 1 : 0 }}
             >
-              <div className="flex items-center justify-center" style={{ gap: "2.5rem", padding: "32px 0" }}>
+              <div className="flex items-center justify-center" style={{ gap: "1.25rem", padding: "28px 0" }}>
                 {SOCIALS.map(({ label, href, icon }) => (
                   <a
                     key={label}
@@ -271,9 +272,9 @@ export default function SiteHeader({
                     aria-label={label}
                     title={label}
                     className="flex items-center justify-center hover:opacity-60 transition-opacity duration-200"
-                    style={{ color: mobileNavColor, transform: "scale(2.5)", transformOrigin: "center" }}
+                    style={{ color: mobileNavColor, width: 48, height: 48 }}
                   >
-                    {icon}
+                    {React.cloneElement(icon as React.ReactElement<React.SVGProps<SVGSVGElement>>, { width: 48, height: 48 })}
                   </a>
                 ))}
               </div>

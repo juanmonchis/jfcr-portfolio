@@ -81,10 +81,11 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
             inset: 0,
             zIndex: 1,
             display: "flex",
-            alignItems: "center",
+            alignItems: "flex-end",
             justifyContent: "center",
             paddingLeft: "8vw",
             paddingRight: "8vw",
+            paddingBottom: "8vh",
             opacity: selectedBook ? 0 : 1,
             pointerEvents: selectedBook ? "none" : "auto",
             transition: "opacity 0.45s ease",
@@ -168,7 +169,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
         {/* Title overlay */}
         <div
           className="absolute pointer-events-none"
-          style={{ top: "clamp(80px, 12vh, 130px)", left: "clamp(24px, 5vw, 80px)", zIndex: 3 }}
+          style={{ top: "clamp(130px, 18vh, 200px)", left: "clamp(24px, 5vw, 80px)", zIndex: 3 }}
         >
           <h1 className="type-case-title !text-[#F2EBD9] mb-2">Book Recs</h1>
           <p className="type-paragraph !text-[#F2EBD9]/50">Books that shaped how I think.</p>
@@ -200,48 +201,55 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
         navHoverText="#0C0D1F"
       />
 
-      <main className="px-6 pt-28 pb-20">
+      <main className="px-6 pt-40 pb-20">
         <h1 className="type-case-title !text-[#F2EBD9] mb-4">Book Recs</h1>
         <p className="type-paragraph !text-[#F2EBD9]/60 mb-10">
           Books that shaped how I think about design, engineering, and the world.
         </p>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
-          {books.map((book) => {
-            const isSelected = selectedBook?.id === book.id
-            return (
-              <button
-                key={book.id}
-                onClick={() => handleSelect(book)}
-                className="relative text-left focus:outline-none"
-                aria-label={`${book.title} by ${book.author}`}
-                style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
-              >
-                <div
-                  className="relative overflow-hidden"
-                  style={{
-                    aspectRatio: "2 / 3",
-                    borderRadius: 6,
-                    boxShadow: isSelected
-                      ? `0 24px 60px rgba(0,0,0,0.7), 0 0 0 2px ${book.spineColor}`
-                      : "0 12px 36px rgba(0,0,0,0.5)",
-                    transition: "box-shadow 0.3s ease",
-                  }}
-                >
-                  <Image src={book.coverUrl} alt={book.title} fill sizes="50vw" className="object-cover" />
-                </div>
-                <div className="mt-2 px-0.5">
-                  <p
-                    className="text-white/80 text-xs font-medium leading-snug"
-                    style={{ fontFamily: "var(--font-telegraf), sans-serif" }}
+        <div style={{ display: "flex", gap: "1.25rem" }}>
+          {[books.filter((_, i) => i % 2 === 0), books.filter((_, i) => i % 2 === 1)].map((col, colIdx) => (
+            <div
+              key={colIdx}
+              style={{ flex: 1, display: "flex", flexDirection: "column", gap: "1rem", marginTop: colIdx === 1 ? "6rem" : 0 }}
+            >
+              {col.map((book) => {
+                const isSelected = selectedBook?.id === book.id
+                return (
+                  <button
+                    key={book.id}
+                    onClick={() => handleSelect(book)}
+                    className="relative text-left focus:outline-none"
+                    aria-label={`${book.title} by ${book.author}`}
+                    style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
                   >
-                    {book.title}
-                  </p>
-                  <p className="text-white/35 text-xs mt-0.5">{book.author}</p>
-                </div>
-              </button>
-            )
-          })}
+                    <div
+                      className="relative overflow-hidden"
+                      style={{
+                        aspectRatio: "2 / 3",
+                        borderRadius: 6,
+                        boxShadow: isSelected
+                          ? `0 24px 60px rgba(0,0,0,0.7), 0 0 0 2px ${book.spineColor}`
+                          : "0 12px 36px rgba(0,0,0,0.5)",
+                        transition: "box-shadow 0.3s ease",
+                      }}
+                    >
+                      <Image src={book.coverUrl} alt={book.title} fill sizes="50vw" className="object-cover" />
+                    </div>
+                    <div className="mt-2 px-0.5">
+                      <p
+                        className="text-white/80 text-xs font-medium leading-snug"
+                        style={{ fontFamily: "var(--font-telegraf), sans-serif" }}
+                      >
+                        {book.title}
+                      </p>
+                      <p className="text-white/35 text-xs mt-0.5">{book.author}</p>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          ))}
         </div>
       </main>
 

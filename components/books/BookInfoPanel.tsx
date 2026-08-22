@@ -50,17 +50,22 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 5,
+        zIndex: 60,
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
+        gap: "1.25rem",
         padding: "0 5vw",
+        background: visible ? "rgba(242,235,217,0.4)" : "rgba(242,235,217,0)",
+        backdropFilter: visible ? "blur(12px)" : "blur(0px)",
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? "auto" : "none",
-        transition: "opacity 0.45s ease",
+        transition: "opacity 0.45s ease, background 0.45s ease, backdrop-filter 0.45s ease",
       }}
     >
       {book && (
+        <>
         <div
           role="dialog"
           aria-modal="true"
@@ -72,10 +77,11 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
             gap: "1.5rem",
             border: "1px solid rgba(242,235,217,0.18)",
             borderRadius: 20,
-            padding: "1.75rem",
+            padding: isMobile ? "2.25rem 1.75rem" : "1.75rem",
             background: "rgba(12,13,31,0.96)",
             backdropFilter: "blur(16px)",
-            width: "min(90vw, 560px)",
+            width: "min(90vw, 728px)",
+            ...(isMobile ? { maxHeight: "80vh", overflowY: "auto" } : {}),
             transform: visible ? "translateY(0) scale(1)" : "translateY(16px) scale(0.97)",
             transition: "transform 0.45s cubic-bezier(0.4,0,0.2,1)",
           }}
@@ -84,7 +90,7 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
           <div
             style={{
               flexShrink: 0,
-              width: isMobile ? "100%" : 200,
+              width: isMobile ? "100%" : 260,
               maxWidth: isMobile ? 240 : undefined,
               borderRadius: 10,
               overflow: "hidden",
@@ -144,7 +150,7 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
               <p
                 style={{
                   fontFamily: "var(--font-telegraf), sans-serif",
-                  fontSize: isMobile ? "clamp(17px, 4vw, 19px)" : "clamp(13px, 1vw, 15px)",
+                  fontSize: 16,
                   color: "rgba(242,235,217,0.55)",
                   lineHeight: 1.65,
                   margin: 0,
@@ -154,29 +160,39 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
               </p>
             )}
 
-            <button
-              ref={dismissRef}
-              onClick={onDismiss}
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                fontFamily: "var(--font-telegraf), sans-serif",
-                fontSize: 11,
-                letterSpacing: "0.1em",
-                color: "rgba(242,235,217,0.25)",
-                textTransform: "uppercase",
-                marginTop: "auto",
-                paddingTop: "0.5rem",
-                textAlign: "left",
-              }}
-              aria-label="Deselect book"
-            >
-              ← BACK
-            </button>
           </div>
         </div>
+
+        {/* Close button — below modal, mobile only */}
+        {isMobile && (
+          <button
+            ref={dismissRef}
+            onClick={onDismiss}
+            aria-label="Close"
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              border: "none",
+              background: "#DDED3C",
+              color: "#0C0D1F",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              fontSize: 18,
+              flexShrink: 0,
+            }}
+          >
+            ✕
+          </button>
+        )}
+
+        {/* Hidden dismiss for desktop keyboard nav */}
+        {!isMobile && (
+          <button ref={dismissRef} onClick={onDismiss} style={{ position: "absolute", opacity: 0, pointerEvents: "none", width: 0, height: 0 }} aria-label="Deselect book" tabIndex={-1} />
+        )}
+        </>
       )}
     </div>
   )
