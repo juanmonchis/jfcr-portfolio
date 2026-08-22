@@ -32,7 +32,7 @@
 
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, cloneElement } from "react";
 import { createPortal } from "react-dom";
 import LogoIcon from "@/components/LogoIcon";
 import { assetPath } from "@/lib/assetPath";
@@ -72,7 +72,8 @@ export type Block =
   | { id: string; type: "feature-info"; items: string[] }
   | { id: string; type: "card-summary"; heading: string; intro?: string; items: string[] }
   | { id: string; type: "category-grid"; items: Array<{ icon: string; name: string; description: string }> }
-  | { id: string; type: "numbered-list"; items: Array<{ title: string; body: string }> };
+  | { id: string; type: "text-columns"; items: Array<{ icon?: string; title: string; subtitle?: string; body: string }> }
+  | { id: string; type: "intro-text"; label: string; leftBody: string; title: string; body: string; callout?: string };
 
 function getVideoEmbedUrl(url: string): string | null {
   try {
@@ -1602,6 +1603,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
             block.type === "feature-info" ? "py-12" :
             block.type === "heading" ? "pt-12 pb-3" :
             block.type === "text" ? "pt-3 pb-8" :
+            block.type === "divider" ? "py-4 md:py-8" :
             "py-8"
           }
           style={block.type === "feature-info" ? { background: cardColor } : undefined}
@@ -1804,26 +1806,15 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
             const dividerColor = cardColor ? lightenHex(cardColor, 0.2) : "rgba(12,13,31,0.08)";
             return (
               <div className={textWrapper}>
-                <div style={{ background: bg, borderRadius: 20, overflow: "hidden" }}>
-                  <div style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 1fr)",
-                    gridTemplateRows: "auto auto",
-                  }}>
-                    {block.items.map((item, i) => {
-                      const col = i % 3;
-                      const row = Math.floor(i / 3);
-                      const totalRows = Math.ceil(block.items.length / 3);
-                      return (
-                        <div
-                          key={i}
-                          style={{
-                            padding: "28px 24px",
-                            borderRight: col < 2 ? `1px solid ${dividerColor}` : "none",
-                            borderBottom: row < totalRows - 1 ? `1px solid ${dividerColor}` : "none",
-                          }}
-                        >
-                          <div style={{ width: 28, height: 28, marginBottom: 14, color: "#0C0D1F", opacity: 0.7 }}>
+                <div
+                  className="-mx-6 md:mx-0 rounded-none md:rounded-[20px] py-3.5 md:py-0"
+                  style={{ "--cat-divider": dividerColor, background: bg, overflow: "hidden" } as React.CSSProperties}
+                >
+                  <div className="grid grid-cols-2 md:grid-cols-3">
+                    {block.items.map((item, i) => (
+                      <div key={i} className="cat-grid-item" style={{ padding: "28px 24px" }}>
+                        <div className="cat-grid-header">
+                          <div style={{ width: 28, height: 28, color: "#0C0D1F", opacity: 0.7, flexShrink: 0 }}>
                             {CATEGORY_ICONS[item.icon] ?? <span style={{ fontSize: 24, lineHeight: 1 }}>{item.icon}</span>}
                           </div>
                           <div style={{
@@ -1834,67 +1825,123 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                             marginBottom: 6,
                             lineHeight: 1.2,
                           }}>{item.name}</div>
-                          <div style={{
-                            fontFamily: "var(--font-telegraf), sans-serif",
-                            fontSize: 15,
-                            fontWeight: 400,
-                            color: "rgba(12,13,31,0.55)",
-                            lineHeight: 1.55,
-                          }}>{item.description}</div>
                         </div>
-                      );
-                    })}
+                        <div className="cat-grid-desc" style={{
+                          fontFamily: "var(--font-telegraf), sans-serif",
+                          fontSize: 15,
+                          fontWeight: 400,
+                          color: "rgba(12,13,31,0.55)",
+                          lineHeight: 1.55,
+                        }}>{item.description}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
             );
           })()}
 
-          {block.type === "numbered-list" && (() => {
+          {block.type === "text-columns" && (() => {
             const borderColor = cardColor ? `${cardColor}33` : "rgba(12,13,31,0.12)";
-            const accentColor = cardColor ?? "#0C0D1F";
+            const cols = block.items.length;
             return (
               <div className={textWrapper}>
-                <div style={{ border: `1px solid ${borderColor}`, borderRadius: 12, overflow: "hidden" }}>
+                <div
+                  className="text-col-grid"
+                  style={{
+                    "--col-count": `repeat(${cols}, 1fr)`,
+                    "--col-divider": borderColor,
+                    border: `1px solid ${borderColor}`,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                  } as React.CSSProperties}
+                >
                   {block.items.map((item, i) => (
-                    <div key={i} style={{
-                      display: "grid",
-                      gridTemplateColumns: "52px 1fr",
-                      borderBottom: i < block.items.length - 1 ? `1px solid ${borderColor}` : "none",
-                    }}>
+                    <div key={i} className="text-col-item" style={{ padding: "28px 24px" }}>
+                      {item.icon && CATEGORY_ICONS[item.icon] && (
+                        <div style={{ marginBottom: 14, color: cardColor ?? "#0C0D1F" }}>
+                          {cloneElement(CATEGORY_ICONS[item.icon] as React.ReactElement, { size: 32, color: "currentColor" })}
+                        </div>
+                      )}
                       <div style={{
-                        padding: "24px 0 24px 24px",
-                        fontSize: 11,
-                        fontWeight: 600,
-                        letterSpacing: "0.08em",
-                        color: accentColor,
-                        opacity: 0.5,
-                      }}>
-                        {String(i + 1).padStart(2, "0")}
-                      </div>
+                        fontFamily: "var(--font-migra), serif",
+                        fontSize: 24,
+                        fontWeight: 800,
+                        color: "#0C0D1F",
+                        marginBottom: 4,
+                        lineHeight: 1.15,
+                      }}>{item.title}</div>
+                      {item.subtitle && (
+                        <div style={{
+                          fontFamily: "var(--font-telegraf), sans-serif",
+                          fontSize: 13,
+                          fontWeight: 500,
+                          color: cardColor ?? "#0C0D1F",
+                          letterSpacing: "0.01em",
+                          marginBottom: 12,
+                          lineHeight: 1.4,
+                        }}>{item.subtitle}</div>
+                      )}
                       <div style={{
-                        padding: "24px 28px",
-                        borderLeft: `1px solid ${borderColor}`,
-                      }}>
-                        <div style={{
-                          fontSize: 15,
-                          fontWeight: 600,
-                          color: "#0C0D1F",
-                          marginBottom: 6,
-                          lineHeight: 1.3,
-                        }}>{item.title}</div>
-                        <div style={{
-                          fontSize: 14,
-                          color: "rgba(12,13,31,0.55)",
-                          lineHeight: 1.65,
-                        }}>{item.body}</div>
-                      </div>
+                        fontFamily: "var(--font-telegraf), sans-serif",
+                        fontSize: 15,
+                        fontWeight: 400,
+                        color: "rgba(12,13,31,0.55)",
+                        lineHeight: 1.65,
+                      }}>{item.body}</div>
                     </div>
                   ))}
                 </div>
               </div>
             );
           })()}
+
+          {block.type === "intro-text" && (
+            <div className={textWrapper}>
+              <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-10 md:gap-16 items-start">
+                <div>
+                  <div className="text-[22px] md:text-[15px]" style={{
+                    fontFamily: "var(--font-migra), serif",
+                    fontWeight: 800,
+                    color: "#0C0D1F",
+                    marginBottom: 14,
+                    lineHeight: 1.2,
+                  }}>{block.label}</div>
+                  <div style={{
+                    fontFamily: "var(--font-telegraf), sans-serif",
+                    fontSize: 15,
+                    fontWeight: 400,
+                    color: "rgba(12,13,31,0.55)",
+                    lineHeight: 1.65,
+                  }}>{block.leftBody}</div>
+                </div>
+                <div>
+                  <div className="text-[22px] md:text-[72px]" style={{
+                    fontFamily: "var(--font-migra), serif",
+                    fontWeight: 800,
+                    color: "#0C0D1F",
+                    lineHeight: 0.95,
+                    marginBottom: 28,
+                  }}>{block.title}</div>
+                  <div className="text-[15px] md:text-[18px]" style={{
+                    fontFamily: "var(--font-telegraf), sans-serif",
+                    fontWeight: 400,
+                    color: "rgba(12,13,31,0.7)",
+                    lineHeight: 1.6,
+                    marginBottom: block.callout ? 20 : 0,
+                  }}>{block.body}</div>
+                  {block.callout && (
+                    <div className="text-[15px] md:text-[18px]" style={{
+                      fontFamily: "var(--font-telegraf), sans-serif",
+                      fontWeight: 700,
+                      color: "#0C0D1F",
+                      lineHeight: 1.5,
+                    }}>{block.callout}</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {block.type === "button" && (
             <div className={`${textWrapper} flex ${block.align === "center" ? "justify-center" : block.align === "right" ? "justify-end" : "justify-start"}`}>

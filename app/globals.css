@@ -109,37 +109,49 @@ a:hover .sui-item-text { color: #FF2F01 !important; }
 /* Case study opening title — the largest heading on a case study page */
 .type-case-main-title {
   font-family: var(--font-migra), serif;
-  font-size: 120px;
-  line-height: 120px;
+  font-size: 72px;
+  line-height: 1;
   font-weight: 400;
   color: #0d0c27;
+}
+@media (min-width: 768px) {
+  .type-case-main-title { font-size: 120px; line-height: 120px; }
 }
 
 /* Case study primary section title */
 .type-case-title {
   font-family: var(--font-migra), serif;
-  font-size: 64px;
-  line-height: 64px;
-  font-weight: 800; /* ⚠ Mapped to Extrabold — Migra has no 700 */
+  font-size: 45px;
+  line-height: 1.1;
+  font-weight: 800;
   color: #0d0c27;
+}
+@media (min-width: 768px) {
+  .type-case-title { font-size: 64px; line-height: 64px; }
 }
 
 /* Case study subsection title */
 .type-case-subtitle {
   font-family: var(--font-migra), serif;
-  font-size: 40px;
-  line-height: 52px;
-  font-weight: 800; /* ⚠ Mapped to Extrabold — Migra has no 700 */
+  font-size: 33px;
+  line-height: 1.2;
+  font-weight: 800;
   color: #0d0c27;
+}
+@media (min-width: 768px) {
+  .type-case-subtitle { font-size: 40px; line-height: 52px; }
 }
 
 /* Case study small heading / label heading */
 .type-case-heading-sm {
   font-family: var(--font-migra), serif;
-  font-size: 24px;
-  line-height: 30px;
-  font-weight: 800; /* ⚠ Mapped to Extrabold — Migra has no 700 */
+  font-size: 25px;
+  line-height: 1.3;
+  font-weight: 800;
   color: #0d0c27;
+}
+@media (min-width: 768px) {
+  .type-case-heading-sm { font-size: 24px; line-height: 30px; }
 }
 
 /* Highlighted pullquote or key statement inside a case study */
@@ -481,6 +493,63 @@ body {
 
 .pill-marquee-item:hover {
   background: #0C0D1F;
+}
+
+/* Text columns responsive layout */
+.text-col-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .text-col-grid { grid-template-columns: var(--col-count, repeat(3, 1fr)); }
+}
+.text-col-item {
+  border-bottom: 1px solid var(--col-divider, rgba(12,13,31,0.12));
+}
+.text-col-item:last-child { border-bottom: none; }
+@media (min-width: 768px) {
+  .text-col-item { border-bottom: none; border-right: 1px solid var(--col-divider, rgba(12,13,31,0.12)); }
+  .text-col-item:last-child { border-right: none; }
+}
+
+/* Category grid icon+title header */
+.cat-grid-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 14px;
+}
+@media (max-width: 767px) {
+  .cat-grid-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .cat-grid-header > div:last-child { margin-bottom: 0 !important; }
+}
+
+/* Category grid responsive borders */
+.cat-grid-item {
+  border-right: 1px solid var(--cat-divider, rgba(12,13,31,0.08));
+  border-bottom: 1px solid var(--cat-divider, rgba(12,13,31,0.08));
+}
+/* Desktop: 3-col borders */
+.cat-grid-item:nth-child(3n)      { border-right: none; }
+.cat-grid-item:nth-last-child(-n+3) { border-bottom: none; }
+
+@media (max-width: 767px) {
+  /* 2-col mobile borders — reset desktop rules first */
+  .cat-grid-item:nth-child(3n)        { border-right: 1px solid var(--cat-divider, rgba(12,13,31,0.08)); }
+  .cat-grid-item:nth-last-child(-n+3) { border-bottom: 1px solid var(--cat-divider, rgba(12,13,31,0.08)); }
+  /* 2-col: remove right border from even items (right column) */
+  .cat-grid-item:nth-child(even) { border-right: none; }
+  /* 2-col: remove bottom border from last 2 items (last row) */
+  .cat-grid-item:nth-last-child(-n+2) { border-bottom: none; }
+  /* Smaller, tighter body text on mobile */
+  .cat-grid-desc { font-size: 13px !important; line-height: 1.4 !important; }
+  /* Reduced padding on mobile */
+  .cat-grid-item { padding: 16px !important; }
 }
 
 .pill-marquee-item .type-homepage-hero {

@@ -119,7 +119,8 @@ const BLOCK_TYPES = [
   { value: "feature-info", label: "Feature Info" },
   { value: "card-summary", label: "Card Summary" },
   { value: "category-grid", label: "Category Grid" },
-  { value: "numbered-list", label: "Numbered List" },
+  { value: "text-columns", label: "Text Columns" },
+  { value: "intro-text", label: "Intro Text" },
 ] as const;
 
 function createBlock(type: Block["type"]): Block {
@@ -151,8 +152,10 @@ function createBlock(type: Block["type"]): Block {
       return { id, type: "card-summary", heading: "", intro: "", items: ["01 — "] };
     case "category-grid":
       return { id, type: "category-grid", items: [{ icon: "", name: "", description: "" }] };
-    case "numbered-list":
-      return { id, type: "numbered-list", items: [{ title: "", body: "" }] };
+    case "text-columns":
+      return { id, type: "text-columns", items: [{ title: "", subtitle: "", body: "" }] };
+    case "intro-text":
+      return { id, type: "intro-text", label: "", leftBody: "", title: "", body: "", callout: "" };
   }
 }
 
@@ -185,7 +188,8 @@ function BlockItem({
             : block.type === "feature-info" ? "feature info"
             : block.type === "card-summary" ? "card summary"
             : block.type === "category-grid" ? "category grid"
-            : block.type === "numbered-list" ? "numbered list"
+            : block.type === "text-columns" ? "text columns"
+            : block.type === "intro-text" ? "intro text"
             : block.type}
         </span>
         <div className="flex gap-1">
@@ -626,24 +630,66 @@ function BlockItem({
         </div>
       )}
 
-      {block.type === "numbered-list" && (
+      {block.type === "text-columns" && (
         <div className="flex flex-col gap-3">
-          <label className={labelClass}>Items (title + body)</label>
+          <label className={labelClass}>Columns (title + subtitle + body)</label>
           {block.items.map((item, i) => (
             <div key={i} className="flex flex-col gap-1 border border-gray-100 rounded-lg p-3">
               <div className="flex gap-2 items-center">
-                <span className="text-xs text-gray-400 font-mono shrink-0">{String(i + 1).padStart(2, "0")}</span>
-                <input type="text" className="flex-1 border border-gray-200 rounded-lg px-3 py-1 text-sm font-semibold" value={item.title} placeholder="Title"
+                <input type="text" className="flex-1 border border-gray-200 rounded-lg px-3 py-1 text-sm font-semibold" value={item.title} placeholder="Title (e.g. Illustration)"
                   onChange={(e) => { const items = [...block.items]; items[i] = { ...items[i], title: e.target.value }; onUpdate({ ...block, items }); }} />
                 <button type="button" onClick={() => onUpdate({ ...block, items: block.items.filter((_, idx) => idx !== i) })}
                   className="px-2 py-1 text-xs rounded border border-red-200 text-red-500 hover:bg-red-50 shrink-0">×</button>
               </div>
+              <select className="w-full border border-gray-200 rounded-lg px-3 py-1 text-sm text-gray-500 bg-white" value={item.icon ?? ""}
+                onChange={(e) => { const items = [...block.items]; items[i] = { ...items[i], icon: e.target.value || undefined }; onUpdate({ ...block, items }); }}>
+                <option value="">— no icon —</option>
+                <option value="gg-helmet">gg-helmet (Helmet)</option>
+                <option value="gg-armor">gg-armor (Safety Vest)</option>
+                <option value="gg-weapons">gg-weapons (Swords)</option>
+                <option value="gg-badges">gg-badges (Medal)</option>
+                <option value="gg-backpack">gg-backpack (Backpack)</option>
+                <option value="gg-accessories">gg-accessories (Crown)</option>
+                <option value="urban-farm">urban-farm (Plant)</option>
+                <option value="farm">farm (Tractor)</option>
+                <option value="market">market (Basket)</option>
+                <option value="store">store (Store)</option>
+                <option value="restaurant">restaurant (Restaurant)</option>
+                <option value="event">event (Calendar)</option>
+              </select>
+              <input type="text" className="w-full border border-gray-200 rounded-lg px-3 py-1 text-sm text-gray-500" value={item.subtitle ?? ""} placeholder="Subtitle (e.g. building a visual universe from scratch)"
+                onChange={(e) => { const items = [...block.items]; items[i] = { ...items[i], subtitle: e.target.value }; onUpdate({ ...block, items }); }} />
               <textarea rows={2} className="w-full border border-gray-200 rounded-lg px-3 py-1 text-sm text-gray-600 resize-none" value={item.body} placeholder="Body text"
                 onChange={(e) => { const items = [...block.items]; items[i] = { ...items[i], body: e.target.value }; onUpdate({ ...block, items }); }} />
             </div>
           ))}
-          <button type="button" onClick={() => onUpdate({ ...block, items: [...block.items, { title: "", body: "" }] })}
-            className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start">+ Add item</button>
+          <button type="button" onClick={() => onUpdate({ ...block, items: [...block.items, { title: "", subtitle: "", body: "" }] })}
+            className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start">+ Add column</button>
+        </div>
+      )}
+
+      {block.type === "intro-text" && (
+        <div className="flex flex-col gap-3">
+          <div>
+            <label className={labelClass}>Label (left column header)</label>
+            <input type="text" className={inputClass} value={block.label} placeholder="e.g. Context:" onChange={(e) => onUpdate({ ...block, label: e.target.value })} />
+          </div>
+          <div>
+            <label className={labelClass}>Left body text</label>
+            <textarea rows={4} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 resize-none" value={block.leftBody} placeholder="Short paragraph on the left…" onChange={(e) => onUpdate({ ...block, leftBody: e.target.value })} />
+          </div>
+          <div>
+            <label className={labelClass}>Title (large right heading)</label>
+            <input type="text" className={inputClass} value={block.title} placeholder="e.g. The results:" onChange={(e) => onUpdate({ ...block, title: e.target.value })} />
+          </div>
+          <div>
+            <label className={labelClass}>Body text</label>
+            <textarea rows={4} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 resize-none" value={block.body} placeholder="Main paragraph on the right…" onChange={(e) => onUpdate({ ...block, body: e.target.value })} />
+          </div>
+          <div>
+            <label className={labelClass}>Callout (optional bold text at bottom)</label>
+            <textarea rows={2} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 resize-none" value={block.callout ?? ""} placeholder="Bold closing statement…" onChange={(e) => onUpdate({ ...block, callout: e.target.value || undefined })} />
+          </div>
         </div>
       )}
 
