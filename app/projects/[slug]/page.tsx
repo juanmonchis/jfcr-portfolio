@@ -31,7 +31,7 @@ import BlockRenderer, { Block } from "@/components/CaseStudy/BlockRenderer";
 import SiteHeader from "@/components/SiteHeader";
 import ProjectCard from "@/components/ProjectCard";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   try {
