@@ -1860,7 +1860,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                     <div key={i} className="text-col-item" style={{ padding: "28px 24px" }}>
                       {item.icon && CATEGORY_ICONS[item.icon] && (
                         <div style={{ marginBottom: 14, color: cardColor ?? "#0C0D1F" }}>
-                          {cloneElement(CATEGORY_ICONS[item.icon] as React.ReactElement, { size: 32, color: "currentColor" })}
+                          {cloneElement(CATEGORY_ICONS[item.icon] as React.ReactElement<{ size?: number; color?: string }>, { size: 32, color: "currentColor" })}
                         </div>
                       )}
                       <div style={{
