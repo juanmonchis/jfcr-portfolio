@@ -1815,12 +1815,14 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                     {block.items.map((item, i) => (
                       <div key={i} className="cat-grid-item" style={{ padding: "28px 24px" }}>
                         <div className="cat-grid-header">
-                          <div style={{ width: 28, height: 28, color: "#0C0D1F", opacity: 0.7, flexShrink: 0 }}>
-                            {CATEGORY_ICONS[item.icon] ?? <span style={{ fontSize: 24, lineHeight: 1 }}>{item.icon}</span>}
+                          <div style={{ width: 48, height: 48, color: "#0C0D1F", opacity: 0.7, flexShrink: 0, marginBottom: 14 }}>
+                            {CATEGORY_ICONS[item.icon]
+                              ? cloneElement(CATEGORY_ICONS[item.icon] as React.ReactElement<{ size?: number }>, { size: 48 })
+                              : <span style={{ fontSize: 40, lineHeight: 1 }}>{item.icon}</span>}
                           </div>
                           <div style={{
                             fontFamily: "var(--font-migra), serif",
-                            fontSize: 18,
+                            fontSize: 22,
                             fontWeight: 800,
                             color: "#0C0D1F",
                             marginBottom: 6,
