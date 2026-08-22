@@ -118,6 +118,7 @@ const BLOCK_TYPES = [
   { value: "text-boxes", label: "Text Boxes" },
   { value: "feature-info", label: "Feature Info" },
   { value: "card-summary", label: "Card Summary" },
+  { value: "category-grid", label: "Category Grid" },
 ] as const;
 
 function createBlock(type: Block["type"]): Block {
@@ -147,6 +148,8 @@ function createBlock(type: Block["type"]): Block {
       return { id, type: "feature-info", items: [""] };
     case "card-summary":
       return { id, type: "card-summary", heading: "", intro: "", items: ["01 — "] };
+    case "category-grid":
+      return { id, type: "category-grid", items: [{ icon: "", name: "", description: "" }] };
   }
 }
 
@@ -178,6 +181,7 @@ function BlockItem({
           {block.type === "image-grid" ? "card deck"
             : block.type === "feature-info" ? "feature info"
             : block.type === "card-summary" ? "card summary"
+            : block.type === "category-grid" ? "category grid"
             : block.type}
         </span>
         <div className="flex gap-1">
@@ -509,6 +513,28 @@ function BlockItem({
             onClick={() => onUpdate({ ...block, items: [...block.items, ""] })}
             className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start"
           >+ Add item</button>
+        </div>
+      )}
+
+      {block.type === "category-grid" && (
+        <div className="flex flex-col gap-3">
+          <label className={labelClass}>Items (icon · name · description)</label>
+          {block.items.map((item, i) => (
+            <div key={i} className="flex flex-col gap-1 border border-gray-100 rounded-lg p-3">
+              <div className="flex gap-2">
+                <input type="text" className="w-16 border border-gray-200 rounded-lg px-2 py-1 text-sm text-center" value={item.icon} placeholder="🌿"
+                  onChange={(e) => { const items = [...block.items]; items[i] = { ...items[i], icon: e.target.value }; onUpdate({ ...block, items }); }} />
+                <input type="text" className="flex-1 border border-gray-200 rounded-lg px-3 py-1 text-sm font-semibold" value={item.name} placeholder="Category name"
+                  onChange={(e) => { const items = [...block.items]; items[i] = { ...items[i], name: e.target.value }; onUpdate({ ...block, items }); }} />
+                <button type="button" onClick={() => onUpdate({ ...block, items: block.items.filter((_, idx) => idx !== i) })}
+                  className="px-2 py-1 text-xs rounded border border-red-200 text-red-500 hover:bg-red-50 shrink-0">×</button>
+              </div>
+              <input type="text" className="w-full border border-gray-200 rounded-lg px-3 py-1 text-sm text-gray-600" value={item.description} placeholder="Short description"
+                onChange={(e) => { const items = [...block.items]; items[i] = { ...items[i], description: e.target.value }; onUpdate({ ...block, items }); }} />
+            </div>
+          ))}
+          <button type="button" onClick={() => onUpdate({ ...block, items: [...block.items, { icon: "", name: "", description: "" }] })}
+            className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start">+ Add category</button>
         </div>
       )}
 

@@ -70,7 +70,8 @@ export type Block =
   | { id: string; type: "button"; text: string; url: string; align: "left" | "center" | "right" }
   | { id: string; type: "text-boxes"; items: string[] }
   | { id: string; type: "feature-info"; items: string[] }
-  | { id: string; type: "card-summary"; heading: string; intro?: string; items: string[] };
+  | { id: string; type: "card-summary"; heading: string; intro?: string; items: string[] }
+  | { id: string; type: "category-grid"; items: Array<{ icon: string; name: string; description: string }> };
 
 function getVideoEmbedUrl(url: string): string | null {
   try {
@@ -129,6 +130,32 @@ function VideoBlock({ block }: { block: Extract<Block, { type: "video" }> }) {
 }
 
 const textWrapper = "max-w-[1000px] mx-auto w-full px-6 md:px-12";
+
+import {
+  HandHoldingPlant,
+  FarmingTractor,
+  ShoppingBasket,
+  Store,
+  MealRestaurant,
+  CalendarDots,
+} from "@vectoricons/atlas-icons-react";
+
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
+  "urban-farm": <HandHoldingPlant size={28} color="currentColor" />,
+  "farm":       <FarmingTractor   size={28} color="currentColor" />,
+  "market":     <ShoppingBasket   size={28} color="currentColor" />,
+  "store":      <Store            size={28} color="currentColor" />,
+  "restaurant": <MealRestaurant   size={28} color="currentColor" />,
+  "event":      <CalendarDots     size={28} color="currentColor" />,
+};
+
+function lightenHex(hex: string, amount = 0.55): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgb(${Math.round(r + (255 - r) * amount)}, ${Math.round(g + (255 - g) * amount)}, ${Math.round(b + (255 - b) * amount)})`;
+}
 
 const MAX_GRID_IMAGES = 12;
 const PACK_LIMIT = 5;
@@ -1555,7 +1582,16 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
     <>
     <div className="flex flex-col">
       {blocks.map((block) => (
-        <div key={block.id} className="py-8">
+        <div
+          key={block.id}
+          className={
+            block.type === "feature-info" ? "py-12" :
+            block.type === "heading" ? "pt-12 pb-3" :
+            block.type === "text" ? "pt-3 pb-8" :
+            "py-8"
+          }
+          style={block.type === "feature-info" ? { background: cardColor } : undefined}
+        >
 
           {block.type === "heading" && (
             <div className={textWrapper}>
@@ -1572,8 +1608,22 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
           )}
 
           {block.type === "highlight" && (
-            <div className={`${textWrapper} py-12 text-center`}>
-              <p className="font-black text-3xl md:text-5xl text-[#0C0D1F]">{block.text}</p>
+            <div className={textWrapper}>
+              <div
+                className="py-12 px-10 text-center"
+                style={{
+                  border: `2px solid ${cardColor ?? "rgba(12,13,31,0.1)"}`,
+                  borderRadius: "50%",
+                }}
+              >
+                <p style={{
+                  fontFamily: "var(--font-migra), serif",
+                  fontWeight: 400,
+                  fontSize: "clamp(2rem, 4vw, 3.5rem)",
+                  lineHeight: 1.15,
+                  color: "#0C0D1F",
+                }}>{block.text}</p>
+              </div>
             </div>
           )}
 
@@ -1648,8 +1698,9 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
           )}
 
           {block.type === "feature-info" && (
-            <div className={textWrapper}>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+            <div className="px-6 md:px-12">
+              <div className="max-w-[1000px] mx-auto w-full">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                 {block.items.map((text, i) => {
                   const spaceIdx = text.indexOf(" ");
                   const stat = spaceIdx === -1 ? text : text.slice(0, spaceIdx);
@@ -1665,7 +1716,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                     }}>
                       <span style={{
                         fontFamily: "var(--font-migra), serif",
-                        fontSize: 52,
+                        fontSize: 64,
                         fontWeight: 800,
                         lineHeight: 1,
                         letterSpacing: "-0.02em",
@@ -1683,11 +1734,12 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                   );
                 })}
               </div>
+              </div>
             </div>
           )}
 
           {block.type === "card-summary" && (
-            <div className={textWrapper}>
+            <div className="max-w-[800px] mx-auto w-full px-6 md:px-12">
               <h2 className="type-case-subtitle mb-4">{block.heading}</h2>
               {block.intro && (
                 <p style={{
@@ -1732,6 +1784,57 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
               </div>
             </div>
           )}
+
+          {block.type === "category-grid" && (() => {
+            const bg = cardColor ? lightenHex(cardColor, 0.55) : "rgba(12,13,31,0.03)";
+            const dividerColor = cardColor ? lightenHex(cardColor, 0.2) : "rgba(12,13,31,0.08)";
+            return (
+              <div className={textWrapper}>
+                <div style={{ background: bg, borderRadius: 20, overflow: "hidden" }}>
+                  <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gridTemplateRows: "auto auto",
+                  }}>
+                    {block.items.map((item, i) => {
+                      const col = i % 3;
+                      const row = Math.floor(i / 3);
+                      const totalRows = Math.ceil(block.items.length / 3);
+                      return (
+                        <div
+                          key={i}
+                          style={{
+                            padding: "28px 24px",
+                            borderRight: col < 2 ? `1px solid ${dividerColor}` : "none",
+                            borderBottom: row < totalRows - 1 ? `1px solid ${dividerColor}` : "none",
+                          }}
+                        >
+                          <div style={{ width: 28, height: 28, marginBottom: 14, color: "#0C0D1F", opacity: 0.7 }}>
+                            {CATEGORY_ICONS[item.icon] ?? <span style={{ fontSize: 24, lineHeight: 1 }}>{item.icon}</span>}
+                          </div>
+                          <div style={{
+                            fontFamily: "var(--font-migra), serif",
+                            fontSize: 18,
+                            fontWeight: 800,
+                            color: "#0C0D1F",
+                            marginBottom: 6,
+                            lineHeight: 1.2,
+                          }}>{item.name}</div>
+                          <div style={{
+                            fontFamily: "var(--font-telegraf), sans-serif",
+                            fontSize: 15,
+                            fontWeight: 400,
+                            color: "rgba(12,13,31,0.55)",
+                            lineHeight: 1.55,
+                          }}>{item.description}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
 
           {block.type === "button" && (
             <div className={`${textWrapper} flex ${block.align === "center" ? "justify-center" : block.align === "right" ? "justify-end" : "justify-start"}`}>

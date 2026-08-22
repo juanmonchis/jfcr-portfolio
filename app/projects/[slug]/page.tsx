@@ -134,39 +134,30 @@ export default async function CaseStudyPage({ params }: Props) {
         <div className="relative">
           <SiteHeader logoSize={100} mobileOverlayColor={project.cardColor} />
         <section
-          className="pt-[calc(20vw+48px)] pb-12 px-6 md:px-12 md:pt-32 md:pb-12"
+          className="pt-[calc(20vw+64px)] pb-12 px-6 md:px-12 md:pt-56 md:pb-12"
           style={{ background: project.cardColor }}
         >
           <div className="max-w-[1000px] mx-auto w-full">
-            <div className="flex flex-col md:flex-row gap-8 md:items-end">
+            {/* Title */}
+            <h1 className="type-homepage-hero-left !text-[#0C0D1F] mb-4">
+              {project.title}
+            </h1>
+
+            {/* Tags — dot-separated below title */}
+            {tags.length > 0 && (
+              <p className="type-tag text-[#0C0D1F]/50 mb-8 tracking-widest uppercase">
+                {tags.join(" · ")}
+              </p>
+            )}
+
+            {/* Description + Team side by side, both top-aligned */}
+            <div className="flex flex-col md:flex-row gap-8 md:items-start">
               <div className="flex-1">
-                {/* Tags */}
-                {tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="type-tag px-3 py-1 border border-[#0C0D1F]/30 rounded-full text-[#0C0D1F]"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {/* Title */}
-                <h1 className="type-homepage-hero-left !text-[#0C0D1F]">
-                  {project.title}
-                </h1>
-
-                {/* Description */}
                 {heroDescription && (
-                  <p className="type-paragraph text-[#0C0D1F]/70 mt-4">
+                  <p className="type-paragraph text-[#0C0D1F]/70">
                     {heroDescription}
                   </p>
                 )}
-
-                {/* CTA */}
                 {heroCtaLabel && heroCtaUrl && (
                   <a
                     href={heroCtaUrl}

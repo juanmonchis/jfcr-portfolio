@@ -46,6 +46,13 @@ export default function CaseStudyEditorClient({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // Feature-info items managed separately from the block list
+  const [featureInfoItems, setFeatureInfoItems] = useState<string[]>(() => {
+    const parsed = parseBlocks(initialBlocks);
+    const block = parsed.find((b) => b.type === "feature-info");
+    return block && block.type === "feature-info" ? block.items : [];
+  });
+
   async function handleSave() {
     setSaving(true);
     setError(null);
@@ -56,6 +63,22 @@ export default function CaseStudyEditorClient({
       .map((s) => s.trim())
       .filter(Boolean);
 
+    // Sync featureInfoItems back into the blocks array
+    let mergedBlocks = blocks;
+    if (featureInfoItems.length > 0) {
+      const existingIdx = blocks.findIndex((b) => b.type === "feature-info");
+      if (existingIdx >= 0) {
+        mergedBlocks = blocks.map((b, i) =>
+          i === existingIdx ? { ...b, type: "feature-info" as const, items: featureInfoItems } : b
+        );
+      } else {
+        mergedBlocks = [
+          { id: crypto.randomUUID(), type: "feature-info" as const, items: featureInfoItems },
+          ...blocks,
+        ];
+      }
+    }
+
     try {
       const res = await fetch(`/api/admin/case-studies/${projectId}`, {
         method: "PUT",
@@ -63,7 +86,7 @@ export default function CaseStudyEditorClient({
         body: JSON.stringify({
           slug,
           teamMembers,
-          blocks,
+          blocks: mergedBlocks,
           description: description || null,
           ctaLabel: ctaLabel || null,
           ctaUrl: ctaUrl || null,
@@ -169,12 +192,60 @@ export default function CaseStudyEditorClient({
             </div>
           </div>
         </div>
+
+        {/* Feature Info stats */}
+        <div className="flex flex-col gap-2 pt-2 border-t border-gray-100">
+          <p className="text-xs font-semibold text-gray-500">Feature Info Stats</p>
+          <p className="text-xs text-gray-400">First word of each item becomes the large stat number.</p>
+          {featureInfoItems.map((item, i) => (
+            <div key={i} className="flex gap-2">
+              <input
+                type="text"
+                className={inputClass}
+                value={item}
+                onChange={(e) => {
+                  const next = [...featureInfoItems];
+                  next[i] = e.target.value;
+                  setFeatureInfoItems(next);
+                }}
+                placeholder={`e.g. "2× app installs doubled after the redesign"`}
+              />
+              <button
+                type="button"
+                onClick={() => setFeatureInfoItems(featureInfoItems.filter((_, idx) => idx !== i))}
+                className="px-2 py-1 text-xs rounded border border-red-200 text-red-500 hover:bg-red-50 shrink-0"
+              >×</button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => setFeatureInfoItems([...featureInfoItems, ""])}
+            className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start"
+          >+ Add stat</button>
+        </div>
       </div>
 
       {/* Block editor */}
       <div className="bg-white rounded-2xl p-6 flex flex-col gap-4">
         <h2 className="text-lg font-bold text-[#0C0D1F]">Content Blocks</h2>
-        <BlockEditor blocks={blocks} onChange={setBlocks} />
+        <BlockEditor
+          blocks={blocks.filter((b) => b.type !== "feature-info")}
+          onChange={(updated) => {
+            // Re-merge: keep existing feature-info blocks at their original positions
+            const featureInfoBlocks = blocks.filter((b) => b.type === "feature-info");
+            const featureInfoIdx = blocks.findIndex((b) => b.type === "feature-info");
+            if (featureInfoBlocks.length === 0) {
+              setBlocks(updated);
+            } else {
+              // Insert feature-info blocks back at their original index
+              const next = [...updated];
+              featureInfoBlocks.forEach((fi, offset) => {
+                next.splice(Math.min(featureInfoIdx + offset, next.length), 0, fi);
+              });
+              setBlocks(next);
+            }
+          }}
+        />
       </div>
 
       {/* Save / status */}

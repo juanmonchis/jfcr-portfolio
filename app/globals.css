@@ -85,14 +85,14 @@ a:hover .sui-item-text { color: #FF2F01 !important; }
 /* Same as type-homepage-hero but left-aligned */
 .type-homepage-hero-left {
   font-family: var(--font-migra), serif;
-  font-size: 120px;
-  line-height: 118px;
+  font-size: 85px;
+  line-height: 85px;
   font-weight: 800;
   color: #0d0c27;
   text-align: left;
 }
 
-@media (min-width: 440px) {
+@media (min-width: 400px) {
   .type-homepage-hero-left {
     font-size: 60px;
     line-height: 50px;
