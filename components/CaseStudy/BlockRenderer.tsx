@@ -84,8 +84,9 @@ function getVideoEmbedUrl(url: string): string | null {
       }
       if (videoId) return `https://www.youtube.com/embed/${videoId}`;
     }
-    // Vimeo
+    // Vimeo — if already a player URL preserve all params (needed for unlisted video h= hash)
     if (u.hostname.includes("vimeo.com")) {
+      if (u.hostname === "player.vimeo.com") return url.replace(/&;/g, "&");
       const videoId = u.pathname.split("/").filter(Boolean).pop();
       if (videoId) return `https://player.vimeo.com/video/${videoId}`;
     }
@@ -116,7 +117,7 @@ function VideoBlock({ block }: { block: Extract<Block, { type: "video" }> }) {
             src={embedUrl}
             className="w-full h-full rounded-xl"
             allowFullScreen
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
           />
         ) : (
           <video src={assetPath(block.url)} controls className="w-full h-full rounded-xl object-cover" />
@@ -138,15 +139,27 @@ import {
   Store,
   MealRestaurant,
   CalendarDots,
+  Helmet,
+  SafetyVest,
+  FencingSwords,
+  MedalBadgeAward,
+  Backpack,
+  CrownAchievement,
 } from "@vectoricons/atlas-icons-react";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  "urban-farm": <HandHoldingPlant size={28} color="currentColor" />,
-  "farm":       <FarmingTractor   size={28} color="currentColor" />,
-  "market":     <ShoppingBasket   size={28} color="currentColor" />,
-  "store":      <Store            size={28} color="currentColor" />,
-  "restaurant": <MealRestaurant   size={28} color="currentColor" />,
-  "event":      <CalendarDots     size={28} color="currentColor" />,
+  "urban-farm":      <HandHoldingPlant size={28} color="currentColor" />,
+  "farm":            <FarmingTractor   size={28} color="currentColor" />,
+  "market":          <ShoppingBasket   size={28} color="currentColor" />,
+  "store":           <Store            size={28} color="currentColor" />,
+  "restaurant":      <MealRestaurant   size={28} color="currentColor" />,
+  "event":           <CalendarDots     size={28} color="currentColor" />,
+  "gg-helmet":       <Helmet           size={28} color="currentColor" />,
+  "gg-armor":        <SafetyVest       size={28} color="currentColor" />,
+  "gg-weapons":      <FencingSwords    size={28} color="currentColor" />,
+  "gg-badges":       <MedalBadgeAward  size={28} color="currentColor" />,
+  "gg-backpack":     <Backpack         size={28} color="currentColor" />,
+  "gg-accessories":  <CrownAchievement size={28} color="currentColor" />,
 };
 
 function lightenHex(hex: string, amount = 0.55): string {
