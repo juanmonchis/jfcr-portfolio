@@ -119,6 +119,7 @@ const BLOCK_TYPES = [
   { value: "feature-info", label: "Feature Info" },
   { value: "card-summary", label: "Card Summary" },
   { value: "category-grid", label: "Category Grid" },
+  { value: "numbered-list", label: "Numbered List" },
 ] as const;
 
 function createBlock(type: Block["type"]): Block {
@@ -150,6 +151,8 @@ function createBlock(type: Block["type"]): Block {
       return { id, type: "card-summary", heading: "", intro: "", items: ["01 — "] };
     case "category-grid":
       return { id, type: "category-grid", items: [{ icon: "", name: "", description: "" }] };
+    case "numbered-list":
+      return { id, type: "numbered-list", items: [{ title: "", body: "" }] };
   }
 }
 
@@ -182,6 +185,7 @@ function BlockItem({
             : block.type === "feature-info" ? "feature info"
             : block.type === "card-summary" ? "card summary"
             : block.type === "category-grid" ? "category grid"
+            : block.type === "numbered-list" ? "numbered list"
             : block.type}
         </span>
         <div className="flex gap-1">
@@ -619,6 +623,27 @@ function BlockItem({
               className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start"
             >+ Add card</button>
           </div>
+        </div>
+      )}
+
+      {block.type === "numbered-list" && (
+        <div className="flex flex-col gap-3">
+          <label className={labelClass}>Items (title + body)</label>
+          {block.items.map((item, i) => (
+            <div key={i} className="flex flex-col gap-1 border border-gray-100 rounded-lg p-3">
+              <div className="flex gap-2 items-center">
+                <span className="text-xs text-gray-400 font-mono shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                <input type="text" className="flex-1 border border-gray-200 rounded-lg px-3 py-1 text-sm font-semibold" value={item.title} placeholder="Title"
+                  onChange={(e) => { const items = [...block.items]; items[i] = { ...items[i], title: e.target.value }; onUpdate({ ...block, items }); }} />
+                <button type="button" onClick={() => onUpdate({ ...block, items: block.items.filter((_, idx) => idx !== i) })}
+                  className="px-2 py-1 text-xs rounded border border-red-200 text-red-500 hover:bg-red-50 shrink-0">×</button>
+              </div>
+              <textarea rows={2} className="w-full border border-gray-200 rounded-lg px-3 py-1 text-sm text-gray-600 resize-none" value={item.body} placeholder="Body text"
+                onChange={(e) => { const items = [...block.items]; items[i] = { ...items[i], body: e.target.value }; onUpdate({ ...block, items }); }} />
+            </div>
+          ))}
+          <button type="button" onClick={() => onUpdate({ ...block, items: [...block.items, { title: "", body: "" }] })}
+            className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start">+ Add item</button>
         </div>
       )}
 

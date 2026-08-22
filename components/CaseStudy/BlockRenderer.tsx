@@ -71,7 +71,8 @@ export type Block =
   | { id: string; type: "text-boxes"; items: string[] }
   | { id: string; type: "feature-info"; items: string[] }
   | { id: string; type: "card-summary"; heading: string; intro?: string; items: string[] }
-  | { id: string; type: "category-grid"; items: Array<{ icon: string; name: string; description: string }> };
+  | { id: string; type: "category-grid"; items: Array<{ icon: string; name: string; description: string }> }
+  | { id: string; type: "numbered-list"; items: Array<{ title: string; body: string }> };
 
 function getVideoEmbedUrl(url: string): string | null {
   try {
@@ -1844,6 +1845,52 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                       );
                     })}
                   </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          {block.type === "numbered-list" && (() => {
+            const borderColor = cardColor ? `${cardColor}33` : "rgba(12,13,31,0.12)";
+            const accentColor = cardColor ?? "#0C0D1F";
+            return (
+              <div className={textWrapper}>
+                <div style={{ border: `1px solid ${borderColor}`, borderRadius: 12, overflow: "hidden" }}>
+                  {block.items.map((item, i) => (
+                    <div key={i} style={{
+                      display: "grid",
+                      gridTemplateColumns: "52px 1fr",
+                      borderBottom: i < block.items.length - 1 ? `1px solid ${borderColor}` : "none",
+                    }}>
+                      <div style={{
+                        padding: "24px 0 24px 24px",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        letterSpacing: "0.08em",
+                        color: accentColor,
+                        opacity: 0.5,
+                      }}>
+                        {String(i + 1).padStart(2, "0")}
+                      </div>
+                      <div style={{
+                        padding: "24px 28px",
+                        borderLeft: `1px solid ${borderColor}`,
+                      }}>
+                        <div style={{
+                          fontSize: 15,
+                          fontWeight: 600,
+                          color: "#0C0D1F",
+                          marginBottom: 6,
+                          lineHeight: 1.3,
+                        }}>{item.title}</div>
+                        <div style={{
+                          fontSize: 14,
+                          color: "rgba(12,13,31,0.55)",
+                          lineHeight: 1.65,
+                        }}>{item.body}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             );
