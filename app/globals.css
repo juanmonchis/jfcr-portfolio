@@ -547,15 +547,13 @@ body {
 
 @media (max-width: 767px) {
   .cat-grid-cols,
-  .cat-grid-4col { grid-template-columns: repeat(2, 1fr); }
-  /* Reset all desktop nth-child rules before applying 2-col rules */
-  .cat-grid-item:nth-child(3n)        { border-right: 1px solid var(--cat-divider, rgba(12,13,31,0.08)); }
+  .cat-grid-4col { grid-template-columns: 1fr; }
+  /* Reset all desktop nth-child border rules */
+  .cat-grid-item:nth-child(n)         { border-right: none; }
   .cat-grid-item:nth-last-child(-n+3) { border-bottom: 1px solid var(--cat-divider, rgba(12,13,31,0.08)); }
-  .cat-grid-item:nth-child(4n)        { border-right: 1px solid var(--cat-divider, rgba(12,13,31,0.08)); }
   .cat-grid-item:nth-last-child(-n+4) { border-bottom: 1px solid var(--cat-divider, rgba(12,13,31,0.08)); }
-  /* 2-col: remove right border from even items, bottom from last 2 */
-  .cat-grid-item:nth-child(even)       { border-right: none; }
-  .cat-grid-item:nth-last-child(-n+2)  { border-bottom: none; }
+  /* 1-col: no right border, only bottom dividers; last item has none */
+  .cat-grid-item:last-child           { border-bottom: none; }
   /* Smaller, tighter body text on mobile */
   .cat-grid-desc { font-size: 13px !important; line-height: 1.4 !important; }
   /* Reduced padding on mobile */
