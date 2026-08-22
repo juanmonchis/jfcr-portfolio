@@ -73,7 +73,8 @@ export type Block =
   | { id: string; type: "card-summary"; heading: string; intro?: string; items: string[] }
   | { id: string; type: "category-grid"; items: Array<{ icon: string; name: string; description: string }> }
   | { id: string; type: "text-columns"; items: Array<{ icon?: string; title: string; subtitle?: string; body: string }> }
-  | { id: string; type: "intro-text"; label: string; leftBody: string; title: string; body: string; callout?: string };
+  | { id: string; type: "intro-text"; label: string; leftBody: string; title: string; body: string; callout?: string }
+  | { id: string; type: "scope-chips"; label: string; heading: string; body: string; chips: string[] };
 
 function getVideoEmbedUrl(url: string): string | null {
   try {
@@ -1950,6 +1951,60 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                     }}>{block.callout}</div>
                   )}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {block.type === "scope-chips" && (
+            <div className={textWrapper}>
+              <div style={{ marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ width: 24, height: 1, background: cardColor ?? "rgba(12,13,31,0.3)", flexShrink: 0 }} />
+                <span style={{
+                  fontFamily: "var(--font-telegraf), sans-serif",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: cardColor ?? "rgba(12,13,31,0.4)",
+                }}>{block.label}</span>
+              </div>
+              <h2 style={{
+                fontFamily: "var(--font-migra), serif",
+                fontSize: "clamp(1.75rem, 3.5vw, 2.75rem)",
+                fontWeight: 800,
+                lineHeight: 1.1,
+                letterSpacing: "-0.02em",
+                color: "#0C0D1F",
+                marginBottom: 16,
+              }}>{block.heading}</h2>
+              <p style={{
+                fontFamily: "var(--font-telegraf), sans-serif",
+                fontSize: 16,
+                fontWeight: 400,
+                color: "rgba(12,13,31,0.6)",
+                lineHeight: 1.7,
+                marginBottom: 28,
+                maxWidth: 620,
+              }}>{block.body}</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                {block.chips.map((chip, i) => (
+                  <div key={i} style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    fontFamily: "var(--font-telegraf), sans-serif",
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: "#0C0D1F",
+                    background: "rgba(12,13,31,0.04)",
+                    border: "1px solid rgba(12,13,31,0.12)",
+                    padding: "9px 18px",
+                    borderRadius: 100,
+                  }}>
+                    <span style={{ color: cardColor ?? "#0C0D1F", fontSize: 13, lineHeight: 1 }}>◆</span>
+                    {chip}
+                  </div>
+                ))}
               </div>
             </div>
           )}
