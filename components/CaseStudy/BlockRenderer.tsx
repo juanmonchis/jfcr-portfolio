@@ -148,8 +148,8 @@ import {
   Backpack,
   CrownAchievement,
   GroupPeopleArrowUp,
-  LinkChain,
-  Wheelchair,
+  Layers,
+  CircleGroupPeople,
   TargetArrowBullseye,
 } from "@vectoricons/atlas-icons-react";
 
@@ -167,8 +167,8 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   "gg-backpack":       <Backpack            size={28} color="currentColor" />,
   "gg-accessories":    <CrownAchievement    size={28} color="currentColor" />,
   "pie-empowered":     <GroupPeopleArrowUp  size={28} color="currentColor" />,
-  "pie-consistent":    <LinkChain           size={28} color="currentColor" />,
-  "pie-inclusive":     <Wheelchair          size={28} color="currentColor" />,
+  "pie-consistent":    <Layers              size={28} color="currentColor" />,
+  "pie-inclusive":     <CircleGroupPeople   size={28} color="currentColor" />,
   "pie-effective":     <TargetArrowBullseye size={28} color="currentColor" />,
 };
 
