@@ -1804,13 +1804,14 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
           {block.type === "category-grid" && (() => {
             const bg = cardColor ? lightenHex(cardColor, 0.55) : "rgba(12,13,31,0.03)";
             const dividerColor = cardColor ? lightenHex(cardColor, 0.2) : "rgba(12,13,31,0.08)";
+            const cols = block.items.length === 4 ? 4 : 3;
             return (
               <div className={textWrapper}>
                 <div
                   className="-mx-6 md:mx-0 rounded-none md:rounded-[20px] py-3.5 md:py-0"
-                  style={{ "--cat-divider": dividerColor, background: bg, overflow: "hidden" } as React.CSSProperties}
+                  style={{ "--cat-divider": dividerColor, "--cat-cols": cols, background: bg, overflow: "hidden" } as React.CSSProperties}
                 >
-                  <div className="grid grid-cols-2 md:grid-cols-3">
+                  <div className={`grid grid-cols-2 cat-grid-cols${cols === 4 ? " cat-grid-4col" : ""}`}>
                     {block.items.map((item, i) => (
                       <div key={i} className="cat-grid-item" style={{ padding: "28px 24px" }}>
                         <div className="cat-grid-header">

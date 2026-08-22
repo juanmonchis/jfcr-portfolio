@@ -529,23 +529,33 @@ body {
   .cat-grid-header > div:last-child { margin-bottom: 0 !important; }
 }
 
+/* Category grid column count */
+.cat-grid-cols     { grid-template-columns: repeat(3, 1fr); }
+.cat-grid-4col     { grid-template-columns: repeat(4, 1fr); }
+
 /* Category grid responsive borders */
 .cat-grid-item {
   border-right: 1px solid var(--cat-divider, rgba(12,13,31,0.08));
   border-bottom: 1px solid var(--cat-divider, rgba(12,13,31,0.08));
 }
-/* Desktop: 3-col borders */
-.cat-grid-item:nth-child(3n)      { border-right: none; }
-.cat-grid-item:nth-last-child(-n+3) { border-bottom: none; }
+/* Desktop 3-col: remove right border from every 3rd, bottom from last row */
+.cat-grid-cols .cat-grid-item:nth-child(3n)         { border-right: none; }
+.cat-grid-cols .cat-grid-item:nth-last-child(-n+3)  { border-bottom: none; }
+/* Desktop 4-col: remove right border from every 4th, bottom from last row */
+.cat-grid-4col .cat-grid-item:nth-child(4n)         { border-right: none; }
+.cat-grid-4col .cat-grid-item:nth-last-child(-n+4)  { border-bottom: none; }
 
 @media (max-width: 767px) {
-  /* 2-col mobile borders — reset desktop rules first */
+  .cat-grid-cols,
+  .cat-grid-4col { grid-template-columns: repeat(2, 1fr); }
+  /* Reset all desktop nth-child rules before applying 2-col rules */
   .cat-grid-item:nth-child(3n)        { border-right: 1px solid var(--cat-divider, rgba(12,13,31,0.08)); }
   .cat-grid-item:nth-last-child(-n+3) { border-bottom: 1px solid var(--cat-divider, rgba(12,13,31,0.08)); }
-  /* 2-col: remove right border from even items (right column) */
-  .cat-grid-item:nth-child(even) { border-right: none; }
-  /* 2-col: remove bottom border from last 2 items (last row) */
-  .cat-grid-item:nth-last-child(-n+2) { border-bottom: none; }
+  .cat-grid-item:nth-child(4n)        { border-right: 1px solid var(--cat-divider, rgba(12,13,31,0.08)); }
+  .cat-grid-item:nth-last-child(-n+4) { border-bottom: 1px solid var(--cat-divider, rgba(12,13,31,0.08)); }
+  /* 2-col: remove right border from even items, bottom from last 2 */
+  .cat-grid-item:nth-child(even)       { border-right: none; }
+  .cat-grid-item:nth-last-child(-n+2)  { border-bottom: none; }
   /* Smaller, tighter body text on mobile */
   .cat-grid-desc { font-size: 13px !important; line-height: 1.4 !important; }
   /* Reduced padding on mobile */
