@@ -1811,7 +1811,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                   className="-mx-6 md:mx-0 rounded-none md:rounded-[20px] py-3.5 md:py-0"
                   style={{ "--cat-divider": dividerColor, "--cat-cols": cols, background: bg, overflow: "hidden" } as React.CSSProperties}
                 >
-                  <div className={`grid grid-cols-2 cat-grid-cols${cols === 4 ? " cat-grid-4col" : ""}`}>
+                  <div className={`grid grid-cols-2 ${cols === 4 ? "cat-grid-4col" : "cat-grid-cols"}`}>
                     {block.items.map((item, i) => (
                       <div key={i} className="cat-grid-item" style={{ padding: "28px 24px" }}>
                         <div className="cat-grid-header">
