@@ -24,6 +24,7 @@ interface BookProps {
   anySelected: boolean
   isHovered: boolean
   mouseNDCRef: MutableRefObject<{ x: number; y: number }>
+  cardCenterNDCRef: MutableRefObject<{ x: number; y: number }>
   phaseOffset: number
   onSelect: () => void
   reducedMotion: boolean
@@ -37,6 +38,7 @@ export default function BookMesh({
   anySelected,
   isHovered,
   mouseNDCRef,
+  cardCenterNDCRef,
   phaseOffset,
   reducedMotion,
 }: BookProps) {
@@ -55,38 +57,57 @@ export default function BookMesh({
   })
 
   const materials = useMemo(() => [
-    new THREE.MeshStandardMaterial({ map: spineTexture,      roughness: 0.7 }),
-    new THREE.MeshStandardMaterial({ color: book.spineColor, roughness: 0.7 }),
-    new THREE.MeshStandardMaterial({ color: "#F5F0E8",       roughness: 0.9 }),
-    new THREE.MeshStandardMaterial({ color: "#F5F0E8",       roughness: 0.9 }),
-    new THREE.MeshStandardMaterial({ map: coverTexture,      roughness: 0.6 }),
-    new THREE.MeshStandardMaterial({ color: book.spineColor, roughness: 0.7 }),
+    new THREE.MeshStandardMaterial({ map: spineTexture,      roughness: 0.7, transparent: false, opacity: 1 }),
+    new THREE.MeshStandardMaterial({ color: book.spineColor, roughness: 0.7, transparent: false, opacity: 1 }),
+    new THREE.MeshStandardMaterial({ color: "#F5F0E8",       roughness: 0.9, transparent: false, opacity: 1 }),
+    new THREE.MeshStandardMaterial({ color: "#F5F0E8",       roughness: 0.9, transparent: false, opacity: 1 }),
+    new THREE.MeshStandardMaterial({ map: coverTexture,      roughness: 0.6, transparent: false, opacity: 1 }),
+    new THREE.MeshStandardMaterial({ color: book.spineColor, roughness: 0.7, transparent: false, opacity: 1 }),
   ], [spineTexture, coverTexture, book.spineColor])
 
   const [spring, api] = useSpring(() => ({
-    pos:     restPosition,
-    rot:     restRotation,
-    scale:   0,
-    opacity: 0,
-    config:  reducedMotion ? IMMEDIATE_CONFIG : RETURN_CONFIG,
+    pos:    restPosition,
+    rot:    restRotation,
+    scale:  0,
+    config: reducedMotion ? IMMEDIATE_CONFIG : RETURN_CONFIG,
   }))
 
   useEffect(() => {
     if (isHovered && !isSelected) {
       needsHoverInit.current = true
       api.start({
-        scale:   1.08,
-        opacity: 1,
-        config:  reducedMotion ? IMMEDIATE_CONFIG : HOVER_CONFIG,
+        scale:  1.08,
+        config: reducedMotion ? IMMEDIATE_CONFIG : HOVER_CONFIG,
+      })
+    } else if (isSelected) {
+      // Compute modal cover target in world space
+      const vw = window.innerWidth
+      const vh = window.innerHeight
+      const WORLD_HEIGHT = 2 * Math.tan((62 / 2) * (Math.PI / 180)) * 1.4
+      const WORLD_WIDTH  = WORLD_HEIGHT * (vw / vh)
+      const modalWidth   = Math.min(vw * 0.9, 728)
+      const coverWidth   = 260
+      const coverHeight  = coverWidth * 1.5
+      const coverCx      = (vw - modalWidth) / 2 + 28 + coverWidth / 2
+      const coverCy      = vh / 2
+      const ndcX         = (coverCx / vw) * 2 - 1
+      const ndcY         = -(coverCy / vh) * 2 + 1
+      const worldX       = ndcX * WORLD_WIDTH  / 2
+      const worldY       = ndcY * WORLD_HEIGHT / 2
+      const targetScale  = (coverHeight / vh) * WORLD_HEIGHT / H
+
+      api.start({
+        pos:    [worldX, worldY, 0.1] as [number, number, number],
+        rot:    [0, 0, 0]             as [number, number, number],
+        scale:  targetScale,
+        config: { tension: 200, friction: 28 },
       })
     } else {
-      // Selected and non-selected both hide — the CSS modal handles the detail view
       api.start({
-        pos:     restPosition,
-        rot:     restRotation,
-        scale:   0,
-        opacity: 0,
-        config:  reducedMotion ? IMMEDIATE_CONFIG : HIDE_CONFIG,
+        pos:    restPosition,
+        rot:    restRotation,
+        scale:  0,
+        config: reducedMotion ? IMMEDIATE_CONFIG : HIDE_CONFIG,
       })
     }
   }, [isSelected, isHovered, anySelected, reducedMotion]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -95,14 +116,7 @@ export default function BookMesh({
     if (!meshRef.current) return
     const { camera } = state
 
-    const sc = spring.scale.get()
-    const op = spring.opacity.get()
-
-    meshRef.current.scale.setScalar(sc)
-    materials.forEach((mat) => {
-      mat.transparent = op < 0.99
-      mat.opacity     = op
-    })
+    meshRef.current.scale.setScalar(spring.scale.get())
 
     if (isHovered && !isSelected) {
       // Unproject mouse NDC to world position at z=0.35
@@ -125,15 +139,13 @@ export default function BookMesh({
 
       meshRef.current.position.set(hoverLerpPos.current[0], hoverLerpPos.current[1], 0.35)
 
-      // The lag vector (mouse target minus current book position) points in the direction
-      // the book is being pulled. Rotate the cover to face that direction in 3D.
-      const lag_dx = tx - hoverLerpPos.current[0]
-      const lag_dy = ty - hoverLerpPos.current[1]
-
-      const aimY = -Math.tanh(lag_dx * 5) * (Math.PI * 0.30) // cover tilts left/right
-      const aimX = -Math.tanh(lag_dy * 5) * (Math.PI * 0.22) // cover tilts up/down
+      // Tilt relative to hovered card's center — neutral at card center, pronounced at edges
+      const center = cardCenterNDCRef.current
+      const aimY =  (ndc.x - center.x) * (Math.PI * 0.9) // left/right
+      const aimX = -(ndc.y - center.y) * (Math.PI * 0.6) // up/down
 
       meshRef.current.rotation.set(aimX, aimY, 0)
+
     } else {
       const [px, py, pz] = spring.pos.get()
       const [rx, ry, rz] = spring.rot.get()

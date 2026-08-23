@@ -9,6 +9,7 @@ interface BookshelfArrangementProps {
   selectedBookId: number | null
   hoveredBookId: number | null
   mouseNDCRef: MutableRefObject<{ x: number; y: number }>
+  cardCenterNDCRef: MutableRefObject<{ x: number; y: number }>
   onSelectBook: (book: BookData) => void
   reducedMotion: boolean
 }
@@ -18,6 +19,7 @@ export default function BookshelfArrangement({
   selectedBookId,
   hoveredBookId,
   mouseNDCRef,
+  cardCenterNDCRef,
   onSelectBook,
   reducedMotion,
 }: BookshelfArrangementProps) {
@@ -60,6 +62,7 @@ export default function BookshelfArrangement({
           anySelected={anySelected}
           isHovered={hoveredBookId === book.id}
           mouseNDCRef={mouseNDCRef}
+          cardCenterNDCRef={cardCenterNDCRef}
           phaseOffset={i * 1.3}
           onSelect={() => onSelectBook(book)}
           reducedMotion={reducedMotion}

@@ -36,16 +36,23 @@ function getGridColumn(i: number): string {
 export default function BooksPageShell({ books }: { books: BookData[] }) {
   const [selectedBook,  setSelectedBook]  = useState<BookData | null>(null)
   const [hoveredBookId, setHoveredBookId] = useState<number | null>(null)
-  const mouseNDCRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
+  const [coverVisible,  setCoverVisible]  = useState(false)
+  const mouseNDCRef       = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
+  const cardCenterNDCRef  = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
+  const coverTimerRef     = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isDesktop   = useIsDesktop()
 
   const handleSelect = useCallback((book: BookData) => {
     setSelectedBook((prev) => (prev?.id === book.id ? null : book))
     setHoveredBookId(null)
+    setCoverVisible(false)
+    if (coverTimerRef.current) clearTimeout(coverTimerRef.current)
+    coverTimerRef.current = setTimeout(() => setCoverVisible(true), 580)
   }, [])
 
   const handleDismiss = useCallback(() => {
     setSelectedBook(null)
+    setCoverVisible(false)
   }, [])
 
   if (isDesktop) {
@@ -69,6 +76,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
               selectedBookId={selectedBook?.id ?? null}
               hoveredBookId={hoveredBookId}
               mouseNDCRef={mouseNDCRef}
+              cardCenterNDCRef={cardCenterNDCRef}
               onSelectBook={handleSelect}
             />
           </Suspense>
@@ -106,7 +114,14 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
                 <div
                   key={book.id}
                   style={{ gridColumn: getGridColumn(i) }}
-                  onMouseEnter={() => setHoveredBookId(book.id)}
+                  onMouseEnter={(e) => {
+                    setHoveredBookId(book.id)
+                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+                    cardCenterNDCRef.current = {
+                      x:  ((rect.left + rect.width  / 2) / window.innerWidth)  * 2 - 1,
+                      y: -(((rect.top  + rect.height / 2) / window.innerHeight) * 2 - 1),
+                    }
+                  }}
                   onMouseLeave={() => setHoveredBookId(null)}
                   onMouseMove={(e) => {
                     mouseNDCRef.current = {
@@ -183,7 +198,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
           ))}
         </ul>
 
-        <BookInfoPanel book={selectedBook} onDismiss={handleDismiss} />
+        <BookInfoPanel book={selectedBook} onDismiss={handleDismiss} coverVisible={coverVisible} />
       </div>
     )
   }

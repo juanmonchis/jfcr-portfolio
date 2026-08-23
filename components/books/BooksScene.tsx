@@ -13,10 +13,11 @@ interface BooksSceneProps {
   selectedBookId: number | null
   hoveredBookId: number | null
   mouseNDCRef: MutableRefObject<{ x: number; y: number }>
+  cardCenterNDCRef: MutableRefObject<{ x: number; y: number }>
   onSelectBook: (book: BookData) => void
 }
 
-export default function BooksScene({ books, selectedBookId, hoveredBookId, mouseNDCRef, onSelectBook }: BooksSceneProps) {
+export default function BooksScene({ books, selectedBookId, hoveredBookId, mouseNDCRef, cardCenterNDCRef, onSelectBook }: BooksSceneProps) {
   const reducedMotion = useReducedMotion()
 
   return (
@@ -35,6 +36,7 @@ export default function BooksScene({ books, selectedBookId, hoveredBookId, mouse
           selectedBookId={selectedBookId}
           hoveredBookId={hoveredBookId}
           mouseNDCRef={mouseNDCRef}
+          cardCenterNDCRef={cardCenterNDCRef}
           onSelectBook={onSelectBook}
           reducedMotion={reducedMotion}
         />

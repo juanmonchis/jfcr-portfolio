@@ -19,9 +19,10 @@ function useIsMobile() {
 interface BookInfoPanelProps {
   book: BookData | null
   onDismiss: () => void
+  coverVisible?: boolean
 }
 
-export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
+export default function BookInfoPanel({ book, onDismiss, coverVisible = true }: BookInfoPanelProps) {
   const titleId    = useId()
   const dismissRef = useRef<HTMLButtonElement>(null)
   const isMobile   = useIsMobile()
@@ -35,7 +36,6 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
     return () => window.removeEventListener("keydown", handler)
   }, [visible, onDismiss])
 
-  // Focus dismiss button when panel opens
   useEffect(() => {
     if (visible) {
       const t = setTimeout(() => dismissRef.current?.focus({ preventScroll: true }), 50)
@@ -96,6 +96,8 @@ export default function BookInfoPanel({ book, onDismiss }: BookInfoPanelProps) {
               overflow: "hidden",
               alignSelf: isMobile ? "center" : "flex-start",
               aspectRatio: "2 / 3",
+              opacity: (isMobile || coverVisible) ? 1 : 0,
+              transition: "opacity 0.3s ease",
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
