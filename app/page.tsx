@@ -145,45 +145,45 @@ export default async function HomePage() {
       <PillMarquee />
 
       {/* Footer */}
-      <footer className="bg-[#0C0D1F] py-28 px-6 md:px-12 lg:px-20 rounded-tl-2xl rounded-tr-2xl">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="flex items-center gap-4 mb-8">
-            <p className="type-case-title !text-[#DDED3C] !text-[44px] !font-normal">
-              Thanks for stopping by!
-            </p>
+      <footer className="bg-[#0C0D1F] rounded-tl-2xl rounded-tr-2xl" style={{ padding: "clamp(48px, 8vw, 96px) clamp(24px, 6vw, 80px)" }}>
+        <div style={{ position: "relative", border: "1px solid #DDED3C", borderRadius: 4, padding: "clamp(48px, 6vw, 80px) clamp(24px, 4vw, 60px)", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.75rem" }}>
+
+          {/* Corner decorations */}
+          {[["top-0 left-0 -translate-x-px -translate-y-px", "rotate-0"], ["top-0 right-0 translate-x-px -translate-y-px", "rotate-90"], ["bottom-0 right-0 translate-x-px translate-y-px", "rotate-180"], ["bottom-0 left-0 -translate-x-px translate-y-px", "-rotate-90"]].map(([pos, rot], i) => (
+            <svg key={i} width="24" height="24" viewBox="0 0 24 24" fill="none" className={`absolute ${pos} ${rot}`} style={{ color: "#DDED3C" }}>
+              <line x1="12" y1="0" x2="12" y2="24" stroke="currentColor" strokeWidth="1.5"/>
+              <line x1="0" y1="12" x2="24" y2="12" stroke="currentColor" strokeWidth="1.5"/>
+            </svg>
+          ))}
+
+          {/* Logo */}
+          <div style={{ width: 56, height: 56, borderRadius: "50%", border: "1.5px solid #DDED3C", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
             <div style={{ filter: "brightness(0) saturate(100%) invert(95%) sepia(60%) saturate(500%) hue-rotate(18deg) brightness(1.05)" }}>
-              <LogoIcon variant="light" size={70} noLink alwaysPlay />
+              <LogoIcon variant="light" size={52} cropPx={8} noLink alwaysPlay />
             </div>
           </div>
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-center gap-6">
-              <Link
-                href="https://instagram.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="type-tag !text-white hover:!text-white/60 transition-colors"
-              >
-                Instagram
+
+          {/* Tagline */}
+          <p style={{ fontFamily: "var(--font-migra), serif", fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 400, color: "#DDED3C", textAlign: "center", lineHeight: 1.1, margin: 0 }}>
+            Thanks for stopping by!
+          </p>
+
+          {/* Social links */}
+          <div style={{ display: "flex", gap: "clamp(1.5rem, 4vw, 3rem)", alignItems: "center" }}>
+            {[
+              { label: "Instagram", href: "https://instagram.com/" },
+              { label: "LinkedIn",  href: "https://linkedin.com/" },
+              { label: "Letterboxd", href: "https://letterboxd.com/" },
+            ].map(({ label, href }) => (
+              <Link key={label} href={href} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--font-telegraf), sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#F2EBD9", textDecoration: "none" }}
+                className="hover:opacity-60 transition-opacity">
+                {label}
               </Link>
-              <Link
-                href="https://linkedin.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="type-tag !text-white hover:!text-white/60 transition-colors"
-              >
-                LinkedIn
-              </Link>
-              <Link
-                href="https://letterboxd.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="type-tag !text-white hover:!text-white/60 transition-colors"
-              >
-                Letterboxd
-              </Link>
-            </div>
-            <p className="type-tag !text-white/30">JFCR 2025</p>
+            ))}
           </div>
+
+          {/* Copyright */}
+          <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontSize: 11, letterSpacing: "0.08em", color: "rgba(242,235,217,0.25)", margin: 0 }}>JFCR 2025</p>
         </div>
       </footer>
     </main>
