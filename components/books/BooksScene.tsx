@@ -24,7 +24,7 @@ export default function BooksScene({ books, selectedBookId, hoveredBookId, mouse
     <Canvas
       role="img"
       aria-label="Interactive 3D bookshelf"
-      style={{ width: "100%", height: "100vh" }}
+      style={{ width: "100%", height: "100vh", pointerEvents: "none" }}
       dpr={[1, 2]}
       gl={{ antialias: true }}
       camera={{ position: [0, 0, 1.4], fov: 62 }}

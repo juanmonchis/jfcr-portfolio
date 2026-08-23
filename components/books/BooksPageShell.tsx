@@ -69,7 +69,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
         />
 
         {/* Three.js canvas — purely visual, no pointer events */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }}>
+        <div style={{ position: "absolute", inset: 0, zIndex: 70, pointerEvents: "none" }}>
           <Suspense fallback={<BooksSceneFallback />}>
             <BooksScene
               books={books}
