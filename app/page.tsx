@@ -32,7 +32,6 @@ import ProjectCard from "@/components/ProjectCard";
 import BorderedItemComponent from "@/components/BorderedItem";
 import Link from "next/link";
 import PillMarquee from "@/components/PillMarquee";
-import PaletteSection from "@/components/PaletteSection";
 import LogoIcon from "@/components/LogoIcon";
 
 
@@ -141,9 +140,6 @@ export default async function HomePage() {
         )}
         </div>
       </section>
-
-      {/* Color palette */}
-      <PaletteSection />
 
       {/* Pill marquee */}
       <PillMarquee />

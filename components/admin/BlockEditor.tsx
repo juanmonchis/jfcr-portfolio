@@ -175,6 +175,8 @@ function createBlock(type: Block["type"]): Block {
       return { id, type: "insight", text: "" };
     case "stat-bar":
       return { id, type: "stat-bar", items: [{ number: "", label: "" }] };
+    case "color-palette":
+      return { id, type: "color-palette", items: [{ name: "", hex: "#000000", rgb: "0, 0, 0" }] };
     default:
       throw new Error(`Unknown block type: ${type}`);
   }

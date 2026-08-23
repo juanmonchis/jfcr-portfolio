@@ -82,7 +82,8 @@ export type Block =
   | { id: string; type: "quote-stack"; quotes: Array<{ text: string; meta: string }>; footnote?: string }
   | { id: string; type: "reflection-list"; items: Array<{ heading: string; body: string }> }
   | { id: string; type: "insight"; text: string }
-  | { id: string; type: "stat-bar"; items: Array<{ number: string; label: string }> };
+  | { id: string; type: "stat-bar"; items: Array<{ number: string; label: string }> }
+  | { id: string; type: "color-palette"; items: Array<{ name: string; hex: string; rgb: string }> };
 
 function getVideoEmbedUrl(url: string): string | null {
   try {
@@ -2241,6 +2242,36 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
               >
                 {block.text}
               </a>
+            </div>
+          )}
+
+          {block.type === "color-palette" && (
+            <div className={textWrapper}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+                {block.items.map((color) => {
+                  const r = parseInt(color.hex.slice(1, 3), 16)
+                  const g = parseInt(color.hex.slice(3, 5), 16)
+                  const b = parseInt(color.hex.slice(5, 7), 16)
+                  const lum = 0.2126 * (r/255) + 0.7152 * (g/255) + 0.0722 * (b/255)
+                  const textCol = lum < 0.3 ? "#ffffff" : "#111111"
+                  const labelCol = lum < 0.3 ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.4)"
+                  return (
+                    <div key={color.name} style={{ backgroundColor: color.hex, borderRadius: 12, padding: "clamp(16px, 2vw, 24px)", display: "flex", flexDirection: "column", gap: "1.25rem", minHeight: "clamp(140px, 14vw, 200px)" }}>
+                      <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontWeight: 700, fontSize: "clamp(13px, 1.2vw, 16px)", color: textCol, letterSpacing: "0.04em", textTransform: "uppercase", margin: 0 }}>{color.name}</p>
+                      <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                        <div>
+                          <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: labelCol, margin: "0 0 2px" }}>HEX</p>
+                          <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontWeight: 700, fontSize: "clamp(11px, 1vw, 13px)", color: textCol, margin: 0 }}>{color.hex}</p>
+                        </div>
+                        <div>
+                          <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: labelCol, margin: "0 0 2px" }}>RGB</p>
+                          <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontWeight: 700, fontSize: "clamp(11px, 1vw, 13px)", color: textCol, margin: 0 }}>{color.rgb}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           )}
 
