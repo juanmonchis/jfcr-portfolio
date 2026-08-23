@@ -2256,16 +2256,12 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
                   const textCol = lum < 0.3 ? "#ffffff" : "#111111"
                   const labelCol = lum < 0.3 ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.4)"
                   return (
-                    <div key={color.name} style={{ backgroundColor: color.hex, borderRadius: 12, padding: "clamp(16px, 2vw, 24px)", display: "flex", flexDirection: "column", gap: "1.25rem", minHeight: "clamp(100px, 9vw, 140px)" }}>
+                    <div key={color.name} style={{ backgroundColor: color.hex, borderRadius: 12, padding: "clamp(16px, 2vw, 24px)", display: "flex", flexDirection: "column", gap: "1.25rem", minHeight: "clamp(72px, 7vw, 100px)" }}>
                       <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontWeight: 700, fontSize: "clamp(13px, 1.2vw, 16px)", color: textCol, letterSpacing: "0.04em", textTransform: "uppercase", margin: 0 }}>{color.name}</p>
                       <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "0.4rem" }}>
                         <div>
                           <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: labelCol, margin: "0 0 2px" }}>HEX</p>
                           <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontWeight: 700, fontSize: "clamp(11px, 1vw, 13px)", color: textCol, margin: 0 }}>{color.hex}</p>
-                        </div>
-                        <div>
-                          <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: labelCol, margin: "0 0 2px" }}>RGB</p>
-                          <p style={{ fontFamily: "var(--font-telegraf), sans-serif", fontWeight: 700, fontSize: "clamp(11px, 1vw, 13px)", color: textCol, margin: 0 }}>{color.rgb}</p>
                         </div>
                       </div>
                     </div>
