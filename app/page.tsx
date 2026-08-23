@@ -31,7 +31,6 @@ import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
 import BorderedItemComponent from "@/components/BorderedItem";
 import Link from "next/link";
-import LogoIcon from "@/components/LogoIcon";
 import PillMarquee from "@/components/PillMarquee";
 
 
@@ -148,20 +147,17 @@ export default async function HomePage() {
       <footer className="bg-[#0C0D1F] rounded-tl-2xl rounded-tr-2xl" style={{ padding: "clamp(48px, 8vw, 96px) clamp(24px, 6vw, 80px)" }}>
         <div style={{ position: "relative", border: "1px solid #DDED3C", borderRadius: 4, padding: "clamp(48px, 6vw, 80px) clamp(24px, 4vw, 60px)", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.75rem" }}>
 
-          {/* Corner decorations */}
-          {[["top-0 left-0 -translate-x-px -translate-y-px", "rotate-0"], ["top-0 right-0 translate-x-px -translate-y-px", "rotate-90"], ["bottom-0 right-0 translate-x-px translate-y-px", "rotate-180"], ["bottom-0 left-0 -translate-x-px translate-y-px", "-rotate-90"]].map(([pos, rot], i) => (
-            <svg key={i} width="24" height="24" viewBox="0 0 24 24" fill="none" className={`absolute ${pos} ${rot}`} style={{ color: "#DDED3C" }}>
-              <line x1="12" y1="0" x2="12" y2="24" stroke="currentColor" strokeWidth="1.5"/>
-              <line x1="0" y1="12" x2="24" y2="12" stroke="currentColor" strokeWidth="1.5"/>
+          {/* Corner star decorations */}
+          {([
+            { style: { top: 0,    left: 0    }, t: "translate(-50%, -50%)" },
+            { style: { top: 0,    right: 0   }, t: "translate(50%,  -50%)" },
+            { style: { bottom: 0, right: 0   }, t: "translate(50%,   50%)" },
+            { style: { bottom: 0, left: 0    }, t: "translate(-50%,  50%)" },
+          ]).map(({ style: corner, t }, i) => (
+            <svg key={i} width="36" height="36" viewBox="0 0 117 117" fill="none" style={{ position: "absolute", transform: t, ...corner }}>
+              <path d="M58.157 116.314L60.8792 62.526L60.7942 60.5742L116.314 58.157L60.5833 55.7306L58.157 0L55.7398 55.5197L53.7879 55.4347L0 58.157L53.7879 60.8792L55.5097 60.8042L55.4347 62.526L58.157 116.314Z" fill="#DDED3C"/>
             </svg>
           ))}
-
-          {/* Logo */}
-          <div style={{ width: 56, height: 56, borderRadius: "50%", border: "1.5px solid #DDED3C", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-            <div style={{ filter: "brightness(0) saturate(100%) invert(95%) sepia(60%) saturate(500%) hue-rotate(18deg) brightness(1.05)" }}>
-              <LogoIcon variant="light" size={52} cropPx={8} noLink alwaysPlay />
-            </div>
-          </div>
 
           {/* Tagline */}
           <p style={{ fontFamily: "var(--font-migra), serif", fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 400, color: "#DDED3C", textAlign: "center", lineHeight: 1.1, margin: 0 }}>
