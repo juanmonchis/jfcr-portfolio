@@ -159,6 +159,24 @@ function createBlock(type: Block["type"]): Block {
       return { id, type: "intro-text", label: "", leftBody: "", title: "", body: "", callout: "" };
     case "scope-chips":
       return { id, type: "scope-chips", label: "", heading: "", body: "", chips: [] };
+    case "labeled-heading":
+      return { id, type: "labeled-heading", label: "", heading: "", body: "" };
+    case "callout-box":
+      return { id, type: "callout-box", title: "", body: "" };
+    case "process-steps":
+      return { id, type: "process-steps", items: [{ num: "01", title: "", body: "" }] };
+    case "cert-grid":
+      return { id, type: "cert-grid", items: [{ name: "", desc: "" }] };
+    case "quote-stack":
+      return { id, type: "quote-stack", quotes: [{ text: "", meta: "" }] };
+    case "reflection-list":
+      return { id, type: "reflection-list", items: [{ heading: "", body: "" }] };
+    case "insight":
+      return { id, type: "insight", text: "" };
+    case "stat-bar":
+      return { id, type: "stat-bar", items: [{ number: "", label: "" }] };
+    default:
+      throw new Error(`Unknown block type: ${type}`);
   }
 }
 
