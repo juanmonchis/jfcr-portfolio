@@ -145,7 +145,7 @@ export default async function HomePage() {
       <PillMarquee />
 
       {/* Footer */}
-      <footer className="rounded-tl-2xl rounded-tr-2xl" style={{ padding: "clamp(48px, 8vw, 96px) clamp(24px, 6vw, 80px)", background: "radial-gradient(ellipse 150% 130% at 50% 100%, rgba(221,237,60,0.85) 0%, rgba(190,215,20,0.3) 40%, transparent 70%), #0C0D1F" }}>
+      <footer className="rounded-tl-2xl rounded-tr-2xl" style={{ padding: "clamp(48px, 8vw, 96px) clamp(24px, 6vw, 80px)", backgroundColor: "#0C0D1F", backgroundImage: "url('/images/footer-gradient.svg')", backgroundRepeat: "no-repeat", backgroundPosition: "center bottom", backgroundSize: "100% auto" }}>
         <div style={{ position: "relative", border: "1px solid #DDED3C", borderRadius: 4, padding: "clamp(48px, 6vw, 80px) clamp(24px, 4vw, 60px)", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.75rem" }}>
 
           {/* Corner star decorations */}
