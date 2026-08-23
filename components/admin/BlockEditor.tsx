@@ -121,6 +121,7 @@ const BLOCK_TYPES = [
   { value: "category-grid", label: "Category Grid" },
   { value: "text-columns", label: "Text Columns" },
   { value: "intro-text", label: "Intro Text" },
+  { value: "scope-chips", label: "Scope Chips" },
 ] as const;
 
 function createBlock(type: Block["type"]): Block {
@@ -156,6 +157,8 @@ function createBlock(type: Block["type"]): Block {
       return { id, type: "text-columns", items: [{ title: "", subtitle: "", body: "" }] };
     case "intro-text":
       return { id, type: "intro-text", label: "", leftBody: "", title: "", body: "", callout: "" };
+    case "scope-chips":
+      return { id, type: "scope-chips", label: "", heading: "", body: "", chips: [] };
   }
 }
 
@@ -190,6 +193,7 @@ function BlockItem({
             : block.type === "category-grid" ? "category grid"
             : block.type === "text-columns" ? "text columns"
             : block.type === "intro-text" ? "intro text"
+            : block.type === "scope-chips" ? "scope chips"
             : block.type}
         </span>
         <div className="flex gap-1">
@@ -707,6 +711,45 @@ function BlockItem({
             onChange={(e) => onUpdate({ ...block, text: e.target.value })}
             placeholder="Large highlight quote..."
           />
+        </div>
+      )}
+
+      {block.type === "scope-chips" && (
+        <div className="flex flex-col gap-3">
+          <div>
+            <label className={labelClass}>Label (small uppercase text above heading — leave empty to hide)</label>
+            <input type="text" className={inputClass} value={block.label} onChange={(e) => onUpdate({ ...block, label: e.target.value })} placeholder="e.g. Scope of work" />
+          </div>
+          <div>
+            <label className={labelClass}>Heading</label>
+            <input type="text" className={inputClass} value={block.heading} onChange={(e) => onUpdate({ ...block, heading: e.target.value })} placeholder="e.g. Everything, from the logo to the conversation" />
+          </div>
+          <div>
+            <label className={labelClass}>Body</label>
+            <textarea rows={3} className={`${inputClass} resize-none`} value={block.body} onChange={(e) => onUpdate({ ...block, body: e.target.value })} placeholder="Short paragraph below the heading…" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className={labelClass}>Chips</label>
+            {block.chips.map((chip, i) => (
+              <div key={i} className="flex gap-2">
+                <input
+                  type="text"
+                  className={inputClass}
+                  value={chip}
+                  onChange={(e) => {
+                    const chips = [...block.chips];
+                    chips[i] = e.target.value;
+                    onUpdate({ ...block, chips });
+                  }}
+                  placeholder={`Chip ${i + 1}`}
+                />
+                <button type="button" onClick={() => onUpdate({ ...block, chips: block.chips.filter((_, idx) => idx !== i) })}
+                  className="px-2 py-1 text-xs rounded border border-red-200 text-red-500 hover:bg-red-50 shrink-0">×</button>
+              </div>
+            ))}
+            <button type="button" onClick={() => onUpdate({ ...block, chips: [...block.chips, ""] })}
+              className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start">+ Add chip</button>
+          </div>
         </div>
       )}
     </div>

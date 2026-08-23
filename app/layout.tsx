@@ -61,7 +61,10 @@ export const metadata: Metadata = {
   },
   description: "A digital designer focused on exceptional products, brands and sometimes silly animations.",
   icons: {
-    icon: [{ url: "/favicon.png", type: "image/png" }],
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
     apple: "/icon.png",
   },
   openGraph: {

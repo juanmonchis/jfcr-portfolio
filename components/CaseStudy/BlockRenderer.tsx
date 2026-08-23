@@ -64,7 +64,7 @@ export type Block =
       rightCaption?: string;
     }
   | { id: string; type: "image-grid"; images: GridImage[]; columns: 2 | 3 }
-  | { id: string; type: "video"; url: string; size: "full" | "large" | "medium"; caption?: string }
+  | { id: string; type: "video"; url: string; size: "full" | "large" | "medium"; caption?: string; loop?: boolean; noControls?: boolean }
   | { id: string; type: "divider" }
   | { id: string; type: "highlight"; text: string }
   | { id: string; type: "button"; text: string; url: string; align: "left" | "center" | "right" }
@@ -74,7 +74,15 @@ export type Block =
   | { id: string; type: "category-grid"; items: Array<{ icon: string; name: string; description: string }> }
   | { id: string; type: "text-columns"; items: Array<{ icon?: string; title: string; subtitle?: string; body: string }> }
   | { id: string; type: "intro-text"; label: string; leftBody: string; title: string; body: string; callout?: string }
-  | { id: string; type: "scope-chips"; label: string; heading: string; body: string; chips: string[] };
+  | { id: string; type: "scope-chips"; label: string; heading: string; body: string; chips: string[] }
+  | { id: string; type: "labeled-heading"; label: string; heading: string; body?: string }
+  | { id: string; type: "callout-box"; title: string; body: string }
+  | { id: string; type: "process-steps"; items: Array<{ num: string; title: string; body: string }> }
+  | { id: string; type: "cert-grid"; items: Array<{ name: string; desc: string }> }
+  | { id: string; type: "quote-stack"; quotes: Array<{ text: string; meta: string }>; footnote?: string }
+  | { id: string; type: "reflection-list"; items: Array<{ heading: string; body: string }> }
+  | { id: string; type: "insight"; text: string }
+  | { id: string; type: "stat-bar"; items: Array<{ number: string; label: string }> };
 
 function getVideoEmbedUrl(url: string): string | null {
   try {
@@ -123,7 +131,12 @@ function VideoBlock({ block }: { block: Extract<Block, { type: "video" }> }) {
             allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
           />
         ) : (
-          <video src={assetPath(block.url)} controls className="w-full h-full rounded-xl object-cover" />
+          <video
+            src={assetPath(block.url)}
+            className="w-full h-full rounded-xl object-cover"
+            {...(block.noControls ? {} : { controls: true })}
+            {...(block.loop ? { autoPlay: true, loop: true, muted: true, playsInline: true } : {})}
+          />
         )}
       </div>
       {block.caption && (
@@ -1610,6 +1623,9 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
           key={block.id}
           className={
             block.type === "feature-info" ? "py-12" :
+            block.type === "labeled-heading" ? "pt-16 pb-2" :
+            block.type === "insight" ? "py-2" :
+            block.type === "callout-box" ? "py-4" :
             block.type === "heading" ? "pt-12 pb-3" :
             block.type === "text" ? "pt-3 pb-8" :
             block.type === "divider" ? "py-4 md:py-8" :
@@ -1955,19 +1971,225 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
             </div>
           )}
 
-          {block.type === "scope-chips" && (
+          {block.type === "stat-bar" && (
             <div className={textWrapper}>
-              <div style={{ marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
+              <div
+                className="grid grid-cols-2 md:grid-cols-4"
+                style={{ border: "1px solid rgba(12,13,31,0.08)", borderRadius: 16, overflow: "hidden" }}
+              >
+                {block.items.map((item, i) => (
+                  <div key={i} style={{
+                    padding: "28px 24px",
+                    borderRight: "1px solid rgba(12,13,31,0.08)",
+                    borderBottom: "1px solid rgba(12,13,31,0.08)",
+                  }} className="stat-bar-item">
+                    <div style={{
+                      fontFamily: "var(--font-migra), serif",
+                      fontSize: "clamp(1.75rem, 3.5vw, 2.75rem)",
+                      fontWeight: 800, lineHeight: 1, letterSpacing: "-0.02em",
+                      color: cardColor ?? "#0C0D1F", marginBottom: 8,
+                    }}>{item.number}</div>
+                    <div style={{
+                      fontFamily: "var(--font-telegraf), sans-serif",
+                      fontSize: 13, color: "rgba(12,13,31,0.5)", lineHeight: 1.5,
+                    }}>{item.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {block.type === "labeled-heading" && (
+            <div className={textWrapper}>
+              <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 10 }}>
                 <div style={{ width: 24, height: 1, background: cardColor ?? "rgba(12,13,31,0.3)", flexShrink: 0 }} />
                 <span style={{
                   fontFamily: "var(--font-telegraf), sans-serif",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
+                  fontSize: 11, fontWeight: 600,
+                  letterSpacing: "0.12em", textTransform: "uppercase",
                   color: cardColor ?? "rgba(12,13,31,0.4)",
                 }}>{block.label}</span>
               </div>
+              <h2 style={{
+                fontFamily: "var(--font-migra), serif",
+                fontSize: "clamp(1.75rem, 3.5vw, 2.75rem)",
+                fontWeight: 800, lineHeight: 1.1, letterSpacing: "-0.02em",
+                color: "#0C0D1F", marginBottom: block.body ? 16 : 0,
+              }}>{block.heading}</h2>
+              {block.body && (
+                <p style={{
+                  fontFamily: "var(--font-telegraf), sans-serif",
+                  fontSize: 16, fontWeight: 400,
+                  color: "rgba(12,13,31,0.6)", lineHeight: 1.7, margin: 0,
+                }}>{block.body}</p>
+              )}
+            </div>
+          )}
+
+          {block.type === "insight" && (
+            <div className={textWrapper}>
+              <div style={{
+                borderLeft: `2px solid ${cardColor ?? "rgba(12,13,31,0.3)"}`,
+                paddingLeft: 28,
+              }}>
+                <p style={{
+                  fontFamily: "var(--font-migra), serif",
+                  fontSize: 22, fontStyle: "italic",
+                  lineHeight: 1.45, color: "#0C0D1F", margin: 0,
+                }}>{block.text}</p>
+              </div>
+            </div>
+          )}
+
+          {block.type === "callout-box" && (
+            <div className={textWrapper}>
+              <div style={{
+                background: "rgba(12,13,31,0.03)",
+                border: "1px solid rgba(12,13,31,0.1)",
+                borderRadius: 12, padding: "28px 32px",
+              }}>
+                <div style={{
+                  fontFamily: "var(--font-telegraf), sans-serif",
+                  fontSize: 11, fontWeight: 600,
+                  letterSpacing: "0.1em", textTransform: "uppercase",
+                  color: cardColor ?? "rgba(12,13,31,0.4)", marginBottom: 12,
+                }}>{block.title}</div>
+                <p style={{
+                  fontFamily: "var(--font-telegraf), sans-serif",
+                  fontSize: 15, color: "#0C0D1F", lineHeight: 1.65, margin: 0,
+                }}>{block.body}</p>
+              </div>
+            </div>
+          )}
+
+          {block.type === "process-steps" && (
+            <div className={textWrapper}>
+              <div style={{
+                border: "1px solid rgba(12,13,31,0.1)",
+                borderRadius: 12, overflow: "hidden",
+              }}>
+                {block.items.map((item, i) => (
+                  <div key={i} style={{
+                    display: "grid", gridTemplateColumns: "52px 1fr",
+                    borderBottom: i < block.items.length - 1 ? "1px solid rgba(12,13,31,0.1)" : "none",
+                  }}>
+                    <div style={{
+                      padding: "22px 0 22px 24px",
+                      fontFamily: "var(--font-telegraf), sans-serif",
+                      fontSize: 11, fontWeight: 600,
+                      letterSpacing: "0.08em", color: "rgba(12,13,31,0.3)",
+                    }}>{item.num}</div>
+                    <div style={{ padding: "22px 28px", borderLeft: "1px solid rgba(12,13,31,0.1)" }}>
+                      <div style={{
+                        fontFamily: "var(--font-telegraf), sans-serif",
+                        fontSize: 15, fontWeight: 600,
+                        color: "#0C0D1F", marginBottom: 6,
+                      }}>{item.title}</div>
+                      <div style={{
+                        fontFamily: "var(--font-telegraf), sans-serif",
+                        fontSize: 14, color: "rgba(12,13,31,0.55)", lineHeight: 1.65,
+                      }}>{item.body}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {block.type === "cert-grid" && (
+            <div className={textWrapper}>
+              <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 10 }}>
+                {block.items.map((item, i) => (
+                  <div key={i} style={{
+                    padding: "20px",
+                    background: "rgba(12,13,31,0.03)",
+                    border: "1px solid rgba(12,13,31,0.08)",
+                    borderRadius: 10,
+                  }}>
+                    <div style={{
+                      fontFamily: "var(--font-telegraf), sans-serif",
+                      fontSize: 14, fontWeight: 700,
+                      color: "#0C0D1F", marginBottom: 6,
+                    }}>{item.name}</div>
+                    <div style={{
+                      fontFamily: "var(--font-telegraf), sans-serif",
+                      fontSize: 12, color: "rgba(12,13,31,0.45)", lineHeight: 1.55,
+                    }}>{item.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {block.type === "quote-stack" && (
+            <div className={textWrapper}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {block.quotes.map((quote, i) => (
+                  <div key={i} style={{
+                    background: "rgba(12,13,31,0.03)",
+                    border: "1px solid rgba(12,13,31,0.1)",
+                    borderRadius: 10, padding: "24px 28px",
+                  }}>
+                    <div style={{
+                      fontFamily: "var(--font-migra), serif",
+                      fontSize: 18, fontStyle: "italic",
+                      color: "#0C0D1F", lineHeight: 1.5, marginBottom: 10,
+                    }}>"{quote.text}"</div>
+                    <div style={{
+                      fontFamily: "var(--font-telegraf), sans-serif",
+                      fontSize: 12, color: "rgba(12,13,31,0.4)",
+                    }}>{quote.meta}</div>
+                  </div>
+                ))}
+              </div>
+              {block.footnote && (
+                <p style={{
+                  fontFamily: "var(--font-telegraf), sans-serif",
+                  fontSize: 12, color: "rgba(12,13,31,0.35)", margin: "12px 0 0",
+                }}>{block.footnote}</p>
+              )}
+            </div>
+          )}
+
+          {block.type === "reflection-list" && (
+            <div className={textWrapper}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                {block.items.map((item, i) => (
+                  <div key={i} style={{ display: "grid", gridTemplateColumns: "20px 1fr", gap: 14, alignItems: "start" }}>
+                    <span style={{
+                      color: cardColor ?? "#0C0D1F",
+                      fontFamily: "var(--font-telegraf), sans-serif",
+                      fontSize: 14, lineHeight: 1.7, paddingTop: 2,
+                    }}>→</span>
+                    <p style={{
+                      fontFamily: "var(--font-telegraf), sans-serif",
+                      fontSize: 15, color: "rgba(12,13,31,0.65)",
+                      lineHeight: 1.65, margin: 0,
+                    }}>
+                      <strong style={{ color: "#0C0D1F", fontWeight: 600 }}>{item.heading} </strong>
+                      {item.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {block.type === "scope-chips" && (
+            <div className={textWrapper}>
+              {block.label && (
+                <div style={{ marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ width: 24, height: 1, background: cardColor ?? "rgba(12,13,31,0.3)", flexShrink: 0 }} />
+                  <span style={{
+                    fontFamily: "var(--font-telegraf), sans-serif",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    color: cardColor ?? "rgba(12,13,31,0.4)",
+                  }}>{block.label}</span>
+                </div>
+              )}
               <h2 style={{
                 fontFamily: "var(--font-migra), serif",
                 fontSize: "clamp(1.75rem, 3.5vw, 2.75rem)",
