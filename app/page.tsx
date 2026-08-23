@@ -32,6 +32,7 @@ import ProjectCard from "@/components/ProjectCard";
 import BorderedItemComponent from "@/components/BorderedItem";
 import Link from "next/link";
 import PillMarquee from "@/components/PillMarquee";
+import LogoIcon from "@/components/LogoIcon";
 
 
 
@@ -154,10 +155,15 @@ export default async function HomePage() {
             { style: { bottom: 0, right: 0   }, t: "translate(50%,   50%)" },
             { style: { bottom: 0, left: 0    }, t: "translate(-50%,  50%)" },
           ]).map(({ style: corner, t }, i) => (
-            <svg key={i} width="36" height="36" viewBox="0 0 117 117" fill="none" style={{ position: "absolute", transform: t, ...corner }}>
+            <svg key={i} width="72" height="72" viewBox="0 0 117 117" fill="none" style={{ position: "absolute", transform: t, ...corner }}>
               <path d="M58.157 116.314L60.8792 62.526L60.7942 60.5742L116.314 58.157L60.5833 55.7306L58.157 0L55.7398 55.5197L53.7879 55.4347L0 58.157L53.7879 60.8792L55.5097 60.8042L55.4347 62.526L58.157 116.314Z" fill="#DDED3C"/>
             </svg>
           ))}
+
+          {/* Animated logo */}
+          <div style={{ filter: "brightness(0) saturate(100%) invert(95%) sepia(60%) saturate(500%) hue-rotate(18deg) brightness(1.05)" }}>
+            <LogoIcon variant="light" size={80} cropPx={12} noLink alwaysPlay />
+          </div>
 
           {/* Tagline */}
           <p style={{ fontFamily: "var(--font-migra), serif", fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 400, color: "#DDED3C", textAlign: "center", lineHeight: 1.1, margin: 0 }}>
@@ -167,9 +173,9 @@ export default async function HomePage() {
           {/* Social links */}
           <div style={{ display: "flex", gap: "clamp(1.5rem, 4vw, 3rem)", alignItems: "center" }}>
             {[
-              { label: "Instagram", href: "https://instagram.com/" },
-              { label: "LinkedIn",  href: "https://linkedin.com/" },
-              { label: "Letterboxd", href: "https://letterboxd.com/" },
+              { label: "Instagram",  href: "https://www.instagram.com/jfcr_/" },
+              { label: "LinkedIn",   href: "https://www.linkedin.com/in/jfcrco/" },
+              { label: "Letterboxd", href: "https://letterboxd.com/jfcr/" },
             ].map(({ label, href }) => (
               <Link key={label} href={href} target="_blank" rel="noopener noreferrer" style={{ fontFamily: "var(--font-telegraf), sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#F2EBD9", textDecoration: "none" }}
                 className="hover:opacity-60 transition-opacity">
