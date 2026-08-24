@@ -110,7 +110,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
             }}
           >
             <div style={{ filter: "brightness(0) saturate(100%) invert(95%) sepia(60%) saturate(500%) hue-rotate(18deg) brightness(1.05)" }}>
-              <LogoIcon variant="light" size={80} cropPx={12} noLink alwaysPlay />
+              <LogoIcon variant="light" size={80} cropPx={12} alwaysPlay />
             </div>
             <div>
               <h1 className="type-case-title" style={{ color: "#F2EBD9", margin: 0 }}>Book Recs</h1>
