@@ -7,6 +7,7 @@ import { BookData } from "./types"
 import BooksSceneFallback from "./BooksSceneFallback"
 import BookInfoPanel from "./BookInfoPanel"
 import SiteHeader from "@/components/SiteHeader"
+import LogoIcon from "@/components/LogoIcon"
 
 const BooksScene = dynamic(() => import("./BooksScene"), {
   ssr: false,
@@ -60,6 +61,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
       <div className="relative w-full h-screen overflow-hidden bg-[#0C0D1F]">
         <SiteHeader
           logoVariant="light"
+          showLogo={false}
           color="#F2EBD9"
           mobileOverlayColor="#0C0D1F"
           mobileNavColor="#F2EBD9"
@@ -107,6 +109,9 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
               paddingRight: "2rem",
             }}
           >
+            <div style={{ filter: "brightness(0) saturate(100%) invert(95%) sepia(60%) saturate(500%) hue-rotate(18deg) brightness(1.05)" }}>
+              <LogoIcon variant="light" size={80} cropPx={12} noLink alwaysPlay />
+            </div>
             <div>
               <h1 className="type-case-title" style={{ color: "#F2EBD9", margin: 0 }}>Book Recs</h1>
               <p className="type-paragraph" style={{ color: "rgba(242,235,217,0.5)", marginTop: "0.5rem" }}>
