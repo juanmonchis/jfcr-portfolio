@@ -775,6 +775,59 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   const [circleProgress, setCircleProgress] = useState(0);
   const [justReleasedIdx, setJustReleasedIdx] = useState<number | null>(null);
 
+  // Gyro tilt for mobile iOS
+  const [needsGyroPermission, setNeedsGyroPermission] = useState(false);
+  const [gyroActive, setGyroActive] = useState(false);
+  const gyroTiltRef = useRef({ x: 0, y: 0 });
+  const gyroBetaNeutralRef = useRef<number | null>(null);
+  const gyroRafRef2 = useRef<number | null>(null);
+  const gyroCleanupRef2 = useRef<(() => void) | null>(null);
+
+  function setupPackGyroListener() {
+    gyroBetaNeutralRef.current = null;
+    function onOrientation(e: DeviceOrientationEvent) {
+      const beta  = e.beta  ?? 0;
+      const gamma = e.gamma ?? 0;
+      if (gyroBetaNeutralRef.current === null) gyroBetaNeutralRef.current = beta;
+      const dBeta = Math.max(-25, Math.min(25, beta - gyroBetaNeutralRef.current));
+      const g     = Math.max(-25, Math.min(25, gamma));
+      if (gyroRafRef2.current !== null) return;
+      gyroRafRef2.current = requestAnimationFrame(() => {
+        gyroRafRef2.current = null;
+        gyroTiltRef.current = { x: dBeta * -0.4, y: g * 0.4 };
+      });
+    }
+    window.addEventListener("deviceorientation", onOrientation);
+    gyroCleanupRef2.current = () => window.removeEventListener("deviceorientation", onOrientation);
+    setGyroActive(true);
+  }
+
+  function requestPackGyroPermission() {
+    const DOE = DeviceOrientationEvent as unknown as { requestPermission: () => Promise<string> };
+    DOE.requestPermission().then((result) => {
+      if (result === "granted") {
+        setNeedsGyroPermission(false);
+        setupPackGyroListener();
+      }
+    }).catch(() => {});
+  }
+
+  useEffect(() => {
+    if (isDesktop) return;
+    if (typeof DeviceOrientationEvent === "undefined") return;
+    const DOE = DeviceOrientationEvent as unknown as { requestPermission?: unknown };
+    if (typeof DOE.requestPermission === "function") {
+      setNeedsGyroPermission(true);
+    } else if ("ondeviceorientation" in window) {
+      setupPackGyroListener();
+    }
+    return () => {
+      if (gyroCleanupRef2.current) { gyroCleanupRef2.current(); gyroCleanupRef2.current = null; }
+      if (gyroRafRef2.current !== null) { cancelAnimationFrame(gyroRafRef2.current); gyroRafRef2.current = null; }
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDesktop]);
+
   function imagesForVersion(version: PackVersion): GridImage[] {
     // common / no version  → every pack
     // special              → every pack (max 2 per draw — enforced in buildPackDraw)
@@ -1007,7 +1060,9 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     if (el) {
       el.style.willChange = "transform";
       el.style.transition = "none";
-      el.style.transform = `translate(calc(-50% + ${newX}px), calc(-50% + ${newY}px)) rotate(${(stack[idx]?.rot ?? 0) + dragTilt}deg) scale(1)`;
+      const gt = gyroTiltRef.current;
+      const gyroPerspective = (gt.x !== 0 || gt.y !== 0) ? ` perspective(600px) rotateX(${gt.x}deg) rotateY(${gt.y}deg)` : "";
+      el.style.transform = `translate(calc(-50% + ${newX}px), calc(-50% + ${newY}px)) rotate(${(stack[idx]?.rot ?? 0) + dragTilt}deg) scale(1)${gyroPerspective}`;
 
       // Show foil animation on special/rare cards during mobile drag
       if (!isDesktop && (stack[idx]?.item.version === "special" || stack[idx]?.item.version === "rare")) {
@@ -1171,7 +1226,18 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
 
       {/* CTA on mobile — floats outside the column above all cards */}
       {mounted && !isDesktop && (
-        <div style={{ position: "relative", zIndex: 400, display: "flex", justifyContent: "center", width: "100%", paddingInline: 24 }}>
+        <div style={{ position: "relative", zIndex: 400, display: "flex", flexDirection: "column", alignItems: "center", gap: 10, width: "100%", paddingInline: 24 }}>
+          {needsGyroPermission && (
+            <button
+              onClick={requestPackGyroPermission}
+              className="type-caption-sm bg-white/60 backdrop-blur-md border border-[#0C0D1F]/20 text-[#0C0D1F] px-4 py-1.5 rounded-full active:bg-[#0C0D1F] active:text-[#F2EBD9] transition-all duration-300"
+            >
+              ↕ Enable tilt
+            </button>
+          )}
+          {gyroActive && (
+            <p className="type-caption-sm" style={{ color: "rgba(12,13,31,0.4)", fontSize: 10 }}>Tilt enabled ✓</p>
+          )}
           {isLimited ? (
             <a
               href="https://www.instagram.com/jfcr_/"
