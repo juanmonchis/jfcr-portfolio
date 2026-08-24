@@ -7,6 +7,7 @@ import { BookData } from "./types"
 import BooksSceneFallback from "./BooksSceneFallback"
 import BookInfoPanel from "./BookInfoPanel"
 import SiteHeader from "@/components/SiteHeader"
+import LogoIcon from "@/components/LogoIcon"
 
 const BooksScene = dynamic(() => import("./BooksScene"), {
   ssr: false,
@@ -82,112 +83,135 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
           </Suspense>
         </div>
 
-        {/* Interactive card grid */}
+        {/* Two-column layout: left info panel + right book grid */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             zIndex: 1,
             display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            paddingLeft: "8vw",
-            paddingRight: "8vw",
-            paddingBottom: "8vh",
-            opacity: selectedBook ? 0 : 1,
-            pointerEvents: selectedBook ? "none" : "auto",
-            transition: "opacity 0.45s ease",
+            flexDirection: "row",
+            alignItems: "center",
+            paddingLeft: "clamp(24px, 5vw, 80px)",
+            paddingRight: "clamp(24px, 5vw, 80px)",
+            paddingTop: 80,
           }}
         >
+          {/* Left column: icon + title + description */}
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(6, 1fr)",
-              gap: "clamp(10px, 1.8vw, 28px)",
-              width: "100%",
-              maxWidth: "min(52vw, 660px)",
+              width: "33%",
+              flexShrink: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: "1.5rem",
+              paddingRight: "2rem",
             }}
           >
-            {books.map((book, i) => {
-              const isHoveredCell = hoveredBookId === book.id
-              return (
-                <div
-                  key={book.id}
-                  style={{ gridColumn: getGridColumn(i) }}
-                  onMouseEnter={(e) => {
-                    setHoveredBookId(book.id)
-                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-                    cardCenterNDCRef.current = {
-                      x:  ((rect.left + rect.width  / 2) / window.innerWidth)  * 2 - 1,
-                      y: -(((rect.top  + rect.height / 2) / window.innerHeight) * 2 - 1),
-                    }
-                  }}
-                  onMouseLeave={() => setHoveredBookId(null)}
-                  onMouseMove={(e) => {
-                    mouseNDCRef.current = {
-                      x:  (e.clientX / window.innerWidth)  * 2 - 1,
-                      y: -(e.clientY / window.innerHeight) * 2 + 1,
-                    }
-                  }}
-                  onClick={() => handleSelect(book)}
-                >
-                  <div
-                    style={{
-                      aspectRatio: "2 / 3",
-                      border: `1px solid ${isHoveredCell ? "#DDED3C" : "rgba(242,235,217,0.12)"}`,
-                      borderRadius: 16,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "0.5rem",
-                      padding: "0.75rem",
-                      cursor: "pointer",
-                      transition: "border-color 0.25s ease, background 0.25s ease",
-                      background: isHoveredCell ? "rgba(242,235,217,0.04)" : "transparent",
-                      userSelect: "none",
-                    }}
-                  >
-                    <p
-                      style={{
-                        color: isHoveredCell ? "#DDED3C" : "#F2EBD9",
-                        textAlign: "center",
-                        fontFamily: "var(--font-migra), serif",
-                        fontWeight: 800,
-                        fontSize: "clamp(1.25rem, 2vw, 1.625rem)",
-                        lineHeight: 1.1,
-                        letterSpacing: "-0.01em",
-                        transition: "color 0.2s ease",
-                      }}
-                    >
-                      {book.title}
-                    </p>
-                    <p
-                      style={{
-                        color: isHoveredCell ? "#DDED3C" : "rgba(242,235,217,0.4)",
-                        textAlign: "center",
-                        fontFamily: "var(--font-telegraf), sans-serif",
-                        fontWeight: 400,
-                        fontSize: "clamp(0.5rem, 0.75vw, 0.72rem)",
-                        transition: "color 0.2s ease",
-                      }}
-                    >
-                      {book.author}
-                    </p>
-                  </div>
-                </div>
-              )
-            })}
+            <div style={{ filter: "brightness(0) saturate(100%) invert(95%) sepia(60%) saturate(500%) hue-rotate(18deg) brightness(1.05)" }}>
+              <LogoIcon variant="light" size={80} cropPx={12} noLink alwaysPlay />
+            </div>
+            <div>
+              <h1 className="type-case-title" style={{ color: "#F2EBD9", margin: 0 }}>Book Recs</h1>
+              <p className="type-paragraph" style={{ color: "rgba(242,235,217,0.5)", marginTop: "0.5rem" }}>
+                Books that shaped how I think about design, engineering, and the world.
+              </p>
+            </div>
           </div>
-        </div>
 
-        {/* Title overlay */}
-        <div
-          className="absolute pointer-events-none"
-          style={{ top: "clamp(130px, 18vh, 200px)", left: "clamp(24px, 5vw, 80px)", zIndex: 3 }}
-        >
-          <h1 className="type-case-title !text-[#F2EBD9] mb-2">Book Recs</h1>
-          <p className="type-paragraph !text-[#F2EBD9]/50">Books that shaped how I think.</p>
+          {/* Right column: interactive book grid */}
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: selectedBook ? 0 : 1,
+              pointerEvents: selectedBook ? "none" : "auto",
+              transition: "opacity 0.45s ease",
+            }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(6, 1fr)",
+                gap: "clamp(10px, 1.8vw, 28px)",
+                width: "100%",
+                maxWidth: "min(52vw, 660px)",
+              }}
+            >
+              {books.map((book, i) => {
+                const isHoveredCell = hoveredBookId === book.id
+                return (
+                  <div
+                    key={book.id}
+                    style={{ gridColumn: getGridColumn(i) }}
+                    onMouseEnter={(e) => {
+                      setHoveredBookId(book.id)
+                      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+                      cardCenterNDCRef.current = {
+                        x:  ((rect.left + rect.width  / 2) / window.innerWidth)  * 2 - 1,
+                        y: -(((rect.top  + rect.height / 2) / window.innerHeight) * 2 - 1),
+                      }
+                    }}
+                    onMouseLeave={() => setHoveredBookId(null)}
+                    onMouseMove={(e) => {
+                      mouseNDCRef.current = {
+                        x:  (e.clientX / window.innerWidth)  * 2 - 1,
+                        y: -(e.clientY / window.innerHeight) * 2 + 1,
+                      }
+                    }}
+                    onClick={() => handleSelect(book)}
+                  >
+                    <div
+                      style={{
+                        aspectRatio: "2 / 3",
+                        border: `1px solid ${isHoveredCell ? "#DDED3C" : "rgba(242,235,217,0.12)"}`,
+                        borderRadius: 16,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "0.5rem",
+                        padding: "0.75rem",
+                        cursor: "pointer",
+                        transition: "border-color 0.25s ease, background 0.25s ease",
+                        background: isHoveredCell ? "rgba(242,235,217,0.04)" : "transparent",
+                        userSelect: "none",
+                      }}
+                    >
+                      <p
+                        style={{
+                          color: isHoveredCell ? "#DDED3C" : "#F2EBD9",
+                          textAlign: "center",
+                          fontFamily: "var(--font-migra), serif",
+                          fontWeight: 800,
+                          fontSize: "clamp(1.25rem, 2vw, 1.625rem)",
+                          lineHeight: 1.1,
+                          letterSpacing: "-0.01em",
+                          transition: "color 0.2s ease",
+                        }}
+                      >
+                        {book.title}
+                      </p>
+                      <p
+                        style={{
+                          color: isHoveredCell ? "#DDED3C" : "rgba(242,235,217,0.4)",
+                          textAlign: "center",
+                          fontFamily: "var(--font-telegraf), sans-serif",
+                          fontWeight: 400,
+                          fontSize: "clamp(0.5rem, 0.75vw, 0.72rem)",
+                          transition: "color 0.2s ease",
+                        }}
+                      >
+                        {book.author}
+                      </p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
         </div>
 
         <ul aria-label="Book list" className="sr-only">
