@@ -110,9 +110,9 @@ export default async function CaseStudyPage({ params }: Props) {
 
   const { project } = caseStudy;
   const blocks = parseBlocks(caseStudy.blocks);
-  const tags = parseJSON<string[]>(project.tags, []);
   const teamMembers = parseJSON<string[]>(caseStudy.teamMembers, []);
   const heroDescription = caseStudy.description ?? project.description;
+  const heroRole = caseStudy.role ?? null;
   const heroCtaLabel = caseStudy.ctaLabel;
   const heroCtaUrl = caseStudy.ctaUrl;
 
@@ -143,10 +143,10 @@ export default async function CaseStudyPage({ params }: Props) {
               {project.title}
             </h1>
 
-            {/* Tags — dot-separated below title */}
-            {tags.length > 0 && (
+            {/* Role — shown below title if set, otherwise hidden */}
+            {heroRole && (
               <p className="type-tag text-[#0C0D1F]/50 mb-8 tracking-widest uppercase">
-                {tags.join(" · ")}
+                {heroRole}
               </p>
             )}
 

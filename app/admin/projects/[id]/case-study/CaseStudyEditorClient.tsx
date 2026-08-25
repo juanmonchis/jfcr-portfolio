@@ -12,6 +12,7 @@ interface Props {
   initialTeamMembers: string[];
   initialBlocks: string;
   initialDescription: string;
+  initialRole: string;
   initialCtaLabel: string;
   initialCtaUrl: string;
   existingSlug: string | null;
@@ -31,6 +32,7 @@ export default function CaseStudyEditorClient({
   initialTeamMembers,
   initialBlocks,
   initialDescription,
+  initialRole,
   initialCtaLabel,
   initialCtaUrl,
   existingSlug,
@@ -38,6 +40,7 @@ export default function CaseStudyEditorClient({
   const [slug, setSlug] = useState(initialSlug);
   const [teamInput, setTeamInput] = useState(initialTeamMembers.join(", "));
   const [description, setDescription] = useState(initialDescription);
+  const [role, setRole] = useState(initialRole);
   const [ctaLabel, setCtaLabel] = useState(initialCtaLabel);
   const [ctaUrl, setCtaUrl] = useState(initialCtaUrl);
   const [blocks, setBlocks] = useState<Block[]>(() => parseBlocks(initialBlocks));
@@ -88,6 +91,7 @@ export default function CaseStudyEditorClient({
           teamMembers,
           blocks: mergedBlocks,
           description: description || null,
+          role: role || null,
           ctaLabel: ctaLabel || null,
           ctaUrl: ctaUrl || null,
         }),
@@ -154,6 +158,20 @@ export default function CaseStudyEditorClient({
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Shown in the hero section of this case study…"
           />
+        </div>
+
+        <div>
+          <label className={labelClass}>My Role</label>
+          <input
+            type="text"
+            className={inputClass}
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            placeholder="Lead Product Designer · Design Systems"
+          />
+          <p className="text-xs text-gray-400 mt-1">
+            Shown in the case study hero instead of the card tags.
+          </p>
         </div>
 
         <div>
