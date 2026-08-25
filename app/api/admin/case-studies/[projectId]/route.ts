@@ -29,8 +29,8 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: "Invalid projectId" }, { status: 400 });
   }
 
-  const body = await req.json() as { slug: string; teamMembers: string[]; blocks: unknown[]; description?: string; role?: string; ctaLabel?: string; ctaUrl?: string };
-  const { slug, teamMembers, blocks, description, role, ctaLabel, ctaUrl } = body;
+  const body = await req.json() as { slug: string; teamMembers: string[]; blocks: unknown[]; description?: string; ctaLabel?: string; ctaUrl?: string };
+  const { slug, teamMembers, blocks, description, ctaLabel, ctaUrl } = body;
 
   if (!slug) {
     return NextResponse.json({ error: "slug is required" }, { status: 400 });
@@ -45,7 +45,6 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
         teamMembers: JSON.stringify(teamMembers ?? []),
         blocks: JSON.stringify(blocks ?? []),
         description: description ?? null,
-        role: role ?? null,
         ctaLabel: ctaLabel ?? null,
         ctaUrl: ctaUrl ?? null,
       },
@@ -54,7 +53,6 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
         teamMembers: JSON.stringify(teamMembers ?? []),
         blocks: JSON.stringify(blocks ?? []),
         description: description ?? null,
-        role: role ?? null,
         ctaLabel: ctaLabel ?? null,
         ctaUrl: ctaUrl ?? null,
       },

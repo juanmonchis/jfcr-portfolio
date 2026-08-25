@@ -112,7 +112,8 @@ export default async function CaseStudyPage({ params }: Props) {
   const blocks = parseBlocks(caseStudy.blocks);
   const teamMembers = parseJSON<string[]>(caseStudy.teamMembers, []);
   const heroDescription = caseStudy.description ?? project.description;
-  const heroRole = caseStudy.role ?? null;
+  const roleBlock = blocks.find((b) => b.type === "role");
+  const heroRole = roleBlock && roleBlock.type === "role" ? roleBlock.text : null;
   const heroCtaLabel = caseStudy.ctaLabel;
   const heroCtaUrl = caseStudy.ctaUrl;
 

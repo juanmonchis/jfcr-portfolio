@@ -70,6 +70,7 @@ export type Block =
   | { id: string; type: "button"; text: string; url: string; align: "left" | "center" | "right" }
   | { id: string; type: "text-boxes"; items: string[] }
   | { id: string; type: "feature-info"; items: string[] }
+  | { id: string; type: "role"; text: string }
   | { id: string; type: "card-summary"; heading: string; intro?: string; items: string[] }
   | { id: string; type: "category-grid"; items: Array<{ icon: string; name: string; description: string }> }
   | { id: string; type: "text-columns"; items: Array<{ icon?: string; title: string; subtitle?: string; body: string }> }
@@ -1674,7 +1675,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
   return (
     <>
     <div className="flex flex-col">
-      {blocks.map((block) => (
+      {blocks.filter((block) => block.type !== "role").map((block) => (
         <div
           key={block.id}
           className={

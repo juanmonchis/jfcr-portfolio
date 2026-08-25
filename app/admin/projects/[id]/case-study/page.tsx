@@ -46,7 +46,6 @@ export default async function CaseStudyEditorPage({ params }: Props) {
         }
         initialBlocks={project.caseStudy?.blocks ?? "[]"}
         initialDescription={project.caseStudy?.description ?? ""}
-        initialRole={project.caseStudy?.role ?? ""}
         initialCtaLabel={project.caseStudy?.ctaLabel ?? ""}
         initialCtaUrl={project.caseStudy?.ctaUrl ?? ""}
         existingSlug={project.caseStudy?.slug ?? null}

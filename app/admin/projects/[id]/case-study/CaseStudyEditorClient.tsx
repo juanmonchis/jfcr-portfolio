@@ -12,7 +12,6 @@ interface Props {
   initialTeamMembers: string[];
   initialBlocks: string;
   initialDescription: string;
-  initialRole: string;
   initialCtaLabel: string;
   initialCtaUrl: string;
   existingSlug: string | null;
@@ -32,7 +31,6 @@ export default function CaseStudyEditorClient({
   initialTeamMembers,
   initialBlocks,
   initialDescription,
-  initialRole,
   initialCtaLabel,
   initialCtaUrl,
   existingSlug,
@@ -40,7 +38,6 @@ export default function CaseStudyEditorClient({
   const [slug, setSlug] = useState(initialSlug);
   const [teamInput, setTeamInput] = useState(initialTeamMembers.join(", "));
   const [description, setDescription] = useState(initialDescription);
-  const [role, setRole] = useState(initialRole);
   const [ctaLabel, setCtaLabel] = useState(initialCtaLabel);
   const [ctaUrl, setCtaUrl] = useState(initialCtaUrl);
   const [blocks, setBlocks] = useState<Block[]>(() => parseBlocks(initialBlocks));
@@ -48,6 +45,13 @@ export default function CaseStudyEditorClient({
   const [savedSlug, setSavedSlug] = useState<string | null>(existingSlug);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // Role managed separately from the block list (stored as a "role" block in the blocks JSON)
+  const [roleText, setRoleText] = useState<string>(() => {
+    const parsed = parseBlocks(initialBlocks);
+    const block = parsed.find((b) => b.type === "role");
+    return block && block.type === "role" ? block.text : "";
+  });
 
   // Feature-info items managed separately from the block list
   const [featureInfoItems, setFeatureInfoItems] = useState<string[]>(() => {
@@ -66,18 +70,27 @@ export default function CaseStudyEditorClient({
       .map((s) => s.trim())
       .filter(Boolean);
 
+    // Sync roleText back into the blocks array (upsert a "role" block at position 0)
+    let mergedBlocks: Block[] = blocks.filter((b) => b.type !== "role");
+    if (roleText.trim()) {
+      mergedBlocks = [
+        { id: "block-role", type: "role" as const, text: roleText.trim() },
+        ...mergedBlocks,
+      ];
+    }
+
     // Sync featureInfoItems back into the blocks array
-    let mergedBlocks = blocks;
     if (featureInfoItems.length > 0) {
-      const existingIdx = blocks.findIndex((b) => b.type === "feature-info");
+      const existingIdx = mergedBlocks.findIndex((b) => b.type === "feature-info");
       if (existingIdx >= 0) {
-        mergedBlocks = blocks.map((b, i) =>
+        mergedBlocks = mergedBlocks.map((b, i) =>
           i === existingIdx ? { ...b, type: "feature-info" as const, items: featureInfoItems } : b
         );
       } else {
         mergedBlocks = [
+          ...mergedBlocks.filter((b) => b.type === "role"),
           { id: crypto.randomUUID(), type: "feature-info" as const, items: featureInfoItems },
-          ...blocks,
+          ...mergedBlocks.filter((b) => b.type !== "role"),
         ];
       }
     }
@@ -91,7 +104,6 @@ export default function CaseStudyEditorClient({
           teamMembers,
           blocks: mergedBlocks,
           description: description || null,
-          role: role || null,
           ctaLabel: ctaLabel || null,
           ctaUrl: ctaUrl || null,
         }),
@@ -165,8 +177,8 @@ export default function CaseStudyEditorClient({
           <input
             type="text"
             className={inputClass}
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
+            value={roleText}
+            onChange={(e) => setRoleText(e.target.value)}
             placeholder="Lead Product Designer · Design Systems"
           />
           <p className="text-xs text-gray-400 mt-1">
@@ -247,7 +259,7 @@ export default function CaseStudyEditorClient({
       <div className="bg-white rounded-2xl p-6 flex flex-col gap-4">
         <h2 className="text-lg font-bold text-[#0C0D1F]">Content Blocks</h2>
         <BlockEditor
-          blocks={blocks.filter((b) => b.type !== "feature-info")}
+          blocks={blocks.filter((b) => b.type !== "feature-info" && b.type !== "role")}
           onChange={(updated) => {
             // Re-merge: keep existing feature-info blocks at their original positions
             const featureInfoBlocks = blocks.filter((b) => b.type === "feature-info");
