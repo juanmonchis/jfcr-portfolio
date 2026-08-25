@@ -113,8 +113,8 @@ export default function AboutSection() {
         </div>
 
         {/* Talks + Recognitions */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="flex flex-col items-center gap-4">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col items-center gap-4 rounded-2xl px-8 py-8" style={{ border: `1px solid ${CREAM}33` }}>
             <h3 className="type-case-subtitle" style={{ color: CREAM }}>Talks</h3>
             <ul className="flex flex-col gap-2 items-center">
               {talks.map((t) => (
@@ -132,7 +132,7 @@ export default function AboutSection() {
               ))}
             </ul>
           </div>
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-4 rounded-2xl px-8 py-8" style={{ border: `1px solid ${CREAM}33` }}>
             <h3 className="type-case-subtitle" style={{ color: CREAM }}>Recognitions</h3>
             <ul className="flex flex-col gap-2 items-center">
               {recognitions.map((r) => (
@@ -153,7 +153,7 @@ export default function AboutSection() {
         </div>
 
         {/* Thoughts on design */}
-        <div className="flex flex-col items-center gap-4">
+        <div className="w-full flex flex-col items-center gap-4 rounded-2xl px-8 py-8" style={{ border: `1px solid ${CREAM}33` }}>
           <h3 className="type-case-subtitle" style={{ color: CREAM }}>Thoughts on design</h3>
           <ul className="flex flex-col gap-2 items-center">
             {thoughtsOnDesign.map((t) => (
