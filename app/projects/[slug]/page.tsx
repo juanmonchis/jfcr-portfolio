@@ -145,16 +145,15 @@ export default async function CaseStudyPage({ params }: Props) {
               {project.title}
             </h1>
 
-            {/* Role */}
-            {heroRole && (
-              <p className="type-tag text-[#0C0D1F]/50 mb-8 tracking-widest uppercase">
-                {heroRole}
-              </p>
-            )}
-
             {/* Description + Team side by side, both top-aligned */}
             <div className="flex flex-col md:flex-row gap-8 md:items-start">
               <div className="flex-1">
+                {/* Role */}
+                {heroRole && (
+                  <p className="type-tag text-[#0C0D1F]/50 mb-4 tracking-widest uppercase">
+                    {heroRole}
+                  </p>
+                )}
                 {heroDescription && (
                   <p className="type-paragraph text-[#0C0D1F]/70">
                     {heroDescription}
