@@ -146,18 +146,10 @@ export default async function CaseStudyPage({ params }: Props) {
             </h1>
 
             {/* Tags row — role replaces tags when set */}
-            {heroRole ? (
+            {(heroRole || tags.length > 0) && (
               <p className="type-tag text-[#0C0D1F]/50 mb-8 tracking-widest uppercase">
-                {heroRole}
+                {heroRole ?? tags.join(" · ")}
               </p>
-            ) : tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-8">
-                {tags.map((tag) => (
-                  <span key={tag} className="type-tag border border-[#0C0D1F]/20 text-[#0C0D1F]/60 px-3 py-1 rounded-full">
-                    {tag}
-                  </span>
-                ))}
-              </div>
             )}
 
             {/* Description + Team side by side, both top-aligned */}
