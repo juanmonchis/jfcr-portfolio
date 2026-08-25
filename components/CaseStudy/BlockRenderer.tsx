@@ -723,6 +723,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     setPackTransitioningTo(null);
     setFanVersions(buildFanVersions(unlockedUnlimited, rareOpened));
     setPackSelectionPhase(true);
+    try { (window as Window & { gtag?: (...a: unknown[]) => void }).gtag?.("event", "get_new_pack", { event_category: "tcg" }); } catch {}
   }
 
   function handlePackMouseMove(e: React.MouseEvent) {
