@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="relative">
+    <main className="relative" style={{ backgroundColor: "#2D0055" }}>
       <SiteHeader logoSize={100} logoVariant="light" color="#F2EBD9" mobileOverlayColor="#0C0D1F" mobileNavColor="#F2EBD9" mobileLogoVariant="light" />
       <AboutSection />
       <footer className="rounded-tl-2xl rounded-tr-2xl" style={{ padding: "clamp(48px, 8vw, 96px) clamp(24px, 6vw, 80px)", backgroundColor: "#0C0D1F", backgroundImage: "url('/images/footer-gradient.svg')", backgroundRepeat: "no-repeat", backgroundPosition: "center bottom", backgroundSize: "100% auto" }}>
