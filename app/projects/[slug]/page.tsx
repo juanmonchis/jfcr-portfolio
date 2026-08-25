@@ -112,6 +112,7 @@ export default async function CaseStudyPage({ params }: Props) {
   const blocks = parseBlocks(caseStudy.blocks);
   const teamMembers = parseJSON<string[]>(caseStudy.teamMembers, []);
   const heroDescription = caseStudy.description ?? project.description;
+  const tags = parseJSON<string[]>(project.tags, []);
   const roleBlock = blocks.find((b) => b.type === "role");
   const heroRole = roleBlock && roleBlock.type === "role" ? roleBlock.text : null;
   const heroCtaLabel = caseStudy.ctaLabel;
@@ -144,11 +145,19 @@ export default async function CaseStudyPage({ params }: Props) {
               {project.title}
             </h1>
 
-            {/* Role — shown below title if set, otherwise hidden */}
-            {heroRole && (
+            {/* Tags row — role replaces tags when set */}
+            {heroRole ? (
               <p className="type-tag text-[#0C0D1F]/50 mb-8 tracking-widest uppercase">
                 {heroRole}
               </p>
+            ) : tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-8">
+                {tags.map((tag) => (
+                  <span key={tag} className="type-tag border border-[#0C0D1F]/20 text-[#0C0D1F]/60 px-3 py-1 rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
             )}
 
             {/* Description + Team side by side, both top-aligned */}
