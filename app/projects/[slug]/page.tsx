@@ -145,12 +145,7 @@ export default async function CaseStudyPage({ params }: Props) {
               {project.title}
             </h1>
 
-            {/* Tags + Role rows */}
-            {tags.length > 0 && (
-              <p className="type-tag text-[#0C0D1F]/50 tracking-widest uppercase" style={{ marginBottom: heroRole ? "0.25rem" : "2rem" }}>
-                {tags.join(" · ")}
-              </p>
-            )}
+            {/* Role */}
             {heroRole && (
               <p className="type-tag text-[#0C0D1F]/50 mb-8 tracking-widest uppercase">
                 {heroRole}
