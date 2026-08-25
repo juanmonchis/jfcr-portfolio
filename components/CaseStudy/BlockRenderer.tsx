@@ -490,7 +490,7 @@ function Lightbox({ items, initialIndex, showDots = true, onClose }: { items: Gr
             cursor: "pointer", zIndex: 10, whiteSpace: "nowrap",
           }}
         >
-          ↕ Enable tilt
+          check rarity
         </button>
       )}
 
@@ -1226,18 +1226,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
 
       {/* CTA on mobile — floats outside the column above all cards */}
       {mounted && !isDesktop && (
-        <div style={{ position: "relative", zIndex: 400, display: "flex", flexDirection: "column", alignItems: "center", gap: 10, width: "100%", paddingInline: 24 }}>
-          {needsGyroPermission && (
-            <button
-              onClick={requestPackGyroPermission}
-              className="type-caption-sm bg-white/60 backdrop-blur-md border border-[#0C0D1F]/20 text-[#0C0D1F] px-4 py-1.5 rounded-full active:bg-[#0C0D1F] active:text-[#F2EBD9] transition-all duration-300"
-            >
-              ↕ Enable tilt
-            </button>
-          )}
-          {gyroActive && (
-            <p className="type-caption-sm" style={{ color: "rgba(12,13,31,0.4)", fontSize: 10 }}>Tilt enabled ✓</p>
-          )}
+        <div style={{ position: "relative", zIndex: 400, display: "flex", justifyContent: "center", width: "100%", paddingInline: 24 }}>
           {isLimited ? (
             <a
               href="https://www.instagram.com/jfcr_/"
