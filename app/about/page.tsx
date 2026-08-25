@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="relative" style={{ backgroundColor: "#2D0055" }}>
-      <SiteHeader logoSize={100} logoVariant="light" color="#F2EBD9" mobileOverlayColor="#0C0D1F" mobileNavColor="#F2EBD9" mobileLogoVariant="light" />
+      <SiteHeader logoSize={100} logoVariant="light" color="#F2EBD9" mobileOverlayColor="#0C0D1F" mobileNavColor="#F2EBD9" mobileLogoVariant="light" navHoverBg="#F2EBD9" navHoverText="#2D0055" />
       <AboutSection />
       <footer className="rounded-tl-2xl rounded-tr-2xl" style={{ padding: "clamp(48px, 8vw, 96px) clamp(24px, 6vw, 80px)", backgroundColor: "#0C0D1F", backgroundImage: "url('/images/footer-gradient.svg')", backgroundRepeat: "no-repeat", backgroundPosition: "center bottom", backgroundSize: "100% auto" }}>
         <div style={{ position: "relative", border: "1px solid #DDED3C", borderRadius: 4, padding: "clamp(48px, 6vw, 80px) clamp(24px, 4vw, 60px)", display: "flex", flexDirection: "column", alignItems: "center", gap: "1.75rem" }}>
