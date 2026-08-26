@@ -84,7 +84,8 @@ export type Block =
   | { id: string; type: "reflection-list"; items: Array<{ heading: string; body: string }> }
   | { id: string; type: "insight"; text: string }
   | { id: string; type: "stat-bar"; items: Array<{ number: string; label: string }> }
-  | { id: string; type: "color-palette"; items: Array<{ name: string; hex: string; rgb: string }> };
+  | { id: string; type: "color-palette"; items: Array<{ name: string; hex: string; rgb: string }> }
+  | { id: string; type: "feature-section"; image: string; title: string; body: string; imageAlign: "left" | "right" };
 
 function getVideoEmbedUrl(url: string): string | null {
   try {
@@ -1931,7 +1932,7 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
             const borderColor = cardColor ? `${cardColor}33` : "rgba(12,13,31,0.12)";
             const cols = block.items.length;
             return (
-              <div className={textWrapper}>
+              <div className="max-w-[1400px] mx-auto w-full px-6 md:px-12">
                 <div
                   className="text-col-grid"
                   style={{
@@ -2299,6 +2300,47 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
               >
                 {block.text}
               </a>
+            </div>
+          )}
+
+          {block.type === "feature-section" && (
+            <div className="max-w-[1000px] mx-auto w-full" style={{
+              backgroundImage: "url('/images/aury-background-block.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              borderRadius: 20,
+              padding: "clamp(32px, 5vw, 64px)",
+            }}>
+              <div style={{ gap: "clamp(32px, 5vw, 56px)" }} className={`flex flex-col${block.imageAlign === "right" ? " md:flex-row-reverse" : " md:flex-row"}`}>
+                {block.image && (
+                  <div style={{ flex: "0 0 40%", minWidth: 0 }}>
+                    <img
+                      src={block.image}
+                      alt={block.title}
+                      style={{ width: "100%", borderRadius: 12, display: "block" }}
+                    />
+                  </div>
+                )}
+                <div style={{
+                  flex: "1 1 0", minWidth: 0,
+                  display: "flex", flexDirection: "column", justifyContent: "center",
+                  gap: 16,
+                }}>
+                  {block.title && (
+                    <h3 style={{
+                      fontFamily: "var(--font-migra), serif",
+                      fontSize: "clamp(1.5rem, 3vw, 2.25rem)",
+                      fontWeight: 700, color: "#0C0D1F", lineHeight: 1.15, margin: 0,
+                    }}>{block.title}</h3>
+                  )}
+                  {block.body && (
+                    <p style={{
+                      fontFamily: "var(--font-telegraf), sans-serif",
+                      fontSize: 15, color: "rgba(12,13,31,0.6)", lineHeight: 1.7, margin: 0,
+                    }}>{block.body}</p>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 

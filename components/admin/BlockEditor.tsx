@@ -122,6 +122,7 @@ const BLOCK_TYPES = [
   { value: "text-columns", label: "Text Columns" },
   { value: "intro-text", label: "Intro Text" },
   { value: "scope-chips", label: "Scope Chips" },
+  { value: "feature-section", label: "Feature Section" },
 ] as const;
 
 function createBlock(type: Block["type"]): Block {
@@ -177,6 +178,8 @@ function createBlock(type: Block["type"]): Block {
       return { id, type: "stat-bar", items: [{ number: "", label: "" }] };
     case "color-palette":
       return { id, type: "color-palette", items: [{ name: "", hex: "#000000", rgb: "0, 0, 0" }] };
+    case "feature-section":
+      return { id, type: "feature-section", image: "", title: "", body: "", imageAlign: "left" };
     default:
       throw new Error(`Unknown block type: ${type}`);
   }
@@ -214,6 +217,7 @@ function BlockItem({
             : block.type === "text-columns" ? "text columns"
             : block.type === "intro-text" ? "intro text"
             : block.type === "scope-chips" ? "scope chips"
+            : block.type === "feature-section" ? "feature section"
             : block.type}
         </span>
         <div className="flex gap-1">
@@ -769,6 +773,30 @@ function BlockItem({
             ))}
             <button type="button" onClick={() => onUpdate({ ...block, chips: [...block.chips, ""] })}
               className="text-xs text-[#0C0D1F] border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 self-start">+ Add chip</button>
+          </div>
+        </div>
+      )}
+
+      {block.type === "feature-section" && (
+        <div className="flex flex-col gap-3">
+          <div>
+            <label className={labelClass}>Image URL</label>
+            <input type="text" className={inputClass} value={block.image} onChange={(e) => onUpdate({ ...block, image: e.target.value })} placeholder="https://..." />
+          </div>
+          <div>
+            <label className={labelClass}>Title</label>
+            <input type="text" className={inputClass} value={block.title} onChange={(e) => onUpdate({ ...block, title: e.target.value })} placeholder="Section heading" />
+          </div>
+          <div>
+            <label className={labelClass}>Description</label>
+            <textarea rows={4} className={`${inputClass} resize-none`} value={block.body} onChange={(e) => onUpdate({ ...block, body: e.target.value })} placeholder="Supporting text…" />
+          </div>
+          <div>
+            <label className={labelClass}>Image position</label>
+            <select className={selectClass} value={block.imageAlign} onChange={(e) => onUpdate({ ...block, imageAlign: e.target.value as "left" | "right" })}>
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+            </select>
           </div>
         </div>
       )}
