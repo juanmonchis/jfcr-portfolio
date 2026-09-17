@@ -6,19 +6,33 @@ export default function PrototypePage() {
   const FRAME_W = 390;
   const FRAME_H = 844;
   const [scale, setScale] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const update = () => {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const s = Math.min(1, (vw - 16) / FRAME_W, (vh - 16) / FRAME_H);
-      setScale(s);
+      // Treat as a real mobile device when the viewport fits naturally in the frame
+      const mobile = vw <= FRAME_W && vh <= FRAME_H + 100;
+      setIsMobile(mobile);
+      if (!mobile) {
+        const s = Math.min(1, (vw - 16) / FRAME_W, (vh - 16) / FRAME_H);
+        setScale(s);
+      }
     };
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
+
+  if (isMobile) {
+    return (
+      <div style={{ width: "100vw", height: "100dvh", overflow: "hidden", background: "#F3F3F2", position: "relative" }}>
+        <VoizePrototype />
+      </div>
+    );
+  }
 
   return (
     <div
