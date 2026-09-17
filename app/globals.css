@@ -27,9 +27,32 @@ html, body {
 }
 
 /* ─── Fonts ─────────────────────────────────────────────────────────────── */
-/* Fonts are loaded via next/font/local in app/layout.tsx.                  */
-/* They expose CSS variables: --font-migra and --font-telegraf               */
-/* which are injected on the <html> element and used in the type classes.   */
+/* Site fonts loaded via next/font/local in app/layout.tsx.                 */
+/* Prototype fonts declared here directly.                                  */
+
+@font-face {
+  font-family: 'SeasonSans';
+  src: url('/fonts/SeasonSansVF.woff2') format('woff2') tech(variations),
+       url('/fonts/SeasonSansVF.woff2') format('woff2-variations'),
+       url('/fonts/SeasonSansVF.ttf') format('truetype') tech(variations),
+       url('/fonts/SeasonSansVF.ttf') format('truetype-variations'),
+       url('/fonts/SeasonSansVF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SeasonMix';
+  src: url('/fonts/SeasonMixVF.woff2') format('woff2') tech(variations),
+       url('/fonts/SeasonMixVF.woff2') format('woff2-variations'),
+       url('/fonts/SeasonMixVF.ttf') format('truetype') tech(variations),
+       url('/fonts/SeasonMixVF.ttf') format('truetype-variations'),
+       url('/fonts/SeasonMixVF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* ─── Theme ──────────────────────────────────────────────────────────────── */
 
