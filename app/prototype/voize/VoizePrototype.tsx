@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 
 const C = {
-  bg:           "#F2F0EB",
+  bg:           "#F3F3F2",
   white:        "#FFFFFF",
   text:         "#747371",
   textMid:      "#6B6880",
@@ -63,7 +63,7 @@ function PatientPhoto({ width = 96, height = 116, radius = 14 }: { width?: numbe
 
 function SectionTitle({ children, badge }: { children: React.ReactNode; badge?: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "18px 0 10px" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "16px 0 10px" }}>
       <div style={{ fontSize: 20, fontWeight: 700, color: C.text, fontFamily: "'SeasonMix', serif" }}>{children}</div>
       {badge}
     </div>
@@ -108,30 +108,30 @@ function UpdateRow({ label, time, date, type, faded = false }: { label: string; 
 
 // ── Wellbeing score ───────────────────────────────────────────────────────────
 function WellbeingExpanded() {
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const days = ["M", "T", "W", "T", "F", "S", "S"];
   const scores = [62, 55, 48, 70, 44, 30, 24];
+  const BAR_H = 80;
   return (
-    <div style={{ paddingTop: 12 }}>
-      <div style={{ fontSize: 12, color: C.wellbeingRed, fontWeight: 600, marginBottom: 8, opacity: 0.7 }}>7-day trend</div>
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 60 }}>
+    <div style={{ display: "flex", alignItems: "flex-end", gap: 16, paddingTop: 8, paddingBottom: 4 }}>
+      {/* Bar chart */}
+      <div style={{ flex: 1, display: "flex", alignItems: "flex-end", gap: 5 }}>
         {days.map((d, i) => {
+          const fillH = Math.max(8, (scores[i] / 100) * BAR_H);
           const isToday = i === 6;
-          const barH = Math.max(6, (scores[i] / 100) * 56);
           return (
-            <div key={d} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
-              <div style={{ width: "100%", height: barH, borderRadius: 4, background: isToday ? "linear-gradient(180deg, #EF5350 0%, #B71C1C 100%)" : "rgba(239,83,80,0.2)" }} />
-              <span style={{ fontSize: 9, color: isToday ? C.wellbeingRed : C.textMuted, fontWeight: isToday ? 700 : 400 }}>{d}</span>
+            <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
+              <div style={{ width: "100%", height: BAR_H, borderRadius: 8, background: "rgba(255,255,255,0.65)", position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: fillH, background: isToday ? C.wellbeingRed : "rgba(255,51,116,0.7)", borderRadius: "6px 6px 0 0" }} />
+              </div>
+              <span style={{ fontSize: 11, color: isToday ? C.wellbeingRed : C.text, fontWeight: isToday ? 700 : 500 }}>{d}</span>
             </div>
           );
         })}
       </div>
-      <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-        {[["Avg score", "44"], ["Best day", "Thu"], ["Target", "70+"]].map(([k, v]) => (
-          <div key={k} style={{ flex: 1, background: "rgba(229,57,53,0.07)", borderRadius: 10, padding: "8px 10px" }}>
-            <div style={{ fontSize: 10, color: C.textMuted, marginBottom: 2 }}>{k}</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: C.wellbeingRed }}>{v}</div>
-          </div>
-        ))}
+      {/* Score */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", paddingBottom: 22, flexShrink: 0 }}>
+        <div style={{ fontSize: 56, fontWeight: 800, color: C.text, lineHeight: 1, letterSpacing: "-2px" }}>24</div>
+        <div style={{ fontSize: 13, color: "#4CAF50", fontWeight: 600, marginTop: 6 }}>▲ 20</div>
       </div>
     </div>
   );
@@ -383,7 +383,7 @@ function VitalRow({ icon, label, chartColor, points, unit, value, labels, yLabel
 // ── Treatment plan ────────────────────────────────────────────────────────────
 function TreatmentDay({ day, date, appointments, faded }: { day: string; date: string; appointments: string[]; faded?: boolean }) {
   return (
-    <div style={{ display: "flex", gap: 12, marginBottom: 8, opacity: faded ? 0.45 : 1 }}>
+    <div style={{ display: "flex", gap: 12, marginBottom: 8, opacity: faded ? 0.45 : 1, transition: "opacity 0.35s ease" }}>
       <div style={{ width: 34, flexShrink: 0, paddingTop: 4 }}>
         <div style={{ fontSize: 9, fontWeight: 700, color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.06em" }}>{day}</div>
         <div style={{ fontSize: 17, fontWeight: 700, color: C.text, lineHeight: 1.1 }}>{date}</div>
@@ -409,42 +409,6 @@ function TreatmentDay({ day, date, appointments, faded }: { day: string; date: s
   );
 }
 
-// ── Bottom nav ────────────────────────────────────────────────────────────────
-function BottomNav() {
-  const items = [
-    { label: "Contacts", icon: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <circle cx="11" cy="8" r="3.5" stroke={C.textMid} strokeWidth="1.4" />
-        <path d="M4.5 19c0-3.5 2.9-6 6.5-6s6.5 2.5 6.5 6" stroke={C.textMid} strokeWidth="1.4" strokeLinecap="round" />
-      </svg>
-    )},
-    { label: "Documents", icon: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <rect x="4" y="2" width="10" height="14" rx="2" stroke={C.textMid} strokeWidth="1.4" />
-        <path d="M8 6h4M8 9h4M8 12h2" stroke={C.textMid} strokeWidth="1.4" strokeLinecap="round" />
-        <rect x="8" y="6" width="10" height="14" rx="2" fill={C.white} stroke={C.textMid} strokeWidth="1.4" />
-        <path d="M12 10h4M12 13h4M12 16h2" stroke={C.textMid} strokeWidth="1.4" strokeLinecap="round" />
-      </svg>
-    )},
-    { label: "Emergency", icon: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <circle cx="11" cy="11" r="8.5" stroke="#EF5350" strokeWidth="1.4" />
-        <rect x="9.5" y="5.5" width="3" height="11" rx="1.5" fill="#EF5350" />
-        <rect x="5.5" y="9.5" width="11" height="3" rx="1.5" fill="#EF5350" />
-      </svg>
-    )},
-  ];
-  return (
-    <div style={{ background: C.white, borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-around", padding: "10px 0 18px" }}>
-      {items.map(({ label, icon }) => (
-        <button key={label} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 16px" }}>
-          {icon}
-          <span style={{ fontSize: 11, color: C.textMid, fontWeight: 600 }}>{label}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
 
 // ── Main component ────────────────────────────────────────────────────────────
 export default function VoizePrototype() {
@@ -476,6 +440,7 @@ export default function VoizePrototype() {
   const [heroOpen, setHeroOpen] = useState(false);
   const touchStartY = useRef(0);
   const touchingAtTop = useRef(false);
+  const lastCompactFlip = useRef(0);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -487,7 +452,15 @@ export default function VoizePrototype() {
     const onScroll = () => {
       setProgress(Math.min(1, Math.max(0, el.scrollTop / SCROLL_RANGE)));
       if (el.scrollTop > 10) setHeroOpen(false);
-      setIsCompact(prev => el.scrollTop > COMPACT_THRESHOLD ? true : el.scrollTop < EXPAND_THRESHOLD ? false : prev);
+      setIsCompact(prev => {
+        const next = el.scrollTop > COMPACT_THRESHOLD ? true : el.scrollTop < EXPAND_THRESHOLD ? false : prev;
+        if (next !== prev) {
+          const now = Date.now();
+          if (now - lastCompactFlip.current < 400) return prev;
+          lastCompactFlip.current = now;
+        }
+        return next;
+      });
     };
     const onWheel = (e: WheelEvent) => {
       if (el.scrollTop === 0 && e.deltaY < -20 && !heroOpen) setHeroOpen(true);
@@ -724,7 +697,7 @@ export default function VoizePrototype() {
           onClick={() => setWellbeingOpen(v => !v)}
           style={{
             width: "100%", border: "none", cursor: "pointer", padding: 0,
-            background: "linear-gradient(to right, rgba(255,51,116,0.12) 0%, #FFFFFF 65%)",
+            background: "linear-gradient(135deg, #FFCCD8 0%, #FFFFFF 65%)",
             borderRadius: 14, boxShadow: C.cardShadow, marginBottom: 4,
           }}
         >
@@ -735,13 +708,13 @@ export default function VoizePrototype() {
               <div style={{ fontSize: 15, fontWeight: 700, color: C.text }}>Wellbeing score:</div>
               <div style={{ fontSize: 13, color: C.text, opacity: 0.7 }}>Support required</div>
             </div>
-            <div style={{ textAlign: "right" }}>
+            <div style={{ textAlign: "right", opacity: wellbeingOpen ? 0 : 1, transition: "opacity 0.2s ease" }}>
               <div style={{ fontSize: 32, fontWeight: 800, color: C.text, lineHeight: 1, fontFamily: "'SeasonMix', serif" }}>24</div>
               <div style={{ fontSize: 12, color: "#4CAF50", fontWeight: 600, marginTop: 2 }}>▲ 20</div>
             </div>
             <Chevron dir={wellbeingOpen ? "up" : "down"} color={C.wellbeingRed} />
           </div>
-          <div style={{ overflow: "hidden", maxHeight: wellbeingOpen ? 220 : 0, transition: "max-height 0.4s cubic-bezier(0.4,0,0.2,1)" }}>
+          <div style={{ overflow: "hidden", maxHeight: wellbeingOpen ? 160 : 0, transition: "max-height 0.4s cubic-bezier(0.4,0,0.2,1)" }}>
             <div style={{ padding: "0 16px 16px" }}>
               <WellbeingExpanded />
             </div>
@@ -801,25 +774,36 @@ export default function VoizePrototype() {
 
         {/* Treatment plan */}
         <div id="sec-treatment" /><SectionTitle>Treatment plan</SectionTitle>
-        <TreatmentDay day="FRI" date="18" appointments={["X-ray appointment", "X-ray appointment"]} />
-        <TreatmentDay day="SAT" date="19" appointments={["X-ray appointment"]} />
-        <TreatmentDay day="SUN" date="20" appointments={["X-ray appointment"]} faded />
+        <TreatmentDay day="FRI" date="18" appointments={["Physiotherapy session", "Medication review"]} />
+        <TreatmentDay day="SAT" date="19" appointments={["Blood pressure check"]} />
+        <TreatmentDay day="SUN" date="20" appointments={["Occupational therapy"]} faded={!treatmentOpen} />
         <div style={{ overflow: "hidden", maxHeight: treatmentOpen ? 300 : 0, transition: "max-height 0.4s cubic-bezier(0.4,0,0.2,1)" }}>
-          <TreatmentDay day="MON" date="21" appointments={["Physiotherapy", "Blood test"]} />
+          <TreatmentDay day="MON" date="21" appointments={["Cardiology consultation", "Mobility assessment"]} />
         </div>
         <ExpandView open={treatmentOpen} onClick={() => setTreatmentOpen(v => !v)} />
 
         <div id="sec-contacts" />
-        <SectionTitle>Contacts &amp; documents</SectionTitle>
-        <div style={{ background: C.white, borderRadius: 14, boxShadow: C.cardShadow, padding: "16px", marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontSize: 13, color: C.textMuted }}>No contacts or documents added</span>
+        <div style={{ display: "flex", gap: 12, marginBottom: 24, marginTop: 16 }}>
+          <button style={{ flex: 1, background: "#F9F6F1", border: "none", borderRadius: 24, padding: "24px 16px", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, boxShadow: C.cardShadow }}>
+            <svg width="24" height="24" viewBox="0 0 18 18" fill="none">
+              <path d="M9 10C9.96667 10 10.7917 9.65833 11.475 8.975C12.1583 8.29167 12.5 7.46667 12.5 6.5C12.5 5.53333 12.1583 4.70833 11.475 4.025C10.7917 3.34167 9.96667 3 9 3C8.03333 3 7.20833 3.34167 6.525 4.025C5.84167 4.70833 5.5 5.53333 5.5 6.5C5.5 7.46667 5.84167 8.29167 6.525 8.975C7.20833 9.65833 8.03333 10 9 10ZM2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H2ZM2 16H16V14.85C15.1 13.9667 14.0542 13.2708 12.8625 12.7625C11.6708 12.2542 10.3833 12 9 12C7.61667 12 6.32917 12.2542 5.1375 12.7625C3.94583 13.2708 2.9 13.9667 2 14.85V16Z" fill={C.text} />
+            </svg>
+            <div>
+              <div style={{ fontSize: 15, color: C.text, fontWeight: 700 }}>Contacts</div>
+              <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 500, marginTop: 2 }}>Practitioner &amp; relatives</div>
+            </div>
+          </button>
+          <button style={{ flex: 1, background: "#F9F6F1", border: "none", borderRadius: 24, padding: "24px 16px", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, boxShadow: C.cardShadow }}>
+            <svg width="24" height="24" viewBox="0 0 18 20" fill="none">
+              <path d="M2 20C1.45 20 0.979167 19.8042 0.5875 19.4125C0.195833 19.0208 0 18.55 0 18V4C0 3.45 0.195833 2.97917 0.5875 2.5875C0.979167 2.19583 1.45 2 2 2H6.2C6.41667 1.4 6.77917 0.916667 7.2875 0.55C7.79583 0.183333 8.36667 0 9 0C9.63333 0 10.2042 0.183333 10.7125 0.55C11.2208 0.916667 11.5833 1.4 11.8 2H16C16.55 2 17.0208 2.19583 17.4125 2.5875C17.8042 2.97917 18 3.45 18 4V18C18 18.55 17.8042 19.0208 17.4125 19.4125C17.0208 19.8042 16.55 20 16 20H2ZM5 16H10C10.2833 16 10.5208 15.9042 10.7125 15.7125C10.9042 15.5208 11 15.2833 11 15C11 14.7167 10.9042 14.4792 10.7125 14.2875C10.5208 14.0958 10.2833 14 10 14H5C4.71667 14 4.47917 14.0958 4.2875 14.2875C4.09583 14.4792 4 14.7167 4 15C4 15.2833 4.09583 15.5208 4.2875 15.7125C4.47917 15.9042 4.71667 16 5 16ZM5 12H13C13.2833 12 13.5208 11.9042 13.7125 11.7125C13.9042 11.5208 14 11.2833 14 11C14 10.7167 13.9042 10.4792 13.7125 10.2875C13.5208 10.0958 13.2833 10 13 10H5C4.71667 10 4.47917 10.0958 4.2875 10.2875C4.09583 10.4792 4 10.7167 4 11C4 11.2833 4.09583 11.5208 4.2875 11.7125C4.47917 11.9042 4.71667 12 5 12ZM5 8H13C13.2833 8 13.5208 7.90417 13.7125 7.7125C13.9042 7.52083 14 7.28333 14 7C14 6.71667 13.9042 6.47917 13.7125 6.2875C13.5208 6.09583 13.2833 6 13 6H5C4.71667 6 4.47917 6.09583 4.2875 6.2875C4.09583 6.47917 4 6.71667 4 7C4 7.28333 4.09583 7.52083 4.2875 7.7125C4.47917 7.90417 4.71667 8 5 8ZM9 3.25C9.21667 3.25 9.39583 3.17917 9.5375 3.0375C9.67917 2.89583 9.75 2.71667 9.75 2.5C9.75 2.28333 9.67917 2.10417 9.5375 1.9625C9.39583 1.82083 9.21667 1.75 9 1.75C8.78333 1.75 8.60417 1.82083 8.4625 1.9625C8.32083 2.10417 8.25 2.28333 8.25 2.5C8.25 2.71667 8.32083 2.89583 8.4625 3.0375C8.60417 3.17917 8.78333 3.25 9 3.25Z" fill={C.text} />
+            </svg>
+            <div>
+              <div style={{ fontSize: 15, color: C.text, fontWeight: 700 }}>Documents</div>
+              <div style={{ fontSize: 12, color: C.textMuted, fontWeight: 500, marginTop: 2 }}>Residency &amp; tests</div>
+            </div>
+          </button>
         </div>
 
-      </div>
-
-      {/* ── Bottom nav ─────────────────────────────────────────────────────── */}
-      <div style={{ position: "sticky", bottom: 0 }}>
-        <BottomNav />
       </div>
 
       </div>{/* end scroll container */}

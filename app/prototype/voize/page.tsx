@@ -26,7 +26,7 @@ export default function PrototypePage() {
       style={{
         width: "100vw",
         height: "100dvh",
-        background: "#F0EDE8",
+        background: "#F3F3F2",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
