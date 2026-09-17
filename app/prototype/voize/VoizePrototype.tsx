@@ -495,17 +495,21 @@ export default function VoizePrototype() {
   const [progress, setProgress] = useState(0);
   const [isCompact, setIsCompact] = useState(false);
   const [heroOpen, setHeroOpen] = useState(false);
+  const [dragProgress, setDragProgress] = useState(0); // 0–1 live pull
+  const [isDragging, setIsDragging] = useState(false);
   const touchStartY = useRef(0);
   const touchingAtTop = useRef(false);
   const lastCompactFlip = useRef(0);
+  const HERO_H = 548;
+  const DRAG_FULL = 200; // px of drag to reach full open
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const SCROLL_RANGE = 240;
-
     const COMPACT_THRESHOLD = 100;
     const EXPAND_THRESHOLD = 60;
+
     const onScroll = () => {
       setProgress(Math.min(1, Math.max(0, el.scrollTop / SCROLL_RANGE)));
       if (el.scrollTop > 10) setHeroOpen(false);
@@ -519,31 +523,54 @@ export default function VoizePrototype() {
         return next;
       });
     };
+
     const onWheel = (e: WheelEvent) => {
       if (el.scrollTop === 0 && e.deltaY < -20 && !heroOpen) setHeroOpen(true);
       if (heroOpen && e.deltaY > 10) setHeroOpen(false);
     };
+
     const onTouchStart = (e: TouchEvent) => {
       touchStartY.current = e.touches[0].clientY;
       touchingAtTop.current = el.scrollTop === 0;
     };
+
     const onTouchMove = (e: TouchEvent) => {
       const dy = e.touches[0].clientY - touchStartY.current;
-      if (touchingAtTop.current && dy > 40 && el.scrollTop === 0 && !heroOpen) setHeroOpen(true);
-      if (heroOpen && dy < -30) setHeroOpen(false);
+      if (heroOpen) {
+        // Swiping up closes
+        if (dy < -30) { setHeroOpen(false); setDragProgress(0); setIsDragging(false); }
+        return;
+      }
+      if (touchingAtTop.current && el.scrollTop === 0 && dy > 0) {
+        const p = Math.min(1, dy / DRAG_FULL);
+        setDragProgress(p);
+        setIsDragging(true);
+      }
+    };
+
+    const onTouchEnd = () => {
+      if (isDragging) {
+        if (dragProgress > 0.35) {
+          setHeroOpen(true);
+        }
+        setDragProgress(0);
+        setIsDragging(false);
+      }
     };
 
     el.addEventListener("scroll", onScroll, { passive: true });
     el.addEventListener("wheel", onWheel, { passive: true });
     el.addEventListener("touchstart", onTouchStart, { passive: true });
     el.addEventListener("touchmove", onTouchMove, { passive: true });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
     return () => {
       el.removeEventListener("scroll", onScroll);
       el.removeEventListener("wheel", onWheel);
       el.removeEventListener("touchstart", onTouchStart);
       el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
     };
-  }, [heroOpen]);
+  }, [heroOpen, isDragging, dragProgress]);
 
   return (
     <div style={{
@@ -555,7 +582,7 @@ export default function VoizePrototype() {
       <div ref={scrollRef} style={{
         position: "absolute", inset: 0,
         background: C.bg,
-        overflowY: heroOpen ? "hidden" : "auto", overflowX: "hidden",
+        overflowY: heroOpen || isDragging ? "hidden" : "auto", overflowX: "hidden",
         WebkitOverflowScrolling: "touch",
       }}>
 
@@ -572,7 +599,11 @@ export default function VoizePrototype() {
           <div style={{ position: "sticky", top: 0, zIndex: 100, background: C.bg }}>
 
             {/* ── Hero layer ── */}
-            <div style={{ overflow: "hidden", maxHeight: heroOpen ? 548 : 0, transition: `max-height ${T}` }}>
+            <div style={{
+              overflow: "hidden",
+              maxHeight: heroOpen ? HERO_H : isDragging ? dragProgress * HERO_H : 0,
+              transition: isDragging ? "none" : `max-height ${T}`,
+            }}>
               <div style={{ position: "relative", height: 490 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/images/patient-turner.png" alt="Ms. Turner"
