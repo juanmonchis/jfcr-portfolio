@@ -26,6 +26,15 @@ jobs:
 
       - name: Generate Prisma client
         run: npx prisma generate
+        env:
+          DATABASE_URL: file:./dev.db
+
+      - name: Setup database
+        run: |
+          npx prisma db push --skip-generate
+          npx ts-node --compiler-options '{"module":"CommonJS"}' prisma/seed.ts
+        env:
+          DATABASE_URL: file:./dev.db
 
       - name: Remove admin routes (not needed for static export)
         run: |
