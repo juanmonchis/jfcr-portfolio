@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import path from "path";
+import fs from "fs";
 
 const dbPath = path.join(process.cwd(), "dev.db");
 const adapter = new PrismaBetterSqlite3({ url: `file:${dbPath}` });
@@ -8,6 +9,29 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("🌱 Seeding database...");
+
+  // If the local admin exported its content (npm run content:export), use that.
+  const contentPath = path.join(process.cwd(), "prisma", "content.json");
+  if (fs.existsSync(contentPath)) {
+    const c = JSON.parse(fs.readFileSync(contentPath, "utf-8"));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const dates = (rows: any[]): any[] =>
+      rows.map((r) => ({
+        ...r,
+        ...(r.createdAt ? { createdAt: new Date(r.createdAt) } : {}),
+        ...(r.updatedAt ? { updatedAt: new Date(r.updatedAt) } : {}),
+      }));
+    await prisma.caseStudy.deleteMany();
+    await prisma.post.deleteMany();
+    await prisma.project.deleteMany();
+    await prisma.borderedItem.deleteMany();
+    await prisma.project.createMany({ data: dates(c.projects) });
+    await prisma.caseStudy.createMany({ data: dates(c.caseStudies) });
+    await prisma.borderedItem.createMany({ data: c.borderedItems });
+    await prisma.post.createMany({ data: dates(c.posts) });
+    console.log("✅ Seeded from prisma/content.json");
+    return;
+  }
 
   // Clean existing data
   await prisma.post.deleteMany();
