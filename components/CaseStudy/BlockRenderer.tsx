@@ -49,7 +49,9 @@ function toGridImage(item: GridImage | string): GridImage {
   return item;
 }
 
-export type Block =
+type BlockMeta = { deepThoughts?: boolean };
+
+export type Block = BlockMeta & (
   | { id: string; type: "heading"; level: 1 | 2 | 3; text: string }
   | { id: string; type: "text"; html: string }
   | { id: string; type: "image"; url: string; mobileUrl?: string; caption?: string; width: "full" | "contained" }
@@ -85,7 +87,9 @@ export type Block =
   | { id: string; type: "insight"; text: string }
   | { id: string; type: "stat-bar"; items: Array<{ number: string; label: string }> }
   | { id: string; type: "color-palette"; items: Array<{ name: string; hex: string; rgb: string }> }
-  | { id: string; type: "feature-section"; image: string; title: string; body: string; imageAlign: "left" | "right" };
+  | { id: string; type: "feature-section"; image: string; title: string; body: string; imageAlign: "left" | "right" }
+  | { id: string; type: "mini-viewer"; minis: MiniData[] }
+);
 
 function getVideoEmbedUrl(url: string): string | null {
   try {
@@ -150,6 +154,8 @@ function VideoBlock({ block }: { block: Extract<Block, { type: "video" }> }) {
 }
 
 const textWrapper = "max-w-[1000px] mx-auto w-full px-6 md:px-12";
+
+import MiniViewer, { type MiniData } from "./MiniViewer";
 
 import {
   HandHoldingPlant,
@@ -1671,7 +1677,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   );
 }
 
-export default function BlockRenderer({ blocks, cardColor, title, showLogo, description }: { blocks: Block[]; cardColor?: string; title?: string; showLogo?: boolean; description?: string }) {
+export default function BlockRenderer({ blocks, cardColor, title, showLogo, description, hideDeepThoughts }: { blocks: Block[]; cardColor?: string; title?: string; showLogo?: boolean; description?: string; hideDeepThoughts?: boolean }) {
   const [lightbox, setLightbox] = useState<{ items: GridImage[]; index: number; showDots: boolean } | null>(null);
 
   return (
@@ -1680,6 +1686,14 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
       {blocks.filter((block) => block.type !== "role").map((block) => (
         <div
           key={block.id}
+          style={{
+            display: "grid",
+            gridTemplateRows: (hideDeepThoughts && block.deepThoughts) ? "0fr" : "1fr",
+            transition: "grid-template-rows 0.45s ease",
+          }}
+        >
+        <div style={{ overflow: "hidden", minHeight: 0 }}>
+        <div
           className={
             block.type === "feature-info" ? "py-12" :
             block.type === "labeled-heading" ? "pt-16 pb-2" :
@@ -1690,7 +1704,9 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
             block.type === "divider" ? "py-4 md:py-8" :
             "py-8"
           }
-          style={block.type === "feature-info" ? { background: cardColor } : undefined}
+          style={{
+            ...(block.type === "feature-info" ? { background: cardColor } : {}),
+          }}
         >
 
           {block.type === "heading" && (
@@ -2344,6 +2360,10 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
             </div>
           )}
 
+          {block.type === "mini-viewer" && (
+            <MiniViewer block={block} />
+          )}
+
           {block.type === "color-palette" && (
             <div className={textWrapper}>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
@@ -2370,6 +2390,8 @@ export default function BlockRenderer({ blocks, cardColor, title, showLogo, desc
             </div>
           )}
 
+        </div>
+        </div>
         </div>
       ))}
     </div>

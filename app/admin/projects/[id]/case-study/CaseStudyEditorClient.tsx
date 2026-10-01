@@ -263,7 +263,10 @@ export default function CaseStudyEditorClient({
           onChange={(updated) => {
             // Re-merge: keep existing feature-info blocks at their original positions
             const featureInfoBlocks = blocks.filter((b) => b.type === "feature-info");
-            const featureInfoIdx = blocks.findIndex((b) => b.type === "feature-info");
+            const fiFullIdx = blocks.findIndex((b) => b.type === "feature-info");
+            // Compute insertion index relative to the editor array (no role, no feature-info)
+            const featureInfoIdx = fiFullIdx < 0 ? -1 :
+              blocks.slice(0, fiFullIdx).filter((b) => b.type !== "role").length;
             if (featureInfoBlocks.length === 0) {
               setBlocks(updated);
             } else {

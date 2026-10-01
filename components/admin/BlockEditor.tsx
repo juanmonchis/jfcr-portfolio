@@ -220,7 +220,15 @@ function BlockItem({
             : block.type === "feature-section" ? "feature section"
             : block.type}
         </span>
-        <div className="flex gap-1">
+        <div className="flex gap-1 items-center">
+          <button
+            type="button"
+            onClick={() => onUpdate({ ...block, deepThoughts: !block.deepThoughts })}
+            className={`px-2 py-1 text-xs rounded border transition-colors ${block.deepThoughts ? "bg-[#0C0D1F] text-white border-[#0C0D1F]" : "border-gray-200 text-gray-400 hover:border-[#0C0D1F] hover:text-[#0C0D1F]"}`}
+            title="Mark as deep thoughts — hidden by default on the case study"
+          >
+            Deep thoughts
+          </button>
           <button
             type="button"
             onClick={() => onMove("up")}

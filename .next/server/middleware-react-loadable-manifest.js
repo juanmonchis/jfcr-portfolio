@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST="{\"components/admin/BlockEditor.tsx -> @/components/admin/Editor\":{\"id\":\"components/admin/BlockEditor.tsx -> @/components/admin/Editor\",\"files\":[\"static/chunks/_app-pages-browser_components_admin_Editor_tsx.js\"]}}"

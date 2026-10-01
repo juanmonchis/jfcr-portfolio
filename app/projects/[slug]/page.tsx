@@ -28,7 +28,8 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import BlockRenderer, { Block } from "@/components/CaseStudy/BlockRenderer";
+import { Block } from "@/components/CaseStudy/BlockRenderer";
+import DeepThoughtsWrapper from "@/components/CaseStudy/DeepThoughtsWrapper";
 import SiteHeader from "@/components/SiteHeader";
 import ProjectCard from "@/components/ProjectCard";
 import LogoIcon from "@/components/LogoIcon";
@@ -191,7 +192,7 @@ export default async function CaseStudyPage({ params }: Props) {
       )}
 
       <section className="bg-white">
-        <BlockRenderer
+        <DeepThoughtsWrapper
           blocks={blocks}
           cardColor={project.cardColor}
           title={project.title}
