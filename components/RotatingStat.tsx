@@ -60,7 +60,7 @@ export default function RotatingStat({
             <span className="type-case-title" style={{ color: valueColor }}>
               {item.value}
             </span>
-            <span className="type-caption-sm" style={{ color: labelColor }}>
+            <span className="type-caption-sm" style={{ color: labelColor, lineHeight: 1.2 }}>
               {item.label}
             </span>
           </div>
