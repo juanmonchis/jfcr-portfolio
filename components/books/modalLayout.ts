@@ -5,6 +5,7 @@ export const TEXT_WIDTH = 432
 export const COVER_MAX_WIDTH = 380
 
 export const COVER_WIDTH_CSS = `min(${COVER_MAX_WIDTH}px, calc((90vh - ${MODAL_PADDING * 2}px) / 1.5))`
+export const MODAL_WIDTH_CSS = `min(92vw, calc(${MODAL_PADDING * 2 + MODAL_GAP + TEXT_WIDTH}px + ${COVER_WIDTH_CSS}))`
 
 export function getDesktopModalLayout(vw: number, vh: number) {
   const coverWidth = Math.min(COVER_MAX_WIDTH, (vh * 0.9 - MODAL_PADDING * 2) / 1.5)
