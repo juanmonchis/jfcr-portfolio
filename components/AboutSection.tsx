@@ -1,26 +1,57 @@
 import SplineViewer from "@/components/SplineViewer";
 import CvCta from "@/components/CvCta";
 import AboutHeroTitle from "@/components/AboutHeroTitle";
+import YouTubeFacade from "@/components/YouTubeFacade";
+import RotatingStat, { type Stat } from "@/components/RotatingStat";
 
 const CREAM = "#F2EBD9";
 const MUTED = "rgba(242,235,217,0.55)";
 const LINK_COLOR = "rgba(242,235,217,0.75)";
 const BG = "#2D0055";
 
-const stats = [
-  { value: "7K+", label: "Minutes mentoring on ADPList" },
-  { value: "199h", label: "Learning Blender (so far)" },
-  { value: "20+", label: "Gunplas built" },
-  { value: "80", label: "Warhammer miniatures in the backlog" },
+// Each column rotates through its own list. Add entries to make a column animate.
+const statColumns: Stat[][] = [
+  [
+    { value: "8K+", label: "Minutes mentoring on ADPList" },
+    { value: "200+", label: "Mentees supported" },
+    { value: "19+", label: "B2B brands served" },
+  ],
+  [
+    { value: "199h", label: "Learning Blender (so far)" },
+    { value: "12", label: "Years in product design" },
+    { value: "400K+", label: "Users reached in healthcare" },
+  ],
+  [
+    { value: "20+", label: "Gunplas built" },
+    { value: "5", label: "Products taken from 0 to 1" },
+    { value: "4", label: "Design systems built" },
+  ],
+  [
+    { value: "80", label: "Warhammer miniatures in the backlog" },
+    { value: "5", label: "Squads led" },
+    { value: "2", label: "Design awards" },
+  ],
 ];
 
 const talks = [
-  { label: "Make A Better Graphic Design Portfolio and Get More Clients", href: "https://www.youtube.com/watch?v=JT-6Zg_pJI8" },
-  { label: "Build a Portfolio That Breaks the Mold and Why It Matters", href: "https://www.youtube.com/watch?v=gjRGMhzhkUY" },
+  { id: "JT-6Zg_pJI8", title: "Make A Better Graphic Design Portfolio and Get More Clients" },
+  { id: "gjRGMhzhkUY", title: "Build a Portfolio That Breaks the Mold and Why It Matters" },
 ];
 
 const recognitions = [
   { label: "ADPList Top 100 Most Influential Mentors 2024", href: "https://blog.adplist.org/post/2024-adplist-wrapped-top-mentors-trends-and-topics" },
+];
+
+const featuredVideos: { id: string; title: string; start?: number }[] = [
+  {
+    id: "UxCYIkZePG8",
+    title: "5 book recommendations for DESIGNERS and CREATIVES instead of The Creative Way",
+  },
+  {
+    id: "5J3gomC1pVs",
+    title: "The risks of AI as a young creative",
+    start: 118,
+  },
 ];
 
 const thoughtsOnDesign = [
@@ -28,7 +59,47 @@ const thoughtsOnDesign = [
   { label: "On developing taste and self curation", href: "https://www.instagram.com/reel/DPthfJ9DGRY" },
   { label: "On taste and intent", href: "https://www.instagram.com/reel/DPtj5yHjF3q" },
   { label: "Hyper individualism and creative geniuses", href: "https://www.instagram.com/reel/DSVIEtpjLpi" },
+  { label: "Thought leaders and use of AI", href: "https://www.instagram.com/reel/DGAK1Kcs9-v/" },
+  { label: "Pentagram and face washing", href: "https://www.instagram.com/reel/DDPgpmeRG3B/" },
 ];
+
+// The two Spline scenes frame their models at different sizes. Spline keeps model size
+// fixed in pixels, so a bigger canvas doesn't help; `zoom` scales the rendered canvas
+// with CSS around `anchor` (where the model sits in the 410×530 canvas) and moves that
+// point to the box centre.
+const BOX_W = 410;
+const BOX_H = 530;
+const PENCIL = { zoom: 1, anchor: [BOX_W / 2, BOX_H / 2] as const };
+const SPRING = { zoom: 2.2, anchor: [80, 82] as const };
+
+function AwardModel({
+  url,
+  zoom,
+  anchor,
+}: {
+  url: string;
+  zoom: number;
+  anchor: readonly [number, number];
+}) {
+  return (
+    <div className="relative w-[287px] h-[371px] md:w-[410px] md:h-[530px] overflow-hidden shrink-0">
+      <div
+        className="absolute left-0 top-0 origin-top-left scale-[0.7] md:scale-100"
+        style={{ width: BOX_W, height: BOX_H }}
+      >
+        <SplineViewer
+          url={url}
+          style={{
+            width: BOX_W,
+            height: BOX_H,
+            transformOrigin: `${anchor[0]}px ${anchor[1]}px`,
+            transform: `translate(${BOX_W / 2 - anchor[0]}px, ${BOX_H / 2 - anchor[1]}px) scale(${zoom})`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function AboutSection() {
   return (
@@ -43,11 +114,14 @@ export default function AboutSection() {
           className="w-full grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-b py-10"
           style={{ borderColor: "rgba(242,235,217,0.15)" }}
         >
-          {stats.map((s) => (
-            <div key={s.value} className="flex flex-col items-center gap-1">
-              <span className="type-case-title" style={{ color: CREAM }}>{s.value}</span>
-              <span className="type-caption-sm" style={{ color: MUTED }}>{s.label}</span>
-            </div>
+          {statColumns.map((items, i) => (
+            <RotatingStat
+              key={items[0].value}
+              items={items}
+              valueColor={CREAM}
+              labelColor={MUTED}
+              delay={i * 900}
+            />
           ))}
         </div>
 
@@ -57,13 +131,7 @@ export default function AboutSection() {
           style={{ background: CREAM }}
         >
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12">
-            <div className="w-[287px] h-[371px] md:w-[410px] md:h-[530px] overflow-hidden shrink-0">
-              <SplineViewer
-                url="https://prod.spline.design/zuOtTMciGG7aBGgV/scene.splinecode"
-                className="origin-top-left scale-[0.7] md:scale-100"
-                style={{ width: 410, height: 530 }}
-              />
-            </div>
+            <AwardModel url="https://prod.spline.design/zuOtTMciGG7aBGgV/scene.splinecode" {...PENCIL} />
 
             <div className="flex flex-col items-center gap-3 shrink-0">
               <h3 className="type-case-subtitle" style={{ color: BG }}>Awards</h3>
@@ -90,13 +158,7 @@ export default function AboutSection() {
               </p>
             </div>
 
-            <div className="w-[287px] h-[371px] md:w-[410px] md:h-[530px] overflow-hidden shrink-0">
-              <SplineViewer
-                url="https://prod.spline.design/yOORwiAE8AgognUf/scene.splinecode"
-                className="origin-top-left scale-[0.7] md:scale-100"
-                style={{ width: 410, height: 530 }}
-              />
-            </div>
+            <AwardModel url="https://prod.spline.design/yOORwiAE8AgognUf/scene.splinecode" {...SPRING} />
           </div>
 
           <p className="type-caption-sm" style={{ color: BG, opacity: 0.45 }}>
@@ -113,25 +175,7 @@ export default function AboutSection() {
         </div>
 
         {/* Talks + Recognitions */}
-        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex flex-col items-center gap-4 rounded-2xl px-8 py-8" style={{ border: `1px solid ${CREAM}33` }}>
-            <h3 className="type-case-subtitle" style={{ color: CREAM }}>Talks</h3>
-            <ul className="flex flex-col gap-2 items-center">
-              {talks.map((t) => (
-                <li key={t.label}>
-                  <a
-                    href={t.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="type-caption-sm underline underline-offset-2 hover:opacity-100 transition-opacity"
-                    style={{ color: LINK_COLOR }}
-                  >
-                    {t.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="w-full flex flex-col gap-6">
           <div className="flex flex-col items-center gap-4 rounded-2xl px-8 py-8" style={{ border: `1px solid ${CREAM}33` }}>
             <h3 className="type-case-subtitle" style={{ color: CREAM }}>Recognitions</h3>
             <ul className="flex flex-col gap-2 items-center">
@@ -141,7 +185,7 @@ export default function AboutSection() {
                     href={r.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="type-caption-sm underline underline-offset-2 hover:opacity-100 transition-opacity"
+                    className="type-caption underline underline-offset-2 hover:opacity-100 transition-opacity"
                     style={{ color: LINK_COLOR }}
                   >
                     {r.label}
@@ -155,21 +199,102 @@ export default function AboutSection() {
         {/* Thoughts on design */}
         <div className="w-full flex flex-col items-center gap-4 rounded-2xl px-8 py-8" style={{ border: `1px solid ${CREAM}33` }}>
           <h3 className="type-case-subtitle" style={{ color: CREAM }}>Thoughts on design</h3>
-          <ul className="flex flex-col gap-2 items-center">
-            {thoughtsOnDesign.map((t) => (
+          {/* Featured video — click-to-play facade */}
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+            {featuredVideos.map((v) => (
+              <div key={v.id} className="flex flex-col gap-3">
+                <YouTubeFacade id={v.id} title={v.title} start={v.start} />
+                <p className="type-caption-sm" style={{ color: MUTED }}>
+                  {v.title}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(
+                featuredVideos.map((v) => ({
+                  "@context": "https://schema.org",
+                  "@type": "VideoObject",
+                  name: v.title,
+                  thumbnailUrl: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+                  embedUrl: `https://www.youtube.com/embed/${v.id}`,
+                  contentUrl: `https://www.youtube.com/watch?v=${v.id}`,
+                }))
+              ),
+            }}
+          />
+
+          <h4 className="type-case-heading-sm mt-4" style={{ color: CREAM }}>
+            See it on Instagram
+          </h4>
+
+          <ul className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {thoughtsOnDesign.map((t, i) => (
               <li key={t.label}>
                 <a
                   href={t.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="type-caption-sm underline underline-offset-2 hover:opacity-100 transition-opacity"
-                  style={{ color: LINK_COLOR }}
+                  className="group flex items-center gap-4 rounded-2xl p-4 text-left h-full transition-colors hover:bg-[rgba(242,235,217,0.08)]"
+                  style={{ border: `1px solid ${CREAM}33` }}
                 >
-                  {t.label}
+                  <span
+                    className="shrink-0 flex items-center justify-center rounded-xl transition-transform group-hover:scale-105"
+                    style={{ width: 56, height: 72, background: CREAM, color: BG }}
+                    aria-hidden="true"
+                  >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                  <span className="flex flex-col gap-1 min-w-0">
+                    <span className="type-caption-sm" style={{ color: MUTED }}>
+                      Reel {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="type-caption" style={{ color: CREAM }}>
+                      {t.label}
+                    </span>
+                    <span className="type-caption-sm" style={{ color: LINK_COLOR }}>
+                      Watch on Instagram ↗
+                    </span>
+                  </span>
                 </a>
               </li>
             ))}
           </ul>
+        </div>
+
+        {/* Talks */}
+        <div className="w-full flex flex-col items-center gap-4 rounded-2xl px-8 py-8" style={{ border: `1px solid ${CREAM}33` }}>
+          <h3 className="type-case-subtitle" style={{ color: CREAM }}>Talks</h3>
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+            {talks.map((t) => (
+              <div key={t.id} className="flex flex-col gap-3">
+                <YouTubeFacade id={t.id} title={t.title} />
+                <p className="type-caption-sm" style={{ color: MUTED }}>
+                  {t.title}
+                </p>
+              </div>
+            ))}
+          </div>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(
+                talks.map((t) => ({
+                  "@context": "https://schema.org",
+                  "@type": "VideoObject",
+                  name: t.title,
+                  thumbnailUrl: `https://i.ytimg.com/vi/${t.id}/hqdefault.jpg`,
+                  embedUrl: `https://www.youtube.com/embed/${t.id}`,
+                  contentUrl: `https://www.youtube.com/watch?v=${t.id}`,
+                }))
+              ),
+            }}
+          />
         </div>
 
         {/* Body */}
