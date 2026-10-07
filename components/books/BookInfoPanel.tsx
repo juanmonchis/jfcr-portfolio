@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react"
 import { BookData } from "./types"
 import { assetPath } from "@/lib/assetPath"
+import { COVER_WIDTH_CSS, MODAL_GAP, MODAL_PADDING, TEXT_WIDTH } from "./modalLayout"
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(false)
@@ -74,13 +75,14 @@ export default function BookInfoPanel({ book, onDismiss, coverVisible = true }: 
           style={{
             display: "flex",
             flexDirection: isMobile ? "column" : "row",
-            gap: "1.5rem",
+            gap: isMobile ? "1.5rem" : `${MODAL_GAP}px`,
             border: "1px solid rgba(242,235,217,0.18)",
             borderRadius: 20,
-            padding: isMobile ? "2.25rem 1.75rem" : "1.75rem",
+            padding: isMobile ? "2.25rem 1.75rem" : `${MODAL_PADDING}px`,
             background: "rgba(12,13,31,0.96)",
             backdropFilter: "blur(16px)",
-            width: "min(90vw, 728px)",
+            width: isMobile ? "min(90vw, 728px)" : "fit-content",
+            maxWidth: isMobile ? undefined : "92vw",
             ...(isMobile ? { maxHeight: "80vh", overflowY: "auto" } : {}),
             transform: visible ? "translateY(0) scale(1)" : "translateY(16px) scale(0.97)",
             transition: "transform 0.45s cubic-bezier(0.4,0,0.2,1)",
@@ -90,7 +92,7 @@ export default function BookInfoPanel({ book, onDismiss, coverVisible = true }: 
           <div
             style={{
               flexShrink: 0,
-              width: isMobile ? "100%" : 260,
+              width: isMobile ? "100%" : COVER_WIDTH_CSS,
               maxWidth: isMobile ? 240 : undefined,
               borderRadius: 10,
               overflow: "hidden",
@@ -111,57 +113,59 @@ export default function BookInfoPanel({ book, onDismiss, coverVisible = true }: 
           {/* Details */}
           <div
             style={{
-              flex: 1,
+              flex: isMobile ? 1 : `0 1 ${TEXT_WIDTH}px`,
               display: "flex",
               flexDirection: "column",
-              gap: "0.65rem",
+              justifyContent: isMobile ? undefined : "flex-end",
               minWidth: 0,
             }}
           >
-            <h2
-              id={titleId}
-              style={{
-                fontFamily: "var(--font-migra), serif",
-                fontSize: isMobile ? "clamp(26px, 5vw, 36px)" : 40,
-                fontWeight: 800,
-                color: "#F2EBD9",
-                lineHeight: 1.0,
-                letterSpacing: "-0.02em",
-                margin: 0,
-              }}
-            >
-              {book.title}
-            </h2>
-
-            <p
-              style={{
-                fontFamily: "var(--font-telegraf), sans-serif",
-                fontSize: 11,
-                color: "rgba(242,235,217,0.45)",
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                margin: 0,
-              }}
-            >
-              {book.author}
-            </p>
-
-            <div style={{ height: 1, background: "rgba(242,235,217,0.07)", marginTop: "0.25rem" }} />
-
-            {book.notes && (
-              <p
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem", width: "100%" }}>
+              <h2
+                id={titleId}
                 style={{
-                  fontFamily: "var(--font-telegraf), sans-serif",
-                  fontSize: 16,
-                  color: "rgba(242,235,217,0.55)",
-                  lineHeight: 1.65,
+                  fontFamily: "var(--font-migra), serif",
+                  fontSize: isMobile ? "clamp(26px, 5vw, 36px)" : 56,
+                  fontWeight: 800,
+                  color: "#F2EBD9",
+                  lineHeight: 1.0,
+                  letterSpacing: "-0.02em",
                   margin: 0,
                 }}
               >
-                {book.notes}
-              </p>
-            )}
+                {book.title}
+              </h2>
 
+              <p
+                style={{
+                  fontFamily: "var(--font-telegraf), sans-serif",
+                  fontSize: isMobile ? 11 : 13,
+                  color: "rgba(242,235,217,0.45)",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  margin: 0,
+                }}
+              >
+                {book.author}
+              </p>
+
+              <div style={{ height: 1, background: "rgba(242,235,217,0.07)", marginTop: "0.25rem" }} />
+
+              {book.notes && (
+                <p
+                  style={{
+                    fontFamily: "var(--font-telegraf), sans-serif",
+                    fontSize: isMobile ? 16 : 19,
+                    color: "rgba(242,235,217,0.55)",
+                    lineHeight: 1.65,
+                    margin: 0,
+                  }}
+                >
+                  {book.notes}
+                </p>
+              )}
+
+            </div>
           </div>
         </div>
 
