@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react"
 import { BookData } from "./types"
 import { assetPath } from "@/lib/assetPath"
-import { COVER_WIDTH_CSS, MODAL_GAP, MODAL_PADDING, TEXT_WIDTH } from "./modalLayout"
+import { COVER_WIDTH_CSS, MODAL_GAP, MODAL_PADDING, MODAL_WIDTH_CSS } from "./modalLayout"
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(false)
@@ -81,8 +81,7 @@ export default function BookInfoPanel({ book, onDismiss, coverVisible = true }: 
             padding: isMobile ? "2.25rem 1.75rem" : `${MODAL_PADDING}px`,
             background: "rgba(12,13,31,0.96)",
             backdropFilter: "blur(16px)",
-            width: isMobile ? "min(90vw, 728px)" : "fit-content",
-            maxWidth: isMobile ? undefined : "92vw",
+            width: isMobile ? "min(90vw, 728px)" : MODAL_WIDTH_CSS,
             ...(isMobile ? { maxHeight: "80vh", overflowY: "auto" } : {}),
             transform: visible ? "translateY(0) scale(1)" : "translateY(16px) scale(0.97)",
             transition: "transform 0.45s cubic-bezier(0.4,0,0.2,1)",
@@ -113,7 +112,7 @@ export default function BookInfoPanel({ book, onDismiss, coverVisible = true }: 
           {/* Details */}
           <div
             style={{
-              flex: isMobile ? 1 : `0 1 ${TEXT_WIDTH}px`,
+              flex: 1,
               display: "flex",
               flexDirection: "column",
               justifyContent: isMobile ? undefined : "flex-end",
