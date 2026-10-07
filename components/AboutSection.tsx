@@ -20,16 +20,19 @@ const statColumns: Stat[][] = [
     { value: "199h", label: "Learning Blender (so far)" },
     { value: "12", label: "Years in product design" },
     { value: "400K+", label: "Users reached in healthcare" },
+    { value: "500+", label: "Engineers served by design systems" },
   ],
   [
     { value: "20+", label: "Gunplas built" },
     { value: "5", label: "Products taken from 0 to 1" },
     { value: "4", label: "Design systems built" },
+    { value: "80M+", label: "Consumers on products built with the design system I helped build" },
   ],
   [
     { value: "80", label: "Warhammer miniatures in the backlog" },
     { value: "5", label: "Squads led" },
     { value: "2", label: "Design awards" },
+    { value: "75+", label: "Designers served by design systems" },
   ],
 ];
 
