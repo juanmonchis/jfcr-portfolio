@@ -8,6 +8,7 @@ import * as THREE from "three"
 import { BookData } from "./types"
 import { useSpineTexture } from "./useSpineTexture"
 import { RETURN_CONFIG, IMMEDIATE_CONFIG } from "./useBookSpring"
+import { getDesktopModalLayout } from "./modalLayout"
 
 const W = 0.22
 const H = 0.32
@@ -85,16 +86,16 @@ export default function BookMesh({
       const vh = window.innerHeight
       const WORLD_HEIGHT = 2 * Math.tan((62 / 2) * (Math.PI / 180)) * 1.4
       const WORLD_WIDTH  = WORLD_HEIGHT * (vw / vh)
-      const modalWidth   = Math.min(vw * 0.9, 728)
-      const coverWidth   = 260
-      const coverHeight  = coverWidth * 1.5
-      const coverCx      = (vw - modalWidth) / 2 + 28 + coverWidth / 2
+      const { coverHeight, coverCx } = getDesktopModalLayout(vw, vh)
       const coverCy      = vh / 2
       const ndcX         = (coverCx / vw) * 2 - 1
       const ndcY         = -(coverCy / vh) * 2 + 1
-      const worldX       = ndcX * WORLD_WIDTH  / 2
-      const worldY       = ndcY * WORLD_HEIGHT / 2
-      const targetScale  = (coverHeight / vh) * WORLD_HEIGHT / H
+      // The card sits closer to the camera (z=1.4) than the z=0 plane the world size is measured on,
+      // so perspective enlarges it; divide that out so it lands exactly on the 2D cover.
+      const persp        = 1.4 / (1.4 - (0.1 + D / 2))
+      const worldX       = (ndcX * WORLD_WIDTH  / 2) / persp
+      const worldY       = (ndcY * WORLD_HEIGHT / 2) / persp
+      const targetScale  = (coverHeight / vh) * WORLD_HEIGHT / H / persp
 
       api.start({
         pos:    [worldX, worldY, 0.1] as [number, number, number],
