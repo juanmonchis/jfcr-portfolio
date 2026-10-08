@@ -17,8 +17,8 @@
  *
  * ✏️  CONTENT — things to edit here:
  *   - Headline text         → "Hey, I am Juan Felipe 🐸"
- *   - Subtitle text         → "A digital designer focused on..."
- *   - CTA label & href      → "About Me" + #about
+ *   - Subtitle text         → "A senior designer who leads..."
+ *   - CTA button            → removed for now (was "About Me" → /about)
  *   - Nav links             → Blog, Work
  *
  * ℹ️  INTERACTIVE SLOT:

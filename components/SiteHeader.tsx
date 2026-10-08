@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import LogoIcon, { LogoVariant } from "@/components/LogoIcon";
+import HeroStar from "@/components/HeroStar";
 
 interface SiteHeaderProps {
   logoVariant?: LogoVariant;
@@ -164,7 +165,7 @@ export default function SiteHeader({
             <div className="w-full h-px my-0.5" style={{ backgroundColor: `${color}33` }} />
 
             {/* Socials pill — desktop */}
-            <div className="relative">
+            <div className="flex flex-col items-end">
               <NavPill
                 color={color}
                 size="sm"
@@ -179,7 +180,7 @@ export default function SiteHeader({
               {/* Dropdown */}
               {socialsOpen && (
                 <div
-                  className="absolute right-0 top-full mt-2 flex items-center gap-2 px-3 py-2 rounded-2xl border"
+                  className="mt-2 flex items-center gap-2 px-3 py-2 rounded-2xl border"
                   style={{ borderColor: `${color}33`, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(12px)" }}
                 >
                   {SOCIALS.map(({ label, href, icon }) => (
@@ -199,6 +200,8 @@ export default function SiteHeader({
                 </div>
               )}
             </div>
+
+            <HeroStar size={64} fill={color} textColor={pillHoverText} hoverLabel="My Trading Card Game" />
           </nav>
 
           {/* ── Mobile hamburger ──────────────────────────────────────────── */}
@@ -280,6 +283,13 @@ export default function SiteHeader({
               </div>
             </div>
           </div>
+
+          <NavPill href="/projects/trading-card-game" color={mobileNavColor} size="md" hoverTextColor={pillHoverText} hoverBgColor={pillHoverBg} onClick={() => setOpen(false)}>
+            <span className="text-xl">→</span>
+            <span className="flex-1 text-center type-cta tracking-widest uppercase" style={{ color: "inherit" }}>
+              LATEST PROJECT
+            </span>
+          </NavPill>
         </nav>
       </div>
     </>

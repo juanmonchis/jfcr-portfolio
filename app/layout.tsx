@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     default: "JFCR — Juan Felipe Cadavid Rojas",
     template: "%s — JFCR",
   },
-  description: "A digital designer focused on exceptional products, brands and sometimes silly animations.",
+  description: "A senior designer who leads, with strong opinions, clean systems and a weakness for silly animations.",
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png" }],
     apple: "/icon.png",
@@ -68,14 +68,14 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "JFCR",
     title: "JFCR — Juan Felipe Cadavid Rojas",
-    description: "A digital designer focused on exceptional products, brands and sometimes silly animations.",
+    description: "A senior designer who leads, with strong opinions, clean systems and a weakness for silly animations.",
     url: BASE_URL,
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "JFCR — Juan Felipe Cadavid Rojas",
-    description: "A digital designer focused on exceptional products, brands and sometimes silly animations.",
+    description: "A senior designer who leads, with strong opinions, clean systems and a weakness for silly animations.",
     images: ["/og-image.png"],
   },
   other: {

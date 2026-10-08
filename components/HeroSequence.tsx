@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import HeroFrog from "./HeroFrog";
-import HeroStar from "./HeroStar";
 
 const WORDS = ["Hey,", "I", "am", "Juan", "Felipe"];
 
@@ -60,25 +58,8 @@ export default function HeroSequence() {
             transition: "opacity 0.7s ease, transform 0.7s ease",
           }}
         >
-          A digital designer focused on exceptional products, brands and sometimes silly animations.
+          A senior designer who leads, with strong opinions, clean systems and a weakness for silly animations.
         </p>
-
-        <div
-          className="flex items-center gap-8"
-          style={{
-            opacity:    showRest ? 1 : 0,
-            transform:  showRest ? "translateY(0)" : "translateY(24px)",
-            transition: "opacity 0.7s 0.15s ease, transform 0.7s 0.15s ease",
-          }}
-        >
-          <Link
-            href="/about"
-            className="inline-flex items-center gap-1 border border-[#0C0D1F] text-[#0C0D1F] px-8 py-3 rounded-full hover:bg-[#0C0D1F] hover:text-[#DDED3C] transition-colors duration-300 ease-in-out type-cta"
-          >
-            About Me
-          </Link>
-          <HeroStar />
-        </div>
 
       </div>
     </div>

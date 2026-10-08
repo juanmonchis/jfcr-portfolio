@@ -65,10 +65,6 @@ export default async function HomePage() {
       {/* Projects Section */}
       <section id="projects" className="bg-[#0C0D1F] py-20 px-6 md:px-12 lg:px-20">
         <div className="max-w-[1200px] mx-auto">
-        <h2 className="type-case-subtitle mb-12 max-w-2xl" style={{ fontWeight: 400, color: "white" }}>
-          These are the latest products and brands I&apos;ve worked on:
-        </h2>
-
         {/* Default (full width) projects */}
         {defaultProjects.length > 0 && (
           <div className="flex flex-col gap-6 mb-6 max-w-[1000px] mx-auto">

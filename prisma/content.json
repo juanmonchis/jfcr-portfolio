@@ -179,36 +179,6 @@
       "showThumbnailOnMobile": true,
       "order": 0,
       "createdAt": "2026-08-22T18:23:19.917Z"
-    },
-    {
-      "id": 13,
-      "title": "voize",
-      "subtitle": "",
-      "tags": "[]",
-      "description": "",
-      "ctaLabel": "View case study",
-      "ctaHref": "/projects/voize",
-      "thumbnailUrl": null,
-      "cardColor": "#FFFFFF",
-      "size": "default",
-      "showThumbnailOnMobile": true,
-      "order": 1,
-      "createdAt": "2026-09-16T05:38:25.000Z"
-    },
-    {
-      "id": 14,
-      "title": "Mini Catalogue",
-      "subtitle": "Painted miniatures as interactive 3D scans",
-      "tags": "[\"3D scanning\", \"WebGL\", \"personal\"]",
-      "description": "A growing catalogue of hand-painted Warhammer miniatures, scanned and displayed as interactive 3D models in the browser.",
-      "ctaLabel": "View catalogue",
-      "ctaHref": "/projects/mini-catalogue",
-      "thumbnailUrl": null,
-      "cardColor": "#1A1A2E",
-      "size": "default",
-      "showThumbnailOnMobile": true,
-      "order": 99,
-      "createdAt": "2026-09-25T15:51:49.000Z"
     }
   ],
   "caseStudies": [
@@ -343,30 +313,6 @@
       "ctaUrl": null,
       "createdAt": "2026-08-22T18:24:35.869Z",
       "updatedAt": "2026-08-25T06:02:21.632Z"
-    },
-    {
-      "id": 135,
-      "projectId": 13,
-      "slug": "voize",
-      "teamMembers": "[]",
-      "blocks": "[]",
-      "description": null,
-      "ctaLabel": null,
-      "ctaUrl": null,
-      "createdAt": "2026-09-16T05:38:25.000Z",
-      "updatedAt": "2026-09-16T05:38:25.000Z"
-    },
-    {
-      "id": 136,
-      "projectId": 14,
-      "slug": "mini-catalogue",
-      "teamMembers": "[]",
-      "blocks": "[{\"id\": \"mc-role\", \"type\": \"role\", \"text\": \"Personal project \\u2014 3D scanning, WebGL, miniature painting\"}, {\"id\": \"mc-intro-h\", \"type\": \"heading\", \"level\": 2, \"text\": \"The collection\"}, {\"id\": \"mc-intro-t\", \"type\": \"text\", \"html\": \"<p>Every miniature here is painted by hand. The 3D scans are done with photogrammetry, optimised to under 3MB per model, and rendered in real-time WebGL with a turntable viewer. Placeholder models are shown until real scans are ready.</p>\"}, {\"id\": \"mc-viewer\", \"type\": \"mini-viewer\", \"minis\": [{\"name\": \"Marneus Calgar\", \"game\": \"Warhammer 40K\", \"faction\": \"Ultramarines\", \"date\": \"Aug 2025\", \"scale\": \"28 mm\", \"notes\": \"Chapter Master in Terminator armour. NMM gold on shoulder trim, freehand chapter symbol on knee pad.\", \"src\": \"https://modelviewer.dev/shared-assets/models/Astronaut.glb\"}, {\"name\": \"Blood Angels Librarian\", \"game\": \"Warhammer 40K\", \"faction\": \"Blood Angels\", \"date\": \"Jun 2025\", \"scale\": \"28 mm\", \"notes\": \"OSL glow on force staff, deep red armour with battle damage.\", \"src\": \"https://modelviewer.dev/shared-assets/models/RobotExpressive.glb\"}, {\"name\": \"Veteran Sergeant\", \"game\": \"Warhammer 40K\", \"faction\": \"Space Wolves\", \"date\": \"Mar 2025\", \"scale\": \"28 mm\", \"notes\": \"Wolf cloak sculpted from green stuff, chipped fenrisian grey armour.\", \"src\": \"https://modelviewer.dev/shared-assets/models/Astronaut.glb\"}, {\"name\": \"Battle Sister\", \"game\": \"Warhammer 40K\", \"faction\": \"Adepta Sororitas\", \"date\": \"Dec 2024\", \"scale\": \"28 mm\", \"notes\": \"Heavy bolter variant. OSL from the muzzle flash, white armour with gold trim.\", \"src\": \"https://modelviewer.dev/shared-assets/models/RobotExpressive.glb\"}, {\"name\": \"Warboss Grak\", \"game\": \"Warhammer 40K\", \"faction\": \"Orks\", \"date\": \"Oct 2024\", \"scale\": \"28 mm\", \"notes\": \"Converted power klaw, warpaint in contrast paints, heavily weathered bionics.\", \"src\": \"https://modelviewer.dev/shared-assets/models/Astronaut.glb\"}, {\"name\": \"Necron Overlord\", \"game\": \"Warhammer 40K\", \"faction\": \"Necrons\", \"date\": \"Jul 2024\", \"scale\": \"28 mm\", \"notes\": \"OSL teal glow on power rods, silver skeleton with verdigris weathering.\", \"src\": \"https://modelviewer.dev/shared-assets/models/RobotExpressive.glb\"}]}]",
-      "description": "A growing catalogue of hand-painted Warhammer miniatures, displayed as interactive 3D scans.",
-      "ctaLabel": null,
-      "ctaUrl": null,
-      "createdAt": "2026-09-25T15:51:49.000Z",
-      "updatedAt": "2026-09-25T15:51:49.000Z"
     }
   ],
   "borderedItems": [
