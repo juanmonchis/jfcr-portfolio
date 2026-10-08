@@ -17,7 +17,7 @@
  *
  * ✏️  CONTENT — things to edit here:
  *   - Headline text         → "Hey, I am Juan Felipe 🐸"
- *   - Subtitle text         → "A senior designer who leads..."
+ *   - Subtitle text         → "A senior product designer who leads..."
  *   - CTA button            → removed for now (was "About Me" → /about)
  *   - Nav links             → Blog, Work
  *

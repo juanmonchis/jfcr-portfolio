@@ -348,6 +348,18 @@ a:hover .sui-item-text { color: #FF2F01 !important; }
   to   { transform: rotate(18deg);  }
 }
 
+/* Hero tagline: the swappable last phrase fades in sharp from a soft blur */
+@keyframes taglineSwap {
+  from { opacity: 0; filter: blur(6px); }
+  to   { opacity: 1; filter: blur(0);   }
+}
+.tagline-swap {
+  animation: taglineSwap 0.4s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tagline-swap { animation: none; }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }

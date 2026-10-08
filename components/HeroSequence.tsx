@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import HeroFrog from "./HeroFrog";
+import TaglineSwap, { LONGEST_PHRASE } from "./TaglineSwap";
+
+const TAGLINE_START = "A senior product designer who leads through clean flexible systems, strong research and";
 
 const WORDS = ["Hey,", "I", "am", "Juan", "Felipe"];
 
@@ -58,7 +61,16 @@ export default function HeroSequence() {
             transition: "opacity 0.7s ease, transform 0.7s ease",
           }}
         >
-          A senior designer who leads, with strong opinions, clean systems and a weakness for silly animations.
+          <span className="grid">
+            <span style={{ gridArea: "1 / 1" }}>
+              {TAGLINE_START}{" "}
+              <TaglineSwap enabled={showRest} />.
+            </span>
+            {/* Invisible copy with the longest phrase, so the block keeps its tallest height */}
+            <span aria-hidden="true" className="invisible" style={{ gridArea: "1 / 1" }}>
+              {TAGLINE_START} {LONGEST_PHRASE}.
+            </span>
+          </span>
         </p>
 
       </div>
