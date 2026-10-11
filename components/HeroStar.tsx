@@ -43,48 +43,103 @@ function roundedStarPath(
 
 const starD = roundedStarPath(80, 80, 72, 48, 8, 0.28);
 
-export default function HeroStar() {
+interface HeroStarProps {
+  /** Rendered width/height in px. */
+  size?: number;
+  /** Star fill colour. */
+  fill?: string;
+  /** Colour of the "TCG by JFCR" text. */
+  textColor?: string;
+  onClick?: () => void;
+  /**
+   * When set, the star is drawn blank and this label slides out to its left on
+   * hover (used in the desktop menu). When omitted, "TCG by JFCR" sits inside the star.
+   */
+  hoverLabel?: string;
+}
+
+export default function HeroStar({
+  size = 160,
+  fill = "#0C0D1F",
+  textColor = "#DDED3C",
+  onClick,
+  hoverLabel,
+}: HeroStarProps) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <Link
       href="/projects/trading-card-game"
+      aria-label="TCG by JFCR"
+      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{
-        display: "inline-block",
-        transformOrigin: "center",
-        transform: hovered ? "scale(1.2)" : "scale(1)",
-        filter: hovered ? "drop-shadow(0px 8px 24px rgba(0,0,0,0.35))" : "none",
-        transition: "transform 0.3s ease, filter 0.3s ease",
-        animation: `starRock ${hovered ? "0.8s" : "3s"} ease-in-out infinite alternate`,
-      }}
+      onFocus={() => setHovered(true)}
+      onBlur={() => setHovered(false)}
+      style={{ position: "relative", display: "inline-block" }}
     >
-      <svg width="160" height="160" viewBox="0 0 160 160" aria-hidden="true">
-        <path d={starD} fill="#0C0D1F" />
-        <text
-          x="80" y="76"
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fill="#DDED3C"
-          fontSize="18"
-          fontWeight="700"
-          fontFamily="var(--font-migra), serif"
+
+      {hoverLabel && (
+        <span
+          className="type-tag"
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: "100%",
+            top: "50%",
+            marginRight: 4,
+            whiteSpace: "nowrap",
+            color: fill,
+            opacity: hovered ? 1 : 0,
+            transform: `translate(${hovered ? "0" : "16px"}, -50%)`,
+            transition: "opacity 0.3s ease, transform 0.3s ease",
+            pointerEvents: "none",
+          }}
         >
-          TCG
-        </text>
-        <text
-          x="80" y="93"
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fill="#DDED3C"
-          fontSize="13"
-          fontFamily="var(--font-telegraf), sans-serif"
-          letterSpacing="0.05em"
-        >
-          by JFCR
-        </text>
-      </svg>
+          {hoverLabel}
+        </span>
+      )}
+
+      <span
+        style={{
+          display: "inline-block",
+          transformOrigin: "center",
+          transform: hovered ? "scale(1.2)" : "scale(1)",
+          filter: hovered ? "drop-shadow(0px 8px 24px rgba(0,0,0,0.35))" : "none",
+          transition: "transform 0.3s ease, filter 0.3s ease",
+          animation: `starRock ${hovered ? "0.8s" : "3s"} ease-in-out infinite alternate`,
+        }}
+      >
+        <svg width={size} height={size} viewBox="0 0 160 160" aria-hidden="true" style={{ display: "block" }}>
+          <path d={starD} fill={fill} />
+          {!hoverLabel && (
+            <>
+              <text
+                x="80" y="76"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill={textColor}
+                fontSize="18"
+                fontWeight="700"
+                fontFamily="var(--font-migra), serif"
+              >
+                TCG
+              </text>
+              <text
+                x="80" y="93"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fill={textColor}
+                fontSize="13"
+                fontFamily="var(--font-telegraf), sans-serif"
+                letterSpacing="0.05em"
+              >
+                by JFCR
+              </text>
+            </>
+          )}
+        </svg>
+      </span>
     </Link>
   );
 }

@@ -25,9 +25,9 @@
       "ctaHref": "#",
       "thumbnailUrl": "/images/1778702234373-urbanfarming_card.png",
       "cardColor": "#e3e8ef",
-      "size": "xsmall",
+      "size": "default",
       "showThumbnailOnMobile": true,
-      "order": 2,
+      "order": 6,
       "createdAt": "2026-05-13T14:15:24.626Z"
     },
     {
@@ -42,7 +42,7 @@
       "cardColor": "#daf4e6",
       "size": "xsmall",
       "showThumbnailOnMobile": true,
-      "order": 3,
+      "order": 9,
       "createdAt": "2026-05-13T14:15:24.626Z"
     },
     {
@@ -57,22 +57,22 @@
       "cardColor": "#f8e6d3",
       "size": "xsmall",
       "showThumbnailOnMobile": false,
-      "order": 4,
+      "order": 10,
       "createdAt": "2026-05-13T14:15:24.626Z"
     },
     {
       "id": 5,
       "title": "WWF - The Tree of Hope",
-      "subtitle": "An award winning campaign on WhatsApp",
+      "subtitle": "",
       "tags": "[\"Brand\",\"marketing\"]",
       "description": "A text-based RPG on WhatsApp, huh? A game about a ninja saving forests on WhatsApp? Yes.",
       "ctaLabel": "View case study",
       "ctaHref": "#",
       "thumbnailUrl": "/images/1778702798042-treeofhope_card.png",
       "cardColor": "#d4cebd",
-      "size": "default",
+      "size": "xsmall",
       "showThumbnailOnMobile": true,
-      "order": 5,
+      "order": 11,
       "createdAt": "2026-05-13T14:15:24.626Z"
     },
     {
@@ -117,7 +117,7 @@
       "cardColor": "#3e11e1",
       "size": "small",
       "showThumbnailOnMobile": true,
-      "order": 6,
+      "order": 7,
       "createdAt": "2026-05-13T20:13:47.100Z"
     },
     {
@@ -147,7 +147,7 @@
       "cardColor": "#ff0101",
       "size": "default",
       "showThumbnailOnMobile": true,
-      "order": 8,
+      "order": 5,
       "createdAt": "2026-05-13T20:17:16.747Z"
     },
     {
@@ -162,7 +162,7 @@
       "cardColor": "#7B827A",
       "size": "small",
       "showThumbnailOnMobile": true,
-      "order": 6,
+      "order": 8,
       "createdAt": "2026-08-18T19:44:30.368Z"
     },
     {
@@ -177,38 +177,8 @@
       "cardColor": "#FF8000",
       "size": "default",
       "showThumbnailOnMobile": true,
-      "order": 0,
-      "createdAt": "2026-08-22T18:23:19.917Z"
-    },
-    {
-      "id": 13,
-      "title": "voize",
-      "subtitle": "",
-      "tags": "[]",
-      "description": "",
-      "ctaLabel": "View case study",
-      "ctaHref": "/projects/voize",
-      "thumbnailUrl": null,
-      "cardColor": "#FFFFFF",
-      "size": "default",
-      "showThumbnailOnMobile": true,
       "order": 1,
-      "createdAt": "2026-09-16T05:38:25.000Z"
-    },
-    {
-      "id": 14,
-      "title": "Mini Catalogue",
-      "subtitle": "Painted miniatures as interactive 3D scans",
-      "tags": "[\"3D scanning\", \"WebGL\", \"personal\"]",
-      "description": "A growing catalogue of hand-painted Warhammer miniatures, scanned and displayed as interactive 3D models in the browser.",
-      "ctaLabel": "View catalogue",
-      "ctaHref": "/projects/mini-catalogue",
-      "thumbnailUrl": null,
-      "cardColor": "#1A1A2E",
-      "size": "default",
-      "showThumbnailOnMobile": true,
-      "order": 99,
-      "createdAt": "2026-09-25T15:51:49.000Z"
+      "createdAt": "2026-08-22T18:23:19.917Z"
     }
   ],
   "caseStudies": [
@@ -294,7 +264,7 @@
       "ctaLabel": null,
       "ctaUrl": null,
       "createdAt": "2026-05-14T17:22:18.112Z",
-      "updatedAt": "2026-05-14T17:22:24.054Z"
+      "updatedAt": "2026-10-08T13:22:19.477Z"
     },
     {
       "id": 27,
@@ -343,30 +313,6 @@
       "ctaUrl": null,
       "createdAt": "2026-08-22T18:24:35.869Z",
       "updatedAt": "2026-08-25T06:02:21.632Z"
-    },
-    {
-      "id": 135,
-      "projectId": 13,
-      "slug": "voize",
-      "teamMembers": "[]",
-      "blocks": "[]",
-      "description": null,
-      "ctaLabel": null,
-      "ctaUrl": null,
-      "createdAt": "2026-09-16T05:38:25.000Z",
-      "updatedAt": "2026-09-16T05:38:25.000Z"
-    },
-    {
-      "id": 136,
-      "projectId": 14,
-      "slug": "mini-catalogue",
-      "teamMembers": "[]",
-      "blocks": "[{\"id\": \"mc-role\", \"type\": \"role\", \"text\": \"Personal project \\u2014 3D scanning, WebGL, miniature painting\"}, {\"id\": \"mc-intro-h\", \"type\": \"heading\", \"level\": 2, \"text\": \"The collection\"}, {\"id\": \"mc-intro-t\", \"type\": \"text\", \"html\": \"<p>Every miniature here is painted by hand. The 3D scans are done with photogrammetry, optimised to under 3MB per model, and rendered in real-time WebGL with a turntable viewer. Placeholder models are shown until real scans are ready.</p>\"}, {\"id\": \"mc-viewer\", \"type\": \"mini-viewer\", \"minis\": [{\"name\": \"Marneus Calgar\", \"game\": \"Warhammer 40K\", \"faction\": \"Ultramarines\", \"date\": \"Aug 2025\", \"scale\": \"28 mm\", \"notes\": \"Chapter Master in Terminator armour. NMM gold on shoulder trim, freehand chapter symbol on knee pad.\", \"src\": \"https://modelviewer.dev/shared-assets/models/Astronaut.glb\"}, {\"name\": \"Blood Angels Librarian\", \"game\": \"Warhammer 40K\", \"faction\": \"Blood Angels\", \"date\": \"Jun 2025\", \"scale\": \"28 mm\", \"notes\": \"OSL glow on force staff, deep red armour with battle damage.\", \"src\": \"https://modelviewer.dev/shared-assets/models/RobotExpressive.glb\"}, {\"name\": \"Veteran Sergeant\", \"game\": \"Warhammer 40K\", \"faction\": \"Space Wolves\", \"date\": \"Mar 2025\", \"scale\": \"28 mm\", \"notes\": \"Wolf cloak sculpted from green stuff, chipped fenrisian grey armour.\", \"src\": \"https://modelviewer.dev/shared-assets/models/Astronaut.glb\"}, {\"name\": \"Battle Sister\", \"game\": \"Warhammer 40K\", \"faction\": \"Adepta Sororitas\", \"date\": \"Dec 2024\", \"scale\": \"28 mm\", \"notes\": \"Heavy bolter variant. OSL from the muzzle flash, white armour with gold trim.\", \"src\": \"https://modelviewer.dev/shared-assets/models/RobotExpressive.glb\"}, {\"name\": \"Warboss Grak\", \"game\": \"Warhammer 40K\", \"faction\": \"Orks\", \"date\": \"Oct 2024\", \"scale\": \"28 mm\", \"notes\": \"Converted power klaw, warpaint in contrast paints, heavily weathered bionics.\", \"src\": \"https://modelviewer.dev/shared-assets/models/Astronaut.glb\"}, {\"name\": \"Necron Overlord\", \"game\": \"Warhammer 40K\", \"faction\": \"Necrons\", \"date\": \"Jul 2024\", \"scale\": \"28 mm\", \"notes\": \"OSL teal glow on power rods, silver skeleton with verdigris weathering.\", \"src\": \"https://modelviewer.dev/shared-assets/models/RobotExpressive.glb\"}]}]",
-      "description": "A growing catalogue of hand-painted Warhammer miniatures, displayed as interactive 3D scans.",
-      "ctaLabel": null,
-      "ctaUrl": null,
-      "createdAt": "2026-09-25T15:51:49.000Z",
-      "updatedAt": "2026-09-25T15:51:49.000Z"
     }
   ],
   "borderedItems": [
@@ -425,9 +371,45 @@
       "coverImage": "/images/1779343472721-Icon_2_jfcr.png",
       "content": "",
       "blocks": "[{\"id\":\"d5a8391f-0ad9-4659-8bc0-c20ac9e66cd8\",\"type\":\"heading\",\"level\":2,\"text\":\"Tragic Card Gathering\"}]",
-      "published": true,
+      "published": false,
       "createdAt": "2026-05-21T06:04:42.007Z",
-      "updatedAt": "2026-05-21T06:04:57.133Z"
+      "updatedAt": "2026-10-11T18:41:57.382Z"
+    },
+    {
+      "id": 3,
+      "title": "AI hyper individualism",
+      "slug": "ai-hyper-individualism",
+      "excerpt": "Our field doesn’t need any “progress” it needs sustenance and nourishment, and the only way to achieve it is through consciously collaborating amongst ourselves. ",
+      "coverImage": "/images/1791743452743-individualism_and_ai_cover.png",
+      "content": "",
+      "blocks": "[{\"id\":\"7d2fe231-346d-444e-90b6-b2f19e0e3023\",\"type\":\"heading\",\"level\":2,\"text\":\"Creative genius be an AI user\"},{\"id\":\"1b262b46-46e4-43ec-8d22-2d739b452f68\",\"type\":\"text\",\"html\":\"<p>I think what bothers me the most about AI people is the assumption you alone can be a creative genius.</p><p>It’s the hint that you can do without the rest of the creatives around you. You can do it all by yourself.</p><p>You don’t need to support a mockup designer because you’re smart enough to prompt it, who needs a voice actor when you can type what you want in a box and get what you will judge as good enough for your content.<br></p><p>Is that hyper individualism, the confidence that you will suddenly understand the ins and outs of&nbsp; fashion design because your prompt looks pretty and you can now start calling yourself a fashion designer.</p><p></p><p>The isolation they cry about starts from the AI bro himself, they’re the ones escaping from the community while expecting us to understand their lack of commitment to it.</p><p></p><p>Is the assumption that we are all chasing an end goal, that somehow there needs to be a winner in the creative field, and that by chance it needs to be him, because he doesn’t need the knowledge of other designers to get things done, he can generate it all by himself. The great man who’s brought progress to the field!</p><p></p><p>That’s the pathetic part, the huge contradiction in the ethos of a lot of creatives. None of their prompting is possible without all of our stolen work put together and made available directly to them. Your story of individualistic prowess is just another disguise for mediocrity, not in the technical sense, but in your commitment to the people around you who you’ve learned from and who you’re gladly stealing valor from.</p><p>My tip to you, is just ask the people around you. I’ve tried doing 3D, I’ve been learning about typography, I practice animation every once in a while and I’ve always had the pleasure of finding creatives around me who will tell me all their secrets about their craft. It will involve practicing more, or buying assets from some other people, or helping them back with any doubts they might have.</p><p></p><p>But community demands friction, it demands that you also give back instead of only taking away. Or at least planting a damn tree for every piece of AI content you post on your feed.</p><p></p><p>An impactful or meaningful attempt in creation requires collaboration, whether indirectly where you apply the information you extracted from a peer or directly when you collaborate and complement your skills with somebody who can bring their perspective and skills.</p><p></p><p>Collaborating will allow you to keep up with the times in a far more significant way, community needs to be a priority over potential clients.</p><p></p>\"}]",
+      "published": true,
+      "createdAt": "2026-10-08T10:53:58.274Z",
+      "updatedAt": "2026-10-11T18:44:08.945Z"
+    },
+    {
+      "id": 4,
+      "title": "The fire of creation",
+      "slug": "the-fire-of-creation",
+      "excerpt": "What else is there to do besides trying to stand out in a sea of fabricated dopamine extracting artifacts?",
+      "coverImage": "/images/1791744012908-fire_of_creation.png",
+      "content": "",
+      "blocks": "[{\"id\":\"b06c06b3-d96c-4b17-aa68-e7517e7272e9\",\"type\":\"heading\",\"level\":2,\"text\":\"You must create a spark before you can make a fire.\"},{\"id\":\"59da1f3c-1069-4f04-a615-24c3108bbf07\",\"type\":\"text\",\"html\":\"<p>I am scared of AI, not because I think it might be able to do things better than me, I am scared because of what it is able to extract from me, I am terrified by how easy it makes it to pretend to be somebody you are not and how viable it feels to abandon what I care for, in exchange of some algorithm dopamine.&nbsp;</p><p><br></p><p>I think that’s why I’ve moved onto painting miniatures, more analogue, less concerned with subscription software, and its ever changing terms and conditions.</p><p><br></p><p>But I keep losing sleep over what can be fabricated from my internet footprint, the things I love and hate, the moments I’ve cherished, the one off comments I’ve written to random instagram idiots, or the overly emotional things I write from time to time in untitled forgotten google documents. All these tiny moments and pieces of me stored in a hard drive are now being fed into an AI.&nbsp;</p><p><br></p><p>An AI that has by now built an avatar of myself deep down in a data center ready to be sold to any company that is willing to pay for it. It will be put to work without my consent, it will be used to do my work for free in favor of a money hungry bastard.&nbsp;</p><p>On the more pathetic side, it might also be used to sell some male balding prevention supplements, or it might be the ideal millennial avatar to use as the face of some extra caffeinated new drink.&nbsp;</p><p><br></p><p>These companies, or even you (if you pay for it) might also be able to tweak this AI homunculus, choose the emotions they want it to display in their ad or piece of content, have it replicate my persona, my way of being and my overall voice timbre and intonation and the way I start to speak faster and show my accent when I get stressed.&nbsp;</p><p>They’ve already built and alternate Juan, a more moderate Juan, the one that likes AI and doesn’t care about the font pairing they’re using for their new lame piece of content about design hustle and how to get more money by using this simple subscription tool!</p><p><br>What will happen if I keep uploading my visual expressions, my random thoughts, my intimate feelings into this corporation infested internet? I hate the uncertainty of that, are we doomed to ask permission to the algorithm in order to connect with real people and not some AI bot?&nbsp;</p><p><br></p><p>What else is there to do besides trying to stand out in a sea of fabricated dopamine extracting artifacts?</p><p>Probably I could try to make my accent more noticeable, maybe I should try wacky camera angles, or different editing styles, or just record in the worst camera possible, but how will I make my need for human connection swim across an ocean of AI slop?&nbsp;</p><p>I dislike algorithm tricks, I don’t need to pretend to engage with a machine that decides if my efforts are worth sharing or not. It is, after all, almost impossible to hit somebody's timeline that might vibe in the same way I do about design, art, miniature painting, scifi books and whatever topic I choose to shoot into the ether.<br>Is it worth my effort to remain human when I can’t seem to reach any one on the internet?</p><p><br><br></p><p>I think it is worth reclaiming being human on the internet, to try harder, for my own sake, not for the algorithm or the AI just for the fact that I am capable of fulfilling my vision, no matter the scope or the topic or the technique.&nbsp;</p><p>Creating for the sake of creation, for the sake of treasuring my vision and skills and for the fact I can channel through my own perspective what AI is still incapable of emulating, creating things, moments, glimpses of clarity, hits of emotion through sweat and tears.</p><p>Create and fail, create and grow, create dangerously, risk the wrath of the machine, risk the deep rejection of the algorithm, risk to lose the race against a GPU farm.</p><p><br></p><p>I’ve been blessed by the fire of creation, AI can barely reflect my blaze on the surface of its shiny metallic guts.&nbsp; I’ll let it emulate, and steal from me, but I’ll watch it burst into pieces tracing the shadow of my emotions on the blank surface of its output window.&nbsp;</p><p>&nbsp;</p><p>To concede my humanity in exchange for comfort and quietness is the sole purpose of its emulations.</p>\"}]",
+      "published": true,
+      "createdAt": "2026-10-08T11:00:19.097Z",
+      "updatedAt": "2026-10-11T18:40:16.742Z"
+    },
+    {
+      "id": 5,
+      "title": "Self-curation and friction",
+      "slug": "self-curation-and-friction",
+      "excerpt": "The \"taste\" that truly make you an outstanding designer is the one that produces the type of media that nourishes the AI beast.",
+      "coverImage": "/images/1791743424884-self_curation.png",
+      "content": "",
+      "blocks": "[{\"id\":\"0cae2a1b-7ad6-4ec1-b2eb-e9f8b90c9fe9\",\"type\":\"heading\",\"level\":2,\"text\":\"AI is immune to taste, you cannot steer an exabyte of trained data away from its logical, statistical outcome no matter the prompt, node configuration, agent, skill, plugin, or subscription tier.\"},{\"id\":\"63a27603-0242-4a68-bc5f-c64e31b0a56b\",\"type\":\"text\",\"html\":\"<p>If you’re a young designer and you’re using AI you’ll never be able to develop taste or a style.</p><p></p><p>You will not develop any taste or style if you keep using AI. Especially if you’re a young designer or young creative.<br></p><p>Every design influencer is currently telling you to use AI or else your career is doomed.</p><p>Buy this, subscribe there, ignore technique and theory, you need AI now to be competitive.</p><p></p><p>False.</p><p></p><p>You don’t need another subscription based service to be a good designer. All you need is <strong>taste</strong> to be above the skillset of 90% of designers.</p><p></p><p>Unfortunately taste is not available as a monthly subscription service, so you’ll have to build one by yourself.</p><p></p><p>A junior designer freshly out of Uni or somebody shifting into the profession has not developed taste, they have a minuscule visual library with no discerning curation.&nbsp;</p><p></p><p>That library most likely consists of Spongebob, Mr Beast thumbnails, some Wes Anderson films cause you heard he’s the best, an expensive logo book you skimmed through that one time and the seasonal brain rot memes on social media.</p><p></p><p>To develop <strong>taste</strong> you need to train and expand your visual/conceptual library every day. It is a marathon of self curation, practice and curiosity. Keep in mind that self curation requires patience, and practice requires friction. You need to be very aware of the things you want to consume and how you want to bring them into your projects so that your taste, your skill and your style have space to flourish.</p><p><br></p><p>AI removes you from this experience. It makes you believe you’ve done the practice that helped you reach that outcome.</p><p>AI models have algorithmically calibrated taste filters that will always appease the lowest common denominator. It has been built to never stray too far away from what is mathematically expected.</p><p><br></p><p>And when you grow as a creative through what is mathematically expected, you’ll be in the same lane as the other 99% of creatives who can’t critically dissect their ideas and ways of working.</p><p><br></p><p>Now, having good or bad taste is irrelevant. As long as you have taste you demonstrate you have an opinion. Having “opinions” will give you sharper ways to engage with ideas and explore more interesting directions than any AI gen service ever could.</p><p><br></p><p>By allowing AI to dim your taste before you’ve barely developed any opinions about your craft you’re making yourself entirely dependent on it and it will make it very hard for you to transition into different software and different areas of design.</p><p><br></p><p>Yes, your work won’t be immediately “good” (if you could say that about an AI deliverable) but you will be building a solid foundation.</p><p>Aim for challenging reads, practicing new techniques and later applying those into your preferred way of working, look at nature, play a videogame, watch a movie from the 60s, watch all the reels from that weird designer who has some opinions.</p><p>Friction through your creative explorations is what creates the spark to genuine growth and innovative ideas, and AI will only butter you up and make you think you’re a genius for producing an algorithmically agreeable idea.</p>\"}]",
+      "published": true,
+      "createdAt": "2026-10-11T18:30:30.294Z",
+      "updatedAt": "2026-10-11T18:30:30.294Z"
     }
   ]
 }

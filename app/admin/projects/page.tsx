@@ -2,7 +2,8 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import DeleteButton from "@/components/admin/DeleteButton";
+import SortableProjectList from "@/components/admin/SortableProjectList";
+import { isUpcoming } from "@/lib/upcomingProjects";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,20 @@ function parseTags(tags: string): string[] {
 }
 
 export default async function AdminProjectsPage() {
-  const projects = await prisma.project.findMany({ orderBy: { order: "asc" } });
+  const sizeRank: Record<string, number> = { default: 0, small: 1, xsmall: 2 };
+  const upcoming = (p: any) => isUpcoming(p.caseStudy?.slug);
+  // Same grouping the homepage uses: finished projects first, coming-soon ones last;
+  // within each, full-width, then 2-col, then 3-col; by order within each size
+  const projects = (
+    await prisma.project.findMany({
+      orderBy: [{ order: "asc" }, { id: "asc" }],
+      include: { caseStudy: { select: { slug: true } } },
+    })
+  ).sort(
+    (a: any, b: any) =>
+      Number(upcoming(a)) - Number(upcoming(b)) ||
+      (sizeRank[a.size] ?? 3) - (sizeRank[b.size] ?? 3)
+  );
 
   return (
     <div>
@@ -48,47 +62,18 @@ export default async function AdminProjectsPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {projects.map((project: any) => (
-            <div
-              key={project.id}
-              className="bg-white rounded-2xl p-5 flex items-center gap-4"
-            >
-              <div
-                className="w-12 h-12 rounded-xl flex-shrink-0"
-                style={{ backgroundColor: project.cardColor }}
-              />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-bold text-[#0C0D1F] text-sm">{project.title}</h3>
-                  <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full capitalize">
-                    {project.size}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-500 mb-1">{project.subtitle}</p>
-                <div className="flex flex-wrap gap-1">
-                  {parseTags(project.tags).slice(0, 4).map((tag) => (
-                    <span key={tag} className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <Link
-                  href={`/admin/projects/${project.id}`}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                >
-                  Edit
-                </Link>
-                <form action={deleteProject}>
-                  <input type="hidden" name="id" value={project.id} />
-                  <DeleteButton label="Delete this project?" />
-                </form>
-              </div>
-            </div>
-          ))}
-        </div>
+        <SortableProjectList
+          deleteAction={deleteProject}
+          initialProjects={projects.map((p: any) => ({
+            id: p.id,
+            title: p.title,
+            subtitle: p.subtitle,
+            tags: parseTags(p.tags),
+            size: p.size,
+            cardColor: p.cardColor,
+            upcoming: upcoming(p),
+          }))}
+        />
       )}
     </div>
   );

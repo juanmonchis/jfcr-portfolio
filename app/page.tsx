@@ -29,6 +29,7 @@
 import { prisma } from "@/lib/prisma";
 import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
+import { isUpcoming } from "@/lib/upcomingProjects";
 import BorderedItemComponent from "@/components/BorderedItem";
 import Link from "next/link";
 import PillMarquee from "@/components/PillMarquee";
@@ -39,15 +40,15 @@ import LogoIcon from "@/components/LogoIcon";
 export default async function HomePage() {
   const [projects, borderedItems] = await Promise.all([
     prisma.project.findMany({
-      orderBy: { order: "asc" },
+      orderBy: [{ order: "asc" }, { id: "asc" }],
       include: { caseStudy: { select: { slug: true } } },
     }),
     prisma.borderedItem.findMany({ orderBy: { order: "asc" } }),
   ]);
 
-  const defaultProjects = projects.filter((p: any) => p.size === "default").sort((a: any, b: any) => a.order - b.order);
-  const smallProjects = projects.filter((p: any) => p.size === "small").sort((a: any, b: any) => a.order - b.order);
-  const xsmallProjects = projects.filter((p: any) => p.size === "xsmall").sort((a: any, b: any) => a.order - b.order);
+  // Unfinished projects are grouped after the finished ones.
+  const liveProjects = projects.filter((p: any) => !isUpcoming(p.caseStudy?.slug));
+  const upcomingProjects = projects.filter((p: any) => isUpcoming(p.caseStudy?.slug));
 
   function parseTags(tags: string): string[] {
     try {
@@ -57,6 +58,51 @@ export default async function HomePage() {
     }
   }
 
+  // Renders a set of projects by size: default (full width), small (2-col), xsmall (3-col).
+  function renderProjects(list: any[]) {
+    const bySize = (size: string) =>
+      list.filter((p: any) => p.size === size).sort((a: any, b: any) => a.order - b.order);
+    const card = (project: any, size: "default" | "small" | "xsmall") => (
+      <ProjectCard
+        key={project.id}
+        title={project.title}
+        subtitle={project.subtitle}
+        tags={parseTags(project.tags)}
+        description={project.description}
+        ctaLabel={project.ctaLabel}
+        ctaHref={project.ctaHref}
+        thumbnailUrl={project.thumbnailUrl ?? undefined}
+        cardColor={project.cardColor}
+        size={size}
+        showThumbnailOnMobile={project.showThumbnailOnMobile}
+        caseStudySlug={project.caseStudy?.slug}
+      />
+    );
+    const defaults = bySize("default");
+    const smalls = bySize("small");
+    const xsmalls = bySize("xsmall");
+
+    return (
+      <>
+        {defaults.length > 0 && (
+          <div className="flex flex-col gap-6 w-full max-w-[1000px] mx-auto">
+            {defaults.map((p: any) => card(p, "default"))}
+          </div>
+        )}
+        {smalls.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[1000px] mx-auto">
+            {smalls.map((p: any) => card(p, "small"))}
+          </div>
+        )}
+        {xsmalls.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-[1000px] mx-auto">
+            {xsmalls.map((p: any) => card(p, "xsmall"))}
+          </div>
+        )}
+      </>
+    );
+  }
+
   return (
     <main className="bg-[#DDED3C]">
       {/* Hero */}
@@ -64,76 +110,9 @@ export default async function HomePage() {
 
       {/* Projects Section */}
       <section id="projects" className="bg-[#0C0D1F] py-20 px-6 md:px-12 lg:px-20">
-        <div className="max-w-[1200px] mx-auto">
-        <h2 className="type-case-subtitle mb-12 max-w-2xl" style={{ fontWeight: 400, color: "white" }}>
-          These are the latest products and brands I&apos;ve worked on:
-        </h2>
-
-        {/* Default (full width) projects */}
-        {defaultProjects.length > 0 && (
-          <div className="flex flex-col gap-6 mb-6 max-w-[1000px] mx-auto">
-            {defaultProjects.map((project: any) => (
-              <ProjectCard
-                key={project.id}
-                title={project.title}
-                subtitle={project.subtitle}
-                tags={parseTags(project.tags)}
-                description={project.description}
-                ctaLabel={project.ctaLabel}
-                ctaHref={project.ctaHref}
-                thumbnailUrl={project.thumbnailUrl ?? undefined}
-                cardColor={project.cardColor}
-                size="default"
-                showThumbnailOnMobile={project.showThumbnailOnMobile}
-                caseStudySlug={project.caseStudy?.slug}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Small (2-col) projects */}
-        {smallProjects.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 max-w-[1000px] mx-auto">
-            {smallProjects.map((project: any) => (
-              <ProjectCard
-                key={project.id}
-                title={project.title}
-                subtitle={project.subtitle}
-                tags={parseTags(project.tags)}
-                description={project.description}
-                ctaLabel={project.ctaLabel}
-                ctaHref={project.ctaHref}
-                thumbnailUrl={project.thumbnailUrl ?? undefined}
-                cardColor={project.cardColor}
-                size="small"
-                showThumbnailOnMobile={project.showThumbnailOnMobile}
-                caseStudySlug={project.caseStudy?.slug}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* XSmall (3-col) projects */}
-        {xsmallProjects.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[1000px] mx-auto">
-            {xsmallProjects.map((project: any) => (
-              <ProjectCard
-                key={project.id}
-                title={project.title}
-                subtitle={project.subtitle}
-                tags={parseTags(project.tags)}
-                description={project.description}
-                ctaLabel={project.ctaLabel}
-                ctaHref={project.ctaHref}
-                thumbnailUrl={project.thumbnailUrl ?? undefined}
-                cardColor={project.cardColor}
-                size="xsmall"
-                showThumbnailOnMobile={project.showThumbnailOnMobile}
-                caseStudySlug={project.caseStudy?.slug}
-              />
-            ))}
-          </div>
-        )}
+        <div className="max-w-[1200px] mx-auto flex flex-col gap-6">
+        {renderProjects(liveProjects)}
+        {renderProjects(upcomingProjects)}
 
         {projects.length === 0 && (
           <p className="text-white/40 text-sm">No projects yet. Add some in the admin panel.</p>

@@ -38,6 +38,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { assetPath } from "@/lib/assetPath";
+import { isUpcoming } from "@/lib/upcomingProjects";
 
 export type ProjectCardSize = "default" | "small" | "xsmall" | "footer-card";
 
@@ -76,6 +77,34 @@ export default function ProjectCard({
     "--card-glow": `${cardColor}66`,
   } as React.CSSProperties;
 
+  // Unfinished projects: muted card, "Coming soon" button, no link, no hover lift.
+  const upcoming = isUpcoming(caseStudySlug);
+  const imageMuted = upcoming ? "grayscale opacity-60" : "";
+
+  const ctaBase = "inline-flex items-center gap-1 text-sm font-semibold border px-4 py-2 rounded-full type-cta";
+  function renderCta(extraClass = "") {
+    if (upcoming) {
+      return (
+        <span
+          aria-disabled="true"
+          className={`${ctaBase} border-dashed border-[#0C0D1F]/50 text-[#0C0D1F]/60 cursor-default select-none ${extraClass}`}
+        >
+          Coming soon
+        </span>
+      );
+    }
+    return (
+      <Link
+        href={resolvedCtaHref}
+        target={resolvedTarget}
+        rel={resolvedRel}
+        className={`${ctaBase} border-[#0C0D1F] text-[#0C0D1F] hover:bg-[#0C0D1F] hover:text-[#DDED3C] transition-colors duration-300 ease-in-out ${extraClass}`}
+      >
+        {ctaLabel} →
+      </Link>
+    );
+  }
+
   const baseCard = (
     <div
       className="group relative rounded-2xl overflow-hidden"
@@ -85,11 +114,13 @@ export default function ProjectCard({
         ...glowStyle,
       }}
       onMouseEnter={(e) => {
+        if (upcoming) return;
         const el = e.currentTarget as HTMLDivElement;
         el.style.boxShadow = `0 0 40px 10px ${cardColor}66`;
         el.style.transform = "scale(1.01)";
       }}
       onMouseLeave={(e) => {
+        if (upcoming) return;
         const el = e.currentTarget as HTMLDivElement;
         el.style.boxShadow = "none";
         el.style.transform = "scale(1)";
@@ -101,7 +132,7 @@ export default function ProjectCard({
           <div className={`mt-6 px-6 md:mt-[50px] md:px-[50px] ${showThumbnailOnMobile ? "" : "hidden md:block"}`}>
             <div className="relative w-full h-[250px] md:h-[400px] overflow-hidden rounded-xl">
               {thumbnailUrl ? (
-                <Image src={assetPath(thumbnailUrl)} alt={title} fill className="object-cover" />
+                <Image src={assetPath(thumbnailUrl)} alt={title} fill className={`object-cover ${imageMuted}`} />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-black/10">
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-black/20">
@@ -138,16 +169,7 @@ export default function ProjectCard({
           {/* Right column: description, CTA */}
           <div className="flex-1 flex flex-col justify-center gap-4 md:pl-10">
             <p className="text-[#0C0D1F]/80 leading-relaxed type-card-description">{description}</p>
-            <div>
-              <Link
-                href={resolvedCtaHref}
-                target={resolvedTarget}
-                rel={resolvedRel}
-                className="inline-flex items-center gap-1 text-sm font-semibold border border-[#0C0D1F] text-[#0C0D1F] px-4 py-2 rounded-full hover:bg-[#0C0D1F] hover:text-[#DDED3C] transition-colors duration-300 ease-in-out type-cta"
-              >
-                {ctaLabel} →
-              </Link>
-            </div>
+            <div>{renderCta()}</div>
           </div>
           </div>
         </div>
@@ -155,21 +177,14 @@ export default function ProjectCard({
         <div className="flex flex-col flex-1 px-5 py-5">
           <h3 className="type-card-title text-[#0C0D1F] mb-2">{title}</h3>
           <p className="type-card-description text-[#0C0D1F]/80 flex-1">{description}</p>
-          <Link
-            href={resolvedCtaHref}
-            target={resolvedTarget}
-            rel={resolvedRel}
-            className="inline-flex items-center gap-1 text-sm font-semibold border border-[#0C0D1F] text-[#0C0D1F] px-4 py-2 rounded-full hover:bg-[#0C0D1F] hover:text-[#DDED3C] transition-colors duration-300 ease-in-out type-cta mt-3 self-start"
-          >
-            {ctaLabel} →
-          </Link>
+          {renderCta("mt-3 self-start")}
         </div>
       ) : (
         <div className="flex flex-col">
           {/* Full-width image / placeholder */}
           <div className={`w-full ${size === "xsmall" || !showThumbnailOnMobile ? "hidden md:block" : ""}`}>
             {thumbnailUrl ? (
-              <Image src={assetPath(thumbnailUrl)} alt={title} width={0} height={0} sizes="100vw" className="w-full h-auto" />
+              <Image src={assetPath(thumbnailUrl)} alt={title} width={0} height={0} sizes="100vw" className={`w-full h-auto ${imageMuted}`} />
             ) : (
               <div className="w-full h-24 flex items-center justify-center bg-black/10">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-black/20">
@@ -194,14 +209,7 @@ export default function ProjectCard({
                 ))}
               </div>
               <p className="type-card-description text-[#0C0D1F]/80 flex-1 overflow-hidden">{description}</p>
-              <Link
-                href={resolvedCtaHref}
-                target={resolvedTarget}
-                rel={resolvedRel}
-                className="inline-flex items-center gap-1 text-sm font-semibold border border-[#0C0D1F] text-[#0C0D1F] px-4 py-2 rounded-full hover:bg-[#0C0D1F] hover:text-[#DDED3C] transition-colors duration-300 ease-in-out type-cta mt-3 self-start"
-              >
-                {ctaLabel} →
-              </Link>
+              {renderCta("mt-3 self-start")}
             </div>
           ) : (
             <div className="flex flex-col md:flex-row flex-1 mt-5 px-5 pb-5">
@@ -225,16 +233,7 @@ export default function ProjectCard({
               {/* Right: description, CTA */}
               <div className="flex-1 flex flex-col justify-center gap-3 md:pl-6">
                 <p className="type-card-description text-[#0C0D1F]/80">{description}</p>
-                <div>
-                  <Link
-                    href={resolvedCtaHref}
-                    target={resolvedTarget}
-                    rel={resolvedRel}
-                    className="inline-flex items-center gap-1 text-sm font-semibold border border-[#0C0D1F] text-[#0C0D1F] px-4 py-2 rounded-full hover:bg-[#0C0D1F] hover:text-[#DDED3C] transition-colors duration-300 ease-in-out type-cta"
-                  >
-                    {ctaLabel} →
-                  </Link>
-                </div>
+                <div>{renderCta()}</div>
               </div>
             </div>
           )}

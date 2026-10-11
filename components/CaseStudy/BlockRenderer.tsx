@@ -153,7 +153,7 @@ function VideoBlock({ block }: { block: Extract<Block, { type: "video" }> }) {
   );
 }
 
-const textWrapper = "max-w-[1000px] mx-auto w-full px-6 md:px-12";
+const textWrapper = "text-wrapper max-w-[1000px] mx-auto w-full px-6 md:px-12";
 
 import MiniViewer, { type MiniData } from "./MiniViewer";
 
