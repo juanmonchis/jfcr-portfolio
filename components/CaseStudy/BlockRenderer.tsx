@@ -1190,7 +1190,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
   return (
     <div className="w-full flex flex-col">
     <div
-      className="min-h-[calc(100vh-80px)] w-full flex flex-col wide:flex-row wide:items-center px-0 wide:px-12 pt-0 wide:pt-0 gap-4 wide:gap-0"
+      className="min-h-[calc(100vh-80px)] w-full flex flex-col wide:flex-row wide:items-center px-0 wide:px-[calc(max(0px,(100%_-_1400px)/2)_+_clamp(24px,5vw,80px))] pt-0 wide:pt-0 gap-4 wide:gap-0"
       style={{
         backgroundImage: "radial-gradient(circle, rgba(138,94,217,0.3) 1px, transparent 1px)",
         backgroundSize: "32px 32px",
@@ -1198,7 +1198,7 @@ function ImageGrid({ block, onOpen, cardColor = "#DDED3C", title = "", showLogo 
     >
 
       {/* Left column: logo → title → description */}
-      <div className="w-full wide:w-1/3 shrink-0 flex flex-col wide:gap-6 px-6 wide:px-0 wide:pl-12 wide:pr-8 items-center wide:items-start text-center wide:text-left" style={{ gap: isDesktop ? undefined : "0.5rem", paddingTop: 0, marginTop: 0, position: "relative" }}>
+      <div className="w-full wide:w-1/3 shrink-0 flex flex-col wide:gap-6 px-6 wide:px-0 wide:pl-0 wide:pr-8 items-center wide:items-start text-center wide:text-left" style={{ gap: isDesktop ? undefined : "0.5rem", paddingTop: 0, marginTop: 0, position: "relative" }}>
         {showLogo && <LogoIcon variant="color" cropPx={50} href="https://www.jfcr.design/" />}
         {title && (
           <h2 className="type-case-subtitle">{title}</h2>
