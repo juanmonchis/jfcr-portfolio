@@ -26,6 +26,7 @@ export function useSpineTexture(title: string, color: string): THREE.CanvasTextu
     ctx.restore()
 
     const texture = new THREE.CanvasTexture(canvas)
+    texture.colorSpace = THREE.SRGBColorSpace
     texture.needsUpdate = true
     return texture
   }, [title, color])

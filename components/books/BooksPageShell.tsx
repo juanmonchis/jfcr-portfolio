@@ -26,13 +26,8 @@ function useIsDesktop() {
   return isDesktop
 }
 
-function getGridColumn(i: number): string {
-  if (i === 0) return "1 / 3"
-  if (i === 1) return "3 / 5"
-  if (i === 2) return "5 / 7"
-  if (i === 3) return "2 / 4"
-  return "4 / 6"
-}
+// 3 x 3 grid. The gap is shared with the width cap so three 2:3 rows always fit the viewport height.
+const GRID_GAP = "clamp(8px, 1.2vw, 18px)"
 
 export default function BooksPageShell({ books }: { books: BookData[] }) {
   const [selectedBook,  setSelectedBook]  = useState<BookData | null>(null)
@@ -115,7 +110,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
             <div>
               <h1 className="type-case-title" style={{ color: "#F2EBD9", margin: 0 }}>Book Recs</h1>
               <p className="type-paragraph" style={{ color: "rgba(242,235,217,0.5)", marginTop: "0.5rem" }}>
-                Books that shaped how I think about design, engineering, and the world.
+                Books that I want more people to read. These have shaped the way I think and experience my everyday.
               </p>
             </div>
           </div>
@@ -124,9 +119,11 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
           <div
             style={{
               flex: 1,
+              alignSelf: "stretch",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              paddingTop: 120, // keeps the grid clear of the fixed nav
               opacity: selectedBook ? 0 : 1,
               pointerEvents: selectedBook ? "none" : "auto",
               transition: "opacity 0.45s ease",
@@ -135,18 +132,17 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(6, 1fr)",
-                gap: "clamp(10px, 1.8vw, 28px)",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: GRID_GAP,
                 width: "100%",
-                maxWidth: "min(52vw, 660px)",
+                maxWidth: `min(56vw, 640px, calc((100vh - 250px - 2 * ${GRID_GAP}) / 1.5 + 2 * ${GRID_GAP}))`,
               }}
             >
-              {books.map((book, i) => {
+              {books.map((book) => {
                 const isHoveredCell = hoveredBookId === book.id
                 return (
                   <div
                     key={book.id}
-                    style={{ gridColumn: getGridColumn(i) }}
                     onMouseEnter={(e) => {
                       setHoveredBookId(book.id)
                       const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
@@ -174,7 +170,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
                         alignItems: "center",
                         justifyContent: "center",
                         gap: "0.5rem",
-                        padding: "0.75rem",
+                        padding: "0.5rem",
                         cursor: "pointer",
                         transition: "border-color 0.25s ease, background 0.25s ease",
                         background: isHoveredCell ? "rgba(242,235,217,0.04)" : "transparent",
@@ -187,7 +183,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
                           textAlign: "center",
                           fontFamily: "var(--font-migra), serif",
                           fontWeight: 800,
-                          fontSize: "clamp(1.25rem, 2vw, 1.625rem)",
+                          fontSize: "clamp(0.85rem, 1.45vw, 1.3rem)",
                           lineHeight: 1.1,
                           letterSpacing: "-0.01em",
                           transition: "color 0.2s ease",
@@ -244,7 +240,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
       <main className="px-6 pt-40 pb-20">
         <h1 className="type-case-title !text-[#F2EBD9] mb-4">Book Recs</h1>
         <p className="type-paragraph !text-[#F2EBD9]/60 mb-10">
-          Books that shaped how I think about design, engineering, and the world.
+          Books that I want more people to read. These have shaped the way I think and experience my everyday.
         </p>
 
         <div style={{ display: "flex", gap: "1.25rem" }}>

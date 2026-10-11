@@ -4,7 +4,7 @@ import { BOOKS } from "@/components/books/data"
 
 export const metadata: Metadata = {
   title: "Books — Juan Felipe",
-  description: "Books that shaped how I think about design, engineering, and the world.",
+  description: "Books that I want more people to read. These have shaped the way I think and experience my everyday.",
 }
 
 export default function BooksPage() {
