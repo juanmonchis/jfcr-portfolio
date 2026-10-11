@@ -94,6 +94,12 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
             display: "flex",
             flexDirection: "row",
             alignItems: "flex-start",
+            // content stays centered and never wider than 1400px on large screens
+            width: "100%",
+            maxWidth: 1400,
+            marginLeft: "auto",
+            marginRight: "auto",
+            boxSizing: "border-box",
             paddingLeft: "clamp(24px, 5vw, 80px)",
             paddingRight: "clamp(24px, 5vw, 80px)",
           }}
@@ -117,7 +123,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
             }}
           >
             <div style={{ filter: "brightness(0) saturate(100%) invert(95%) sepia(60%) saturate(500%) hue-rotate(18deg) brightness(1.05)" }}>
-              <LogoIcon variant="light" size={80} cropPx={12} alwaysPlay />
+              <LogoIcon variant="light" size={100} cropPx={10} alwaysPlay />
             </div>
             <div>
               <h1 className="type-case-title" style={{ color: "#F2EBD9", margin: 0 }}>Book Recs</h1>
