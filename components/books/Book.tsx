@@ -9,6 +9,7 @@ import { BookData } from "./types"
 import { useSpineTexture } from "./useSpineTexture"
 import { RETURN_CONFIG, IMMEDIATE_CONFIG } from "./useBookSpring"
 import { getDesktopModalLayout } from "./modalLayout"
+import { createEnhancedCoverTexture } from "./enhanceCover"
 
 const W = 0.22
 const H = 0.32
@@ -46,25 +47,33 @@ export default function BookMesh({
   const meshRef        = useRef<THREE.Mesh>(null)
   const hoverLerpPos   = useRef<[number, number]>([0, 0])
   const needsHoverInit = useRef(false)
+  // Last pose while hovered — select/hide animations start from here instead of snapping to the rest slot
+  const lastHoverPos   = useRef<[number, number, number]>([0, 0, 0])
+  const lastHoverRot   = useRef<[number, number, number]>([0, 0, 0])
+  const wasHovered     = useRef(false)
 
   const spineTexture = useSpineTexture(book.title, book.spineColor)
 
   const coverTexture = useTexture(book.coverUrl, (tex) => {
     if (Array.isArray(tex)) return
+    // Materials are built by hand (not via JSX props), so R3F won't flag the texture as sRGB for us
+    tex.colorSpace = THREE.SRGBColorSpace
     tex.wrapS = THREE.ClampToEdgeWrapping
     tex.wrapT = THREE.ClampToEdgeWrapping
     tex.minFilter = THREE.LinearFilter
     tex.magFilter = THREE.LinearFilter
   })
 
+  const enhancedCover = useMemo(() => createEnhancedCoverTexture(coverTexture), [coverTexture])
+
   const materials = useMemo(() => [
     new THREE.MeshStandardMaterial({ map: spineTexture,      roughness: 0.7, transparent: false, opacity: 1 }),
     new THREE.MeshStandardMaterial({ color: book.spineColor, roughness: 0.7, transparent: false, opacity: 1 }),
     new THREE.MeshStandardMaterial({ color: "#F5F0E8",       roughness: 0.9, transparent: false, opacity: 1 }),
     new THREE.MeshStandardMaterial({ color: "#F5F0E8",       roughness: 0.9, transparent: false, opacity: 1 }),
-    new THREE.MeshStandardMaterial({ map: coverTexture,      roughness: 0.6, transparent: false, opacity: 1 }),
+    new THREE.MeshStandardMaterial({ map: enhancedCover,     roughness: 0.6, transparent: false, opacity: 1 }),
     new THREE.MeshStandardMaterial({ color: book.spineColor, roughness: 0.7, transparent: false, opacity: 1 }),
-  ], [spineTexture, coverTexture, book.spineColor])
+  ], [spineTexture, enhancedCover, book.spineColor])
 
   const [spring, api] = useSpring(() => ({
     pos:    restPosition,
@@ -74,6 +83,11 @@ export default function BookMesh({
   }))
 
   useEffect(() => {
+    if (wasHovered.current && !isHovered) {
+      api.set({ pos: [...lastHoverPos.current], rot: [...lastHoverRot.current] })
+    }
+    wasHovered.current = isHovered
+
     if (isHovered && !isSelected) {
       needsHoverInit.current = true
       api.start({
@@ -104,9 +118,8 @@ export default function BookMesh({
         config: { tension: 200, friction: 28 },
       })
     } else {
+      // Shrink in place (where the hover pose or modal pose left it) rather than flying to the rest slot
       api.start({
-        pos:    restPosition,
-        rot:    restRotation,
         scale:  0,
         config: reducedMotion ? IMMEDIATE_CONFIG : HIDE_CONFIG,
       })
@@ -139,6 +152,7 @@ export default function BookMesh({
       }
 
       meshRef.current.position.set(hoverLerpPos.current[0], hoverLerpPos.current[1], 0.35)
+      lastHoverPos.current = [hoverLerpPos.current[0], hoverLerpPos.current[1], 0.35]
 
       // Tilt relative to hovered card's center — neutral at card center, pronounced at edges
       const center = cardCenterNDCRef.current
@@ -146,6 +160,7 @@ export default function BookMesh({
       const aimX = -(ndc.y - center.y) * (Math.PI * 0.6) // up/down
 
       meshRef.current.rotation.set(aimX, aimY, 0)
+      lastHoverRot.current = [aimX, aimY, 0]
 
     } else {
       const [px, py, pz] = spring.pos.get()

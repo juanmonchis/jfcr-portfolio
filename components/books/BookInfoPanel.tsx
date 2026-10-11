@@ -58,11 +58,16 @@ export default function BookInfoPanel({ book, onDismiss, coverVisible = true }: 
         justifyContent: "center",
         gap: "1.25rem",
         padding: "0 5vw",
-        background: visible ? "rgba(242,235,217,0.4)" : "rgba(242,235,217,0)",
-        backdropFilter: visible ? "blur(12px)" : "blur(0px)",
+        background: "rgba(242,235,217,0.4)",
+        // Constant blur + opacity-only fade: animating the blur radius re-blurs the whole viewport every frame
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
         opacity: visible ? 1 : 0,
+        // hidden when closed so the blur isn't composited while invisible
+        visibility: visible ? "visible" : "hidden",
+        willChange: "opacity",
         pointerEvents: visible ? "auto" : "none",
-        transition: "opacity 0.45s ease, background 0.45s ease, backdrop-filter 0.45s ease",
+        transition: `opacity 0.45s ease, visibility 0s linear ${visible ? "0s" : "0.45s"}`,
       }}
     >
       {book && (
@@ -80,7 +85,6 @@ export default function BookInfoPanel({ book, onDismiss, coverVisible = true }: 
             borderRadius: 20,
             padding: isMobile ? "2.25rem 1.75rem" : `${MODAL_PADDING}px`,
             background: "rgba(12,13,31,0.96)",
-            backdropFilter: "blur(16px)",
             width: isMobile ? "min(90vw, 728px)" : MODAL_WIDTH_CSS,
             ...(isMobile ? { maxHeight: "80vh", overflowY: "auto" } : {}),
             transform: visible ? "translateY(0) scale(1)" : "translateY(16px) scale(0.97)",

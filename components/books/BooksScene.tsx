@@ -26,6 +26,7 @@ export default function BooksScene({ books, selectedBookId, hoveredBookId, mouse
       aria-label="Interactive 3D bookshelf"
       style={{ width: "100%", height: "100vh", pointerEvents: "none" }}
       dpr={[1, 2]}
+      flat // no ACES tone mapping — it desaturates and flattens contrast
       gl={{ antialias: true }}
       camera={{ position: [0, 0, 1.4], fov: 62 }}
     >

@@ -31,13 +31,13 @@ export default function BookshelfArrangement({
       return x - Math.floor(x)
     }
 
-    const colSpacing = 0.55
-    const rowY       = [0.15, -0.40]
-    const rowCols    = [3, 2]
+    const colSpacing = 0.3
+    const rowY       = [0.4, 0, -0.4]
+    const rowCols    = [3, 3, 3]
 
     return books.map((book, i) => {
-      const row      = i < 3 ? 0 : 1
-      const col      = i < 3 ? i : i - 3
+      const row      = Math.floor(i / 3)
+      const col      = i % 3
       const colCount = rowCols[row]
       const xCenter  = (col - (colCount - 1) / 2) * colSpacing
       const y        = rowY[row] + (seededRandom(book.id * 7) - 0.5) * 0.04
