@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Notes",
   description: "Thoughts on design, creativity, and building things that matter.",
   openGraph: {
-    title: "Notes — JFCR",
+    title: "Notes - JFCR",
     description: "Thoughts on design, creativity, and building things that matter.",
     url: "https://www.jfcr.design/notes",
   },

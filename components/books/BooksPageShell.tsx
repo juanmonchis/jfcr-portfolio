@@ -26,7 +26,7 @@ function useIsDesktop() {
   return isDesktop
 }
 
-// 3 x 3 grid. The gap is shared with the width cap so three 2:3 rows always fit the viewport height.
+// 3 x 3 grid. Card size depends on width only; the page scrolls when the rows are taller than the viewport.
 const GRID_GAP = "clamp(8px, 1.2vw, 18px)"
 
 export default function BooksPageShell({ books }: { books: BookData[] }) {
@@ -46,6 +46,13 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
     coverTimerRef.current = setTimeout(() => setCoverVisible(true), 580)
   }, [])
 
+  useEffect(() => {
+    if (!selectedBook) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = prev }
+  }, [selectedBook])
+
   const handleDismiss = useCallback(() => {
     setSelectedBook(null)
     setCoverVisible(false)
@@ -53,7 +60,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
 
   if (isDesktop) {
     return (
-      <div className="relative w-full h-screen overflow-hidden bg-[#0C0D1F]">
+      <div className="relative w-full min-h-screen overflow-x-clip bg-[#0C0D1F]">
         <SiteHeader
           logoVariant="light"
           showLogo={false}
@@ -66,7 +73,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
         />
 
         {/* Three.js canvas — purely visual, no pointer events */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 70, pointerEvents: "none" }}>
+        <div style={{ position: "fixed", inset: 0, zIndex: 70, pointerEvents: "none" }}>
           <Suspense fallback={<BooksSceneFallback />}>
             <BooksScene
               books={books}
@@ -82,15 +89,13 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
         {/* Two-column layout: left info panel + right book grid */}
         <div
           style={{
-            position: "absolute",
-            inset: 0,
+            position: "relative",
             zIndex: 1,
             display: "flex",
             flexDirection: "row",
-            alignItems: "center",
+            alignItems: "flex-start",
             paddingLeft: "clamp(24px, 5vw, 80px)",
             paddingRight: "clamp(24px, 5vw, 80px)",
-            paddingTop: 80,
           }}
         >
           {/* Left column: icon + title + description */}
@@ -98,8 +103,15 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
             style={{
               width: "33%",
               flexShrink: 0,
+              // stays put (vertically centered in the viewport) while the grid scrolls
+              position: "sticky",
+              top: 0,
+              height: "100vh",
+              boxSizing: "border-box",
+              paddingTop: 80,
               display: "flex",
               flexDirection: "column",
+              justifyContent: "center",
               gap: "1.5rem",
               paddingRight: "2rem",
             }}
@@ -119,11 +131,13 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
           <div
             style={{
               flex: 1,
-              alignSelf: "stretch",
+              minHeight: "100vh",
+              boxSizing: "border-box",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              paddingTop: 120, // keeps the grid clear of the fixed nav
+              paddingTop: 240, // keeps the grid clear of the fixed nav
+              paddingBottom: 80,
               opacity: selectedBook ? 0 : 1,
               pointerEvents: selectedBook ? "none" : "auto",
               transition: "opacity 0.45s ease",
@@ -135,7 +149,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
                 gridTemplateColumns: "repeat(3, 1fr)",
                 gap: GRID_GAP,
                 width: "100%",
-                maxWidth: `min(56vw, 640px, calc((100vh - 250px - 2 * ${GRID_GAP}) / 1.5 + 2 * ${GRID_GAP}))`,
+                maxWidth: "min(56vw, 640px)",
               }}
             >
               {books.map((book) => {
@@ -183,7 +197,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
                           textAlign: "center",
                           fontFamily: "var(--font-migra), serif",
                           fontWeight: 800,
-                          fontSize: "clamp(0.85rem, 1.45vw, 1.3rem)",
+                          fontSize: "clamp(calc(0.85rem + 2px), calc(1.45vw + 2px), calc(1.3rem + 2px))",
                           lineHeight: 1.1,
                           letterSpacing: "-0.01em",
                           transition: "color 0.2s ease",
@@ -197,7 +211,7 @@ export default function BooksPageShell({ books }: { books: BookData[] }) {
                           textAlign: "center",
                           fontFamily: "var(--font-telegraf), sans-serif",
                           fontWeight: 400,
-                          fontSize: "clamp(0.5rem, 0.75vw, 0.72rem)",
+                          fontSize: "clamp(calc(0.5rem + 5px), calc(0.75vw + 5px), calc(0.72rem + 5px))",
                           transition: "color 0.2s ease",
                         }}
                       >

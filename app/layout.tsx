@@ -56,8 +56,8 @@ const BASE_URL = "https://www.jfcr.design";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "JFCR — Juan Felipe Cadavid Rojas",
-    template: "%s — JFCR",
+    default: "JFCR - Juan Felipe Cadavid Rojas",
+    template: "%s - JFCR",
   },
   description: "A senior product designer who leads through clean flexible systems, strong research and a weakness for silly animations.",
   icons: {
@@ -67,14 +67,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "JFCR",
-    title: "JFCR — Juan Felipe Cadavid Rojas",
+    title: "JFCR - Juan Felipe Cadavid Rojas",
     description: "A senior product designer who leads through clean flexible systems, strong research and a weakness for silly animations.",
     url: BASE_URL,
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "JFCR — Juan Felipe Cadavid Rojas",
+    title: "JFCR - Juan Felipe Cadavid Rojas",
     description: "A senior product designer who leads through clean flexible systems, strong research and a weakness for silly animations.",
     images: ["/og-image.png"],
   },
