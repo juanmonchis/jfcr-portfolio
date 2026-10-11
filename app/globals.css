@@ -472,6 +472,35 @@ body {
   text-decoration: underline;
   color: #DDED3C;
 }
+/* Blog post body text — forced style (overrides inline sizes/fonts from pasted HTML).
+   Headings are left alone. Change the size here to adjust every post. */
+/* Blog text column: 70% of the case-study text width, left-aligned with the title/date. */
+.blog-post .text-wrapper {
+  max-width: 700px;
+  margin-left: 0;
+  margin-right: auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+.blog-post .prose p,
+.blog-post .prose li,
+.blog-post .prose p *,
+.blog-post .prose li * {
+  font-family: var(--font-telegraf), sans-serif !important;
+  font-size: 1.7rem !important;
+  line-height: 1.5 !important;
+  font-weight: 400 !important;
+}
+.blog-post .prose p strong,
+.blog-post .prose p b,
+.blog-post .prose li strong,
+.blog-post .prose li b { font-weight: 700 !important; }
+.blog-prose a {
+  color: #0C0D1F;
+  text-decoration-color: #DDED3C;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 3px;
+}
 .prose strong { font-weight: 700; }
 .prose em { font-style: italic; }
 .prose blockquote {

@@ -120,7 +120,7 @@ export default function PostForm({ initialData, mode }: PostFormProps) {
               className={`${inputClass} font-mono`}
               placeholder="post-slug"
             />
-            <p className="text-xs text-gray-400 mt-1">Public URL: /blog/{form.slug || "..."}</p>
+            <p className="text-xs text-gray-400 mt-1">Public URL: /notes/{form.slug || "..."}</p>
           </div>
         </div>
 
@@ -177,7 +177,7 @@ export default function PostForm({ initialData, mode }: PostFormProps) {
         </button>
         {mode === "edit" && initialData?.slug && (
           <a
-            href={`/blog/${initialData.slug}`}
+            href={`/notes/${initialData.slug}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-[#0C0D1F] underline hover:no-underline ml-2"

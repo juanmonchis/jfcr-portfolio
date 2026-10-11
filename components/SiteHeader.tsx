@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import LogoIcon, { LogoVariant } from "@/components/LogoIcon";
 import HeroStar from "@/components/HeroStar";
+import { useAdaptiveHeaderColors } from "@/components/useAdaptiveHeaderColors";
 
 interface SiteHeaderProps {
   logoVariant?: LogoVariant;
@@ -29,6 +30,7 @@ const NAV_LINKS = [
   { label: "MY WORK",    href: "/#projects" },
   { label: "WHO'S THAT", href: "/about" },
   { label: "BOOK RECS",  href: "/books" },
+  { label: "NOTES",      href: "/notes" },
 ];
 
 const SOCIALS = [
@@ -92,6 +94,7 @@ function NavPill({
   size = "md",
   hoverTextColor = "#DDED3C",
   hoverBgColor = "#0C0D1F",
+  adaptive,
 }: {
   children: React.ReactNode;
   onClick?: () => void;
@@ -101,6 +104,8 @@ function NavPill({
   size?: "sm" | "md";
   hoverTextColor?: string;
   hoverBgColor?: string;
+  /** Opts the pill into adaptive contrast (see useAdaptiveHeaderColors). `ink` must be the page-provided colour, not the flipped one. */
+  adaptive?: { id: string; ink: string };
 }) {
   const base =
     size === "sm"
@@ -115,15 +120,16 @@ function NavPill({
     "--nav-pill-hover-bg": hoverBgColor,
   } as React.CSSProperties;
 
+  const adaptiveAttrs = adaptive ? { "data-adaptive": adaptive.id, "data-ink": adaptive.ink } : {};
   if (href) {
     return (
-      <Link href={href} onClick={onClick} className={base} style={style}>
+      <Link href={href} onClick={onClick} className={base} style={style} {...adaptiveAttrs}>
         {children}
       </Link>
     );
   }
   return (
-    <button onClick={onClick} className={base} style={style}>
+    <button onClick={onClick} className={base} style={style} {...adaptiveAttrs}>
       {children}
     </button>
   );
@@ -132,7 +138,7 @@ function NavPill({
 export default function SiteHeader({
   logoVariant = "dark",
   logoSize = 70,
-  color = "#0C0D1F",
+  color: baseColor = "#0C0D1F",
   mobileOverlayColor = "#DDED3C",
   mobileNavColor = "#0C0D1F",
   mobileLogoVariant = "dark",
@@ -141,21 +147,35 @@ export default function SiteHeader({
   navHoverText,
   headerZ = "z-50",
 }: SiteHeaderProps) {
-  const pillHoverBg = navHoverBg ?? "#0C0D1F";
-  const pillHoverText = navHoverText ?? mobileOverlayColor;
+  const headerRef = useRef<HTMLElement>(null);
+
+  // Each opted-in element (logo, pills, star, hamburger) flips on its own when the page behind it
+  // gets too close to its colour. Tones only exist for elements that currently need a flip.
+  const tones = useAdaptiveHeaderColors(headerRef);
+  const inkFor = (id: string) => tones[id]?.ink ?? baseColor;
+  const hoverBgFor = (id: string) => (tones[id] ? tones[id]!.ink : navHoverBg ?? "#0C0D1F");
+  const hoverTextFor = (id: string) => tones[id]?.bg ?? navHoverText ?? mobileOverlayColor;
+  const color = baseColor; // un-flipped, for non-adaptive details (divider, dropdown)
+  const logoInk = logoVariant === "light" ? "#F2EBD9" : "#0C0D1F";
+  const effectiveLogoVariant: LogoVariant =
+    logoVariant === "color" || !tones.logo ? logoVariant : logoVariant === "light" ? "dark" : "light";
+
+  // The mobile overlay has its own fixed background, so its pills keep the page-provided hover colours.
+  const overlayHoverBg = navHoverBg ?? "#0C0D1F";
+  const overlayHoverText = navHoverText ?? mobileOverlayColor;
   const [open, setOpen] = useState(false);
   const [socialsOpen, setSocialsOpen] = useState(false);
 
   return (
     <>
-      <header className={`absolute top-0 left-0 right-0 ${headerZ} pointer-events-none`}>
-        <div className={`w-full px-6 md:px-12 lg:px-20 pt-6 pb-4 md:pt-8 md:pb-6 flex items-center ${showLogo ? "justify-between" : "justify-end"}`}>
-          {showLogo && <span className="pointer-events-auto"><LogoIcon variant={logoVariant} size={logoSize} /></span>}
+      <header ref={headerRef} className={`fixed top-0 left-0 right-0 ${headerZ} pointer-events-none`}>
+        <div className={`w-full max-w-[1400px] mx-auto px-6 md:px-12 pt-6 pb-4 md:pt-8 md:pb-6 flex items-center ${showLogo ? "justify-between" : "justify-end"}`}>
+          {showLogo && <span className="pointer-events-auto" {...(logoVariant !== "color" ? { "data-adaptive": "logo", "data-ink": logoInk } : {})}><LogoIcon variant={effectiveLogoVariant} size={logoSize} /></span>}
 
           {/* ── Desktop nav — permanent pill stack, top-right ─────────────── */}
           <nav className="hidden md:flex flex-col items-end gap-2 pointer-events-auto">
             {NAV_LINKS.map(({ label, href }) => (
-              <NavPill key={label} href={href} color={color} size="sm" hoverTextColor={pillHoverText} hoverBgColor={pillHoverBg}>
+              <NavPill key={label} href={href} color={inkFor(`nav-${label}`)} size="sm" hoverTextColor={hoverTextFor(`nav-${label}`)} hoverBgColor={hoverBgFor(`nav-${label}`)} adaptive={{ id: `nav-${label}`, ink: baseColor }}>
                 <span className="text-sm">→</span>
                 <span className="type-tag" style={{ color: "inherit" }}>{label}</span>
               </NavPill>
@@ -167,10 +187,11 @@ export default function SiteHeader({
             {/* Socials pill — desktop */}
             <div className="flex flex-col items-end">
               <NavPill
-                color={color}
+                color={inkFor("nav-socials")}
                 size="sm"
                 active={socialsOpen}
-                hoverTextColor={pillHoverText} hoverBgColor={pillHoverBg}
+                hoverTextColor={hoverTextFor("nav-socials")} hoverBgColor={hoverBgFor("nav-socials")}
+                adaptive={{ id: "nav-socials", ink: baseColor }}
                 onClick={() => setSocialsOpen(s => !s)}
               >
                 <span className="text-sm">{socialsOpen ? "↓" : "→"}</span>
@@ -181,7 +202,7 @@ export default function SiteHeader({
               {socialsOpen && (
                 <div
                   className="mt-2 flex items-center gap-2 px-3 py-2 rounded-2xl border"
-                  style={{ borderColor: `${color}33`, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(12px)" }}
+                  style={{ borderColor: `${inkFor("nav-socials")}33`, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(12px)" }}
                 >
                   {SOCIALS.map(({ label, href, icon }) => (
                     <a
@@ -192,7 +213,7 @@ export default function SiteHeader({
                       aria-label={label}
                       title={label}
                       className="flex items-center justify-center hover:opacity-60 transition-opacity duration-200"
-                      style={{ color }}
+                      style={{ color: inkFor("nav-socials") }}
                     >
                       {icon}
                     </a>
@@ -201,17 +222,21 @@ export default function SiteHeader({
               )}
             </div>
 
-            <HeroStar size={64} fill={color} textColor={pillHoverText} hoverLabel="My Trading Card Game" />
+            <div data-adaptive="star" data-ink={baseColor}>
+              <HeroStar size={64} fill={inkFor("star")} textColor={hoverTextFor("star")} hoverLabel="My Trading Card Game" />
+            </div>
           </nav>
 
           {/* ── Mobile hamburger ──────────────────────────────────────────── */}
           <button
+            data-adaptive="burger"
+            data-ink={baseColor}
             className="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10 pointer-events-auto"
             onClick={() => { setOpen(true); setSocialsOpen(false); }}
             aria-label="Open menu"
           >
-            <span className="block w-6 h-[2px] rounded-full" style={{ backgroundColor: color }} />
-            <span className="block w-6 h-[2px] rounded-full" style={{ backgroundColor: color }} />
+            <span className="block w-6 h-[2px] rounded-full" style={{ backgroundColor: inkFor("burger") }} />
+            <span className="block w-6 h-[2px] rounded-full" style={{ backgroundColor: inkFor("burger") }} />
           </button>
         </div>
       </header>
@@ -235,7 +260,7 @@ export default function SiteHeader({
         {/* Pill list */}
         <nav className="flex flex-col items-center justify-center flex-1 gap-4 px-6 pb-8">
           {NAV_LINKS.map(({ label, href }) => (
-            <NavPill key={label} href={href} color={mobileNavColor} size="md" hoverTextColor={pillHoverText} hoverBgColor={pillHoverBg} onClick={() => setOpen(false)}>
+            <NavPill key={label} href={href} color={mobileNavColor} size="md" hoverTextColor={overlayHoverText} hoverBgColor={overlayHoverBg} onClick={() => setOpen(false)}>
               <span className="text-xl">→</span>
               <span className="flex-1 text-center type-cta tracking-widest uppercase" style={{ color: "inherit" }}>
                 {label}
@@ -252,7 +277,7 @@ export default function SiteHeader({
               color={mobileNavColor}
               size="md"
               active={socialsOpen}
-              hoverTextColor={pillHoverText} hoverBgColor={pillHoverBg}
+              hoverTextColor={overlayHoverText} hoverBgColor={overlayHoverBg}
               onClick={() => setSocialsOpen(s => !s)}
             >
               <span className="text-xl">{socialsOpen ? "↓" : "→"}</span>
@@ -284,7 +309,7 @@ export default function SiteHeader({
             </div>
           </div>
 
-          <NavPill href="/projects/trading-card-game" color={mobileNavColor} size="md" hoverTextColor={pillHoverText} hoverBgColor={pillHoverBg} onClick={() => setOpen(false)}>
+          <NavPill href="/projects/trading-card-game" color={mobileNavColor} size="md" hoverTextColor={overlayHoverText} hoverBgColor={overlayHoverBg} onClick={() => setOpen(false)}>
             <span className="text-xl">→</span>
             <span className="flex-1 text-center type-cta tracking-widest uppercase" style={{ color: "inherit" }}>
               LATEST PROJECT
