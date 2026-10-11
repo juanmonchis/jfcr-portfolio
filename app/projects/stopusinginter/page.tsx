@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Stop Using Inter",
   description: "A curated list of type foundries and designers offering beautiful fonts — free or affordable. Being original is not expensive.",
   openGraph: {
-    title: "Stop Using Inter — JFCR",
+    title: "Stop Using Inter - JFCR",
     description: "A curated list of type foundries and designers offering beautiful fonts — free or affordable.",
     url: "https://www.jfcr.design/projects/stopusinginter",
   },
