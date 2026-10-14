@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import path from "path";
+import { existsSync } from "fs";
 import SiteHeader from "@/components/SiteHeader";
 import BlockRenderer, { Block } from "@/components/CaseStudy/BlockRenderer";
 import { assetPath } from "@/lib/assetPath";
@@ -26,6 +28,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await prisma.post.findUnique({ where: { slug, published: true } });
   if (!post) return {};
+
+  // Link preview: the generated 1200x630 card (illustration + title + blurb) from
+  // scripts/generate-og.mjs. Falls back to the raw cover image if it wasn't generated.
+  const ogFile = path.join(process.cwd(), "public", "og", `${slug}.png`);
+  const previewImage = existsSync(ogFile)
+    ? { url: `/og/${slug}.png`, width: 1200, height: 630, alt: `${post.title} — Notes by JFCR` }
+    : post.coverImage
+      ? { url: post.coverImage }
+      : null;
+
   return {
     title: post.title,
     description: post.excerpt,
@@ -34,13 +46,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: post.excerpt,
       url: `https://www.jfcr.design/notes/${slug}`,
       type: "article",
-      ...(post.coverImage ? { images: [{ url: post.coverImage }] } : {}),
+      ...(previewImage ? { images: [previewImage] } : {}),
     },
     twitter: {
-      card: post.coverImage ? "summary_large_image" : "summary",
+      card: previewImage ? "summary_large_image" : "summary",
       title: post.title,
       description: post.excerpt,
-      ...(post.coverImage ? { images: [post.coverImage] } : {}),
+      ...(previewImage ? { images: [previewImage.url] } : {}),
     },
   };
 }

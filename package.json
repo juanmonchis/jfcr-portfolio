@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && next dev",
-    "build": "next build",
+    "dev": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && node scripts/generate-og.mjs && next dev",
+    "build": "node scripts/generate-og.mjs && next build",
+    "og": "node scripts/generate-og.mjs",
     "start": "next start",
     "lint": "eslint",
     "content:export": "node scripts/export-content.mjs"
@@ -32,6 +33,7 @@
     "three": "^0.169.0"
   },
   "devDependencies": {
+    "@resvg/resvg-wasm": "^2.6.2",
     "@tailwindcss/postcss": "^4",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
@@ -40,6 +42,7 @@
     "@types/three": "^0.169.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "satori": "^0.57.2",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5"
